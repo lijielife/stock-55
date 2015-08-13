@@ -40,18 +40,28 @@ Route::get('check-model','HistoryController@getIndex');
 // Route::controller('admin/login','Admins\LoginController');
  
 // Start Online Page
-Route::group(['prefix'=>'admin','middleware'=>'auth','namespace'=>'Admins'],function(){
+Route::group(['prefix'=>'admin','middleware'=>'auth','namespace'=>'Admins'],function($param){
     Route::controller('blank','BlankController');
     Route::controller('login','LoginController');
     Route::controller('dashboard','DashboardController');
     Route::controller('user','UserController');
+    Route::controller('index', 'DashboardController');
 });
+
+
+Route::get('history/get', 'History\GetController@getIndex');
+
+
 
 Route::get('pages/{category}', function($category){
-  // dd($product,$category); // remove this line and put your business logic here
-
-	return view('admin.pages.'.$category);
+    return view('admin.pages.'.$category);
 });
+
+
+//Route::bind('pages', function($slug) {
+//  return Page::whereSlug($slug)->first();
+//});
+
 
 // Start Online Page
 // Route::group(['prefix'=>'admin','middleware'=>'auth','namespace'=>'Admins'],function(){
