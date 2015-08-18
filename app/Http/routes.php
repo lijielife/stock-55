@@ -51,6 +51,8 @@ Route::group(['prefix'=>'admin','middleware'=>'auth','namespace'=>'Admins'],func
 
 Route::get('history/get', 'History\GetController@getIndex');
 
+Route::get('history/get2', 'History\RuayHoonGetController@getIndex');
+
 
 
 Route::get('pages/{category}', function($category){

@@ -46,11 +46,6 @@ class HistoryController extends Controller {
 
     protected function getSymbolIsUse(){
     
-//        $symbolNames = DB::table('SYMBOL_NAME')
-//        ->select('SYMBOL', 'IS_USE')
-//        ->where('IS_USE' , 1)
-//        ->get();
-        
         $symbolNames = DB::table('SYMBOL_NAME')
         ->where('IS_USE' , 1)
         ->lists('SYMBOL');
@@ -94,7 +89,7 @@ class HistoryController extends Controller {
     
     function getSymbol() {
         if (!isset($this->symbol) || trim($this->symbol) == "") {
-            $this->symbol = "SET*BK";
+            $this->symbol = "ADVANC*BK";
         } else if (!strrpos($this->symbol, '*')) {
             $this->symbol = $this->symbol . "*BK";
         }

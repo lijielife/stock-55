@@ -77,25 +77,27 @@
                         <th>High</th>
                         <th>Low</th>
                         <th>Close</th>
-                        <th>Volume (MB)</th>
+                        <th>Volume (Baht)</th>
                     </tr>
                 </thead>
+                
                 <tbody>
                     @if($respone)
                     @if($respone->data)
                     @foreach($respone->data as $data)
                     <tr>
-                        <td>{{$data->time}}</td>
-                        <td>{{$data->open}}</td>
-                        <td>{{$data->high}}</td>
-                        <td>{{$data->low}}</td>
-                        <td>{{$data->close}}</td>
-                        <td>{{$data->volume}}</td>
+                        <td>{{$data->getTime()}}</td>
+                        <td>{{$data->getOpen()}}</td>
+                        <td>{{$data->getHigh()}}</td>
+                        <td>{{$data->getLow()}}</td>
+                        <td>{{$data->getClose()}}</td>
+                        <td>{{$data->getVolume()}}</td>
                     </tr>
                     @endforeach
                     @endif
                     @endif
                 </tbody>
+                
             </table>
         </div>
     </div>

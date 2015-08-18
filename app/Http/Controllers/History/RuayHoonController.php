@@ -12,10 +12,10 @@ class RuayHoonController extends Controller {
 
     private $symbol;
     private $resolution;
-//    private $from;
-//    private $to;
+    private $from;
+    private $to;
     private $url = 'http://www.ruayhoon.com/loadvar.php?';
-    private $criteria = 'stock={stock}';
+    private $criteria = 'stock={symbol}';
 
     public function __construct() {
         parent::__construct();
@@ -46,10 +46,6 @@ class RuayHoonController extends Controller {
 
     protected function historyInsert($histories){
         
-        
-
-
-
         $times = array();
         foreach ($histories as $key => $history) {
             $time = $history['TIME'];
@@ -63,9 +59,6 @@ class RuayHoonController extends Controller {
         ->whereIn('TIME' , $times)
         ->lists('TIME');
         
-        
-       
-        
         $historiesInsert = array();
         foreach ($histories as $history) {
             $time = $history['TIME'];
@@ -77,14 +70,15 @@ class RuayHoonController extends Controller {
         
         DB::table('history')->insert($historiesInsert);
         
-
     }
-            function getSymbol() {
-        if (isset($this->symbol) || trim($this->symbol) == "") {
-            $this->symbol = "SET*BK";
-        } else if (!strrpos($this->symbol, '*')) {
-            $this->symbol = $this->symbol . "*BK";
+    
+    function getSymbol() {
+        if (isset($this->symbol)) {
+            $this->symbol = "ADVANC";
         }
+//        else if (!strrpos($this->symbol, '*')) {
+//            $this->symbol = $this->symbol . "*BK";
+//        }
         return $this->symbol;
     }
 
@@ -112,14 +106,14 @@ class RuayHoonController extends Controller {
     function getUrl() {
         $url = $this->url . $this->getCriteria();
         $symbol = $this->getSymbol();
-        $resolution = $this->getResolution();
-        $from = $this->getFrom();
-        $to = $this->getTo();
+//        $resolution = $this->getResolution();
+//        $from = $this->getFrom();
+//        $to = $this->getTo();
 
         $url = str_replace("{symbol}", $symbol, $url);
-        $url = str_replace("{resolution}", $resolution, $url);
-        $url = str_replace("{from}", $from, $url);
-        $url = str_replace("{to}", $to, $url);
+//        $url = str_replace("{resolution}", $resolution, $url);
+//        $url = str_replace("{from}", $from, $url);
+//        $url = str_replace("{to}", $to, $url);
 
         return $url;
     }
