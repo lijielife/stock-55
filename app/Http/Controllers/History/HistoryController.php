@@ -44,12 +44,27 @@ class HistoryController extends Controller {
         return $histories;
     }
 
+    protected function getSymbolIsUse(){
+    
+//        $symbolNames = DB::table('SYMBOL_NAME')
+//        ->select('SYMBOL', 'IS_USE')
+//        ->where('IS_USE' , 1)
+//        ->get();
+        
+        $symbolNames = DB::table('SYMBOL_NAME')
+        ->where('IS_USE' , 1)
+        ->lists('SYMBOL');
+        
+        return $symbolNames;
+    }
+        
+    protected  function updateIsNotUse($symbolName){
+        
+        DB::table('SYMBOL_NAME')->where('SYMBOL', $symbolName)->update(['IS_USE' => 0]);
+        
+    }
     protected function historyInsert($histories){
         
-        
-
-
-
         $times = array();
         foreach ($histories as $key => $history) {
             $time = $history['TIME'];
@@ -62,9 +77,6 @@ class HistoryController extends Controller {
         ->where('SYMBOL' , $symbol)
         ->whereIn('TIME' , $times)
         ->lists('TIME');
-        
-        
-       
         
         $historiesInsert = array();
         foreach ($histories as $history) {
@@ -79,8 +91,9 @@ class HistoryController extends Controller {
         
 
     }
-            function getSymbol() {
-        if (isset($this->symbol) || trim($this->symbol) == "") {
+    
+    function getSymbol() {
+        if (!isset($this->symbol) || trim($this->symbol) == "") {
             $this->symbol = "SET*BK";
         } else if (!strrpos($this->symbol, '*')) {
             $this->symbol = $this->symbol . "*BK";
