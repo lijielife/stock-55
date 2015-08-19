@@ -4,17 +4,27 @@ namespace App\Beans; // การกำหนดที่อยู่ของ M
 
 class SymbolBean {
     
-    private $symbol;
-    private $resolution;
-    private $millisec;
-    private $time;
-    private $open;
-    private $close;
-    private $high;
-    private $low;
-    private $volume;
+    public $symbol;
+    public $resolution;
+    public $millisec;
+    public $time;
+    public $open;
+    public $close;
+    public $high;
+    public $low;
+    public $volume;
+    public $origin;
+    
+    
+    public function getOrigin() {
+        return $this->origin;
+    }
 
-    function getSymbol() {
+    public function setOrigin($origin) {
+        $this->origin = $origin;
+    }
+
+        function getSymbol() {
         return $this->symbol;
     }
 

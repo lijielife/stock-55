@@ -7,7 +7,7 @@ namespace App\Http\Controllers\History;
 use App\Http\Controllers\History\HistoryController;
 
 //use App\Models\History;
-class GetController extends HistoryController {
+class LoadController extends HistoryController {
 
     // สำหรับแสดงรายชื่อสมาชิก หรือ admin ที่มีอยู่ในปัจจุบัน
     public function getIndex() {
