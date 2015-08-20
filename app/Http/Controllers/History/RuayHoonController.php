@@ -44,27 +44,28 @@ class RuayHoonController extends Controller {
         return $histories;
     }
 
-    protected function historyInsert($histories){
+    protected function historyInsert($symbolBeans){
         
         $times = array();
-        foreach ($histories as $key => $history) {
-            $time = $history['TIME'];
-            $times[count($times)] = $time;
+        foreach ($symbolBeans as $symbolBean) {
+            $timeMillisec = $symbolBean->getMillisec();
+            $times[count($times)] = $timeMillisec;
         }
 
         $symbol = $this->getSymbol();
         
         $timeInUse = DB::table('history')
         ->where('SYMBOL' , $symbol)
+        ->where('ORIGIN' , 'ruayhoon')
         ->whereIn('TIME' , $times)
         ->lists('TIME');
         
         $historiesInsert = array();
-        foreach ($histories as $history) {
-            $time = $history['TIME'];
+        foreach ($symbolBeans as $symbolBean) {
+            $timeMillisec = $symbolBean->getMillisec();
             
-            if(!in_array($time, $timeInUse)){
-                array_push($historiesInsert, $history);
+            if(!in_array($timeMillisec, $timeInUse)){
+                array_push($historiesInsert, (array)$symbolBean);
             }
         }
         
@@ -73,13 +74,15 @@ class RuayHoonController extends Controller {
     }
     
     function getSymbol() {
-        if (isset($this->symbol)) {
+        
+//        $symbol = $this->symbol;
+         if (!isset($this->symbol) || trim($this->symbol) == "") {
             $this->symbol = "ADVANC";
-        }
+        } 
 //        else if (!strrpos($this->symbol, '*')) {
 //            $this->symbol = $this->symbol . "*BK";
 //        }
-        return $this->symbol;
+        return strtoupper($this->symbol);
     }
 
     function getResolution() {
@@ -138,6 +141,22 @@ class RuayHoonController extends Controller {
         $this->to = $to;
     }
 
+    
+    protected function getSymbolIsUse(){
+    
+        $symbolNames = DB::table('SYMBOL_NAME')
+        ->where('IS_USE' , 1)
+        ->lists('SYMBOL');
+        
+        return $symbolNames;
+    }
+    
+    protected  function updateIsNotUse($symbolName){
+        
+        DB::table('SYMBOL_NAME')->where('SYMBOL', $symbolName)->update(['IS_USE' => 0]);
+        
+    }
+    
 //    function setUrl($url) {
 //        $this->url = $url;
 //    }
