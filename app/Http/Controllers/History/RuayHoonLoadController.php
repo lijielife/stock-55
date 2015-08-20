@@ -22,54 +22,54 @@ class RuayHoonLoadController extends RuayHoonController {
 
         foreach ($symbolNames as $symbolName) {
 
-            $this->setSymbol($symbolName);
-            $url = $this->getUrl();
-            $this->updateIsNotUse($symbolName);
-
             try {
+                $this->setSymbol($symbolName);
+                $url = $this->getUrl();
                 $responeContent = file_get_contents($url);
+                $contents = explode("&", $responeContent);
+
+                $symbolBeans = array();
+                foreach ($contents as $content) {
+                    $dataMap = explode("=", $content);
+                    $index = $dataMap[0];
+                    $datas = explode(";", $dataMap[1]);
+
+                    switch ($index) {
+                        case "cdate":
+                            $symbolBeans = $this->addCDate($symbolBeans, $datas);
+                            break;
+                        case "copen":
+                            $symbolBeans = $this->addCOpen($symbolBeans, $datas);
+                            break;
+                        case "chigh":
+                            $symbolBeans = $this->addCHigh($symbolBeans, $datas);
+                            break;
+                        case "cclose":
+                            $symbolBeans = $this->addCClose($symbolBeans, $datas);
+                            break;
+                        case "clow":
+                            $symbolBeans = $this->addCLow($symbolBeans, $datas);
+                            break;
+                        case "cvolume":
+                            $symbolBeans = $this->addCVloume($symbolBeans, $datas);
+                            break;
+                    }
+                }
+
+                $this->historyInsert($symbolBeans);
+
+                $respone->data = $symbolBeans;
+                $respone->obj = $this;
+                $respone->count = count($respone->data);
+
+
+                echo $symbolName . " : " . count($respone->data) . " Rows <br/>";
             } catch (Exception $e) {
                 continue;
+            } finally {
+                
             }
-
-            $contents = explode("&", $responeContent);
-            
-            $symbolBeans = array();
-            foreach ($contents as $content) {
-                $dataMap = explode("=", $content);
-                $index = $dataMap[0];
-                $datas = explode(";", $dataMap[1]);
-
-                switch ($index) {
-                    case "cdate":
-                        $symbolBeans = $this->addCDate($symbolBeans, $datas);
-                        break;
-                    case "copen":
-                        $symbolBeans = $this->addCOpen($symbolBeans, $datas);
-                        break;
-                    case "chigh":
-                        $symbolBeans = $this->addCHigh($symbolBeans, $datas);
-                        break;
-                    case "cclose":
-                        $symbolBeans = $this->addCClose($symbolBeans, $datas);
-                        break;
-                    case "clow":
-                        $symbolBeans = $this->addCLow($symbolBeans, $datas);
-                        break;
-                    case "cvolume":
-                        $symbolBeans = $this->addCVloume($symbolBeans, $datas);
-                        break;
-                }
-            }
-
-            $this->historyInsert($symbolBeans);
-
-            $respone->data = $symbolBeans;
-            $respone->obj = $this;
-            $respone->count = count($respone->data);
-            
-            
-            echo $symbolName . " : " . count($respone->data) . " Rows <br/>" ;
+            $this->updateIsNotUse($symbolName);
         }
 
         return view('admin.history.index', ['respone' => $respone]);
@@ -89,7 +89,7 @@ class RuayHoonLoadController extends RuayHoonController {
             } else {
                 $symbolBean = new SymbolBean();
             }
-            if($preFunc){
+            if ($preFunc) {
                 $data = $this->$preFunc($data);
             }
             $symbolBean->setSymbol($symbol);
@@ -97,11 +97,11 @@ class RuayHoonLoadController extends RuayHoonController {
             $symbolBean->setOrigin("ruayhoon");
             $symbolBean->$function($data);
 
-            
-            if($postFunc){
+
+            if ($postFunc) {
                 $this->$postFunc($symbolBean, $data);
             }
-            
+
             $symbolBeans[$count++] = $symbolBean;
         }
         return $symbolBeans;
@@ -110,7 +110,7 @@ class RuayHoonLoadController extends RuayHoonController {
     public function setMillisec($symbolBean, $data) {
         $symbolBean->setMillisec(strtotime($data));
     }
-    
+
     public function dateFormat($data) {
         return date("Y-m-d", strtotime($data));
     }
@@ -142,6 +142,5 @@ class RuayHoonLoadController extends RuayHoonController {
     private function addCVloume($symbolBeans, $datas) {
         return $this->addData("setVolume", $symbolBeans, $datas, "numberFormat");
     }
-
 
 }

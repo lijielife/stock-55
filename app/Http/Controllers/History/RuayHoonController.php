@@ -27,7 +27,7 @@ class RuayHoonController extends Controller {
 
     protected function getHistoryFromJson($json) {
         $histories = array();
-        
+
         for ($i = 0; $i < count($json->t); $i++) {
             $history = array('SYMBOL' => $this->getSymbol()
                 , 'RESOLUTION' => $this->getResolution()
@@ -40,12 +40,12 @@ class RuayHoonController extends Controller {
 
             array_push($histories, $history);
         }
-        
+
         return $histories;
     }
 
-    protected function historyInsert($symbolBeans){
-        
+    protected function historyInsert($symbolBeans) {
+
         $times = array();
         foreach ($symbolBeans as $symbolBean) {
             $timeMillisec = $symbolBean->getMillisec();
@@ -53,32 +53,49 @@ class RuayHoonController extends Controller {
         }
 
         $symbol = $this->getSymbol();
-        
+
         $timeInUse = DB::table('history')
-        ->where('SYMBOL' , $symbol)
-        ->where('ORIGIN' , 'ruayhoon')
-        ->whereIn('TIME' , $times)
-        ->lists('TIME');
-        
+                ->where('SYMBOL', $symbol)
+                ->where('ORIGIN', 'ruayhoon')
+                ->whereIn('TIME', $times)
+                ->lists('TIME');
+
         $historiesInsert = array();
         foreach ($symbolBeans as $symbolBean) {
             $timeMillisec = $symbolBean->getMillisec();
-            
-            if(!in_array($timeMillisec, $timeInUse)){
-                array_push($historiesInsert, (array)$symbolBean);
+
+            if (!in_array($timeMillisec, $timeInUse)) {
+                array_push($historiesInsert, (array) $symbolBean);
             }
         }
+//        $historiesInserts = array();
+//        $highValue = 100000;
+//        $slice = count($historiesInsert) / $highValue;
+//
+//        if ($slice > 1) {
+//            for ($i = 0; $i < $slice; $i++) {
+//                array_push($historiesInserts, array_slice($historiesInsert, $slice * $highValue, ($slice + 1) * $highValue));
+//            }
+//        } else {
+//            array_push($historiesInserts, $historiesInsert);
+//        }
+
+
         
-        DB::table('history')->insert($historiesInsert);
         
+                
+                
+        foreach (array_chunk($historiesInsert, 1000) as $insertValue) {
+            DB::table('history')->insert($insertValue);
+        }
     }
-    
+
     function getSymbol() {
-        
+
 //        $symbol = $this->symbol;
-         if (!isset($this->symbol) || trim($this->symbol) == "") {
+        if (!isset($this->symbol) || trim($this->symbol) == "") {
             $this->symbol = "ADVANC";
-        } 
+        }
 //        else if (!strrpos($this->symbol, '*')) {
 //            $this->symbol = $this->symbol . "*BK";
 //        }
@@ -141,22 +158,20 @@ class RuayHoonController extends Controller {
         $this->to = $to;
     }
 
-    
-    protected function getSymbolIsUse(){
-    
+    protected function getSymbolIsUse() {
+
         $symbolNames = DB::table('SYMBOL_NAME')
-        ->where('IS_USE' , 1)
-        ->lists('SYMBOL');
-        
+                ->where('IS_USE', 1)
+                ->lists('SYMBOL');
+
         return $symbolNames;
     }
-    
-    protected  function updateIsNotUse($symbolName){
-        
+
+    protected function updateIsNotUse($symbolName) {
+
         DB::table('SYMBOL_NAME')->where('SYMBOL', $symbolName)->update(['IS_USE' => 0]);
-        
     }
-    
+
 //    function setUrl($url) {
 //        $this->url = $url;
 //    }
