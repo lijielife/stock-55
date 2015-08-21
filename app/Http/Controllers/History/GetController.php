@@ -40,6 +40,7 @@ class GetController extends HistoryController {
                 $datas[$i]->setLow(number_format($json->l[$i], 2));
                 $datas[$i]->setClose(number_format($json->c[$i], 2));
                 $datas[$i]->setVolume(number_format($json->v[$i], 0));
+                $datas[$i]->setOrigin("investor");
 
             }
             

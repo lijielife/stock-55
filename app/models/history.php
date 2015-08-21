@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Model; // การเรียกใช้ง�
 class History extends Model {
 
     protected $table = 'history'; // กำหนดชื่อของตารางที่ต้องการเรียกใช้
-    protected $fillable = array('ID', 'SYMBOL', 'RESOLUTION', 'TIME', 'OPEN', 'CLOSE', 'HIGH', 'LOW', 'VOLUME');
+    protected $fillable = array('ID', 'SYMBOL', 'RESOLUTION', 'MILLISEC', 'TIME'
+        , 'OPEN', 'CLOSE', 'HIGH', 'LOW', 'VOLUME', 'ORIGIN', 'UPDATED_AT', 'CREATED_AT');
+    
+    
 
 }

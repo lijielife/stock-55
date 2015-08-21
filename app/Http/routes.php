@@ -33,6 +33,7 @@ Route::get('check-connect',function(){
 
 // model
 Route::get('check-model','HistoryController@getIndex');
+Route::get('sub-table','SubTableController@getIndex');
 
 // Route::controller('admin/index','Admins\DashboardController');
 
@@ -49,11 +50,14 @@ Route::group(['prefix'=>'admin','middleware'=>'auth','namespace'=>'Admins'],func
 });
 
 
-Route::get('history/get', 'History\GetController@getIndex');
+//Route::get('history/get', 'History\GetController@getIndex');
+Route::get('history/get', 'History\LoadController@getIndex');
 
-Route::get('history/get2', 'History\RuayHoonGetController@getIndex');
+//Route::get('history/get2', 'History\RuayHoonGetController@getIndex');
 
 Route::get('history/get2', 'History\RuayHoonLoadController@getIndex');
+
+Route::get('backup', 'Backup\BackupDBController@backup');
 
 
 
