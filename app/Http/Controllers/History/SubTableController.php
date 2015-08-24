@@ -21,7 +21,7 @@ class SubTableController extends Controller {
                 
         set_time_limit(0);
         
-        $this->cleanData();
+//        $this->cleanData();
         $respone = new \stdClass();
                 
         $symbolNames = $this->getSymbolIsUse();
@@ -46,15 +46,15 @@ class SubTableController extends Controller {
                         }
                     }
 
-                    if (count($historiesInsert) > 0) {
-                        if ($this->createTable($tableName, $symbolName, $origin)) {
-                            foreach (array_chunk($historiesInsert, 1000) as $insertValue) {
+//                    if (count($historiesInsert) > 0) {
+//                        if ($this->createTable($tableName, $symbolName, $origin)) {
+//                            foreach (array_chunk($historiesInsert, 1000) as $insertValue) {
 //                                DB::table($tableName)->insert($insertValue);
-                            }
-                        }
-                    } else {
-                        DB::table('NO_DATA')->insert(["SYMBOL_ORIGIN" => $symbolName . $origin, "SYMBOL" => $symbolName, "ORIGIN" => $origin]);
-                    }
+//                            }
+//                        }
+//                    } else {
+//                        DB::table('NO_DATA')->insert(["SYMBOL_ORIGIN" => $symbolName . $origin, "SYMBOL" => $symbolName, "ORIGIN" => $origin]);
+//                    }
                 }
 
 

@@ -95,11 +95,11 @@ Route::get('getAllSymbol',function(){
     
 //    Cache::forget('getAllSymbol');
 
-    return Cache::get('getAllSymbol', function() { 
+    $ret = Cache::get('getAllSymbol', function() { 
         $symbolNames = SymbolName::lists('SYMBOL');
         if(count($symbolNames)){
         
-            Cache::add('getAllSymbol', 'allSymbol', json_encode($symbolNames));
+            Cache::add('getAllSymbol', json_encode($symbolNames), date('Y-m-d H:i:s'));
 
             return json_encode($symbolNames);
             
@@ -107,6 +107,8 @@ Route::get('getAllSymbol',function(){
         return json_encode([]);
         
     });
+    
+    return $ret;
 
     
     

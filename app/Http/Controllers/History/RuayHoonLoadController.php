@@ -17,7 +17,7 @@ class RuayHoonLoadController extends RuayHoonController {
 
         set_time_limit(0);
 
-//        $this->resetData();
+        $this->resetData();
         
         $respone = new \stdClass();
 
