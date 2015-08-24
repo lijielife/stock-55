@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\SymbolName;
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -81,12 +82,22 @@ Route::get('single-stock','Charts\SingleStockController@getIndex');
 //service
 
 
+//Route::get('getAllSymbol',function(){
+//    
+//    $symbolNames = DB::table('SYMBOL_NAME')->lists('SYMBOL');
+//
+//    return json_encode($symbolNames);
+//    
+//});
+
+
 Route::get('getAllSymbol',function(){
     
-    $symbolNames = DB::table('SYMBOL_NAME')->lists('SYMBOL');
+    $symbolNames = SymbolName::lists('SYMBOL');
 
     return json_encode($symbolNames);
     
 });
+
 
 

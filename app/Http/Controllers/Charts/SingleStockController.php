@@ -15,12 +15,4 @@ class SingleStockController extends Controller {
         return view('charts.singlestock');
     }
     
-    protected function getSymbolIsUse(){
-    
-        $symbolNames = DB::table('SYMBOL_NAME')
-        ->where('IS_USE' , 1)
-        ->lists('SYMBOL');
-        
-        return $symbolNames;
-    }
 }

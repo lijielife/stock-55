@@ -10,6 +10,4 @@ class History extends Model {
     protected $fillable = array('ID', 'SYMBOL', 'RESOLUTION', 'MILLISEC', 'TIME'
         , 'OPEN', 'CLOSE', 'HIGH', 'LOW', 'VOLUME', 'ORIGIN', 'UPDATED_AT', 'CREATED_AT');
     
-    
-
 }
