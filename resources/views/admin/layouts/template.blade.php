@@ -11,9 +11,16 @@
 
     <title>SB Admin 2 - Bootstrap Admin Theme Modify by Saimok</title>
 
+    
     <!-- Bootstrap Core CSS -->
     @include('admin.layouts.inc-stylesheet')
 	@yield('stylesheet')
+        
+        
+    <!-- jQuery -->
+	@include('admin.layouts.inc-scripts')
+    @yield('scripts')
+    
 </head>
 
 <body>
@@ -53,9 +60,8 @@
     </div>
     <!-- /#wrapper -->
 
-    <!-- jQuery -->
-	@include('admin.layouts.inc-scripts')
-    @yield('scripts')
+    
+    
 </body>
 
 </html>

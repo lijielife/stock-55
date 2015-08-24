@@ -7,6 +7,7 @@ namespace App\Http\Controllers\History;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\DB;
+use App\Beans\SymbolBean;
 
 class HistoryController extends Controller {
 
@@ -17,31 +18,14 @@ class HistoryController extends Controller {
     private $url = 'http://chart.investor.co.th/achart/history/query.ashx?';
     private $criteria = 'symbol={symbol}&resolution={resolution}&from={from}&to={to}';
 
+    protected $is_insert = false;
+    
     public function __construct() {
         parent::__construct();
         $this->symbol = Request::input('symbol');
         $this->resolution = Request::input('resolution');
         $this->from = Request::input('from');
         $this->to = Request::input('to');
-    }
-
-    protected function getHistoryFromJson($json) {
-        $histories = array();
-        
-        for ($i = 0; $i < count($json->t); $i++) {
-            $history = array('SYMBOL' => $this->getSymbol()
-                , 'RESOLUTION' => $this->getResolution()
-                , 'TIME' => $json->t[$i]
-                , 'OPEN' => $json->o[$i]
-                , 'CLOSE' => $json->c[$i]
-                , 'HIGH' => $json->h[$i]
-                , 'LOW' => $json->l[$i]
-                , 'VOLUME' => $json->v[$i]);
-
-            array_push($histories, $history);
-        }
-        
-        return $histories;
     }
 
     protected function getSymbolIsUse(){
@@ -58,67 +42,78 @@ class HistoryController extends Controller {
         DB::table('SYMBOL_NAME')->where('SYMBOL', $symbolName)->update(['IS_USE' => 0]);
         
     }
-    protected function historyInsert($histories){
-        
+    
+    protected function historyInsert($symbolBeans){
+    
+        if (!$this->is_insert) {
+            return;
+        }
+            
         $times = array();
-        foreach ($histories as $key => $history) {
-            $time = $history['TIME'];
-            $times[count($times)] = $time;
+        foreach ($symbolBeans as $symbolBean) {
+            $timeMillisec = $symbolBean->getMillisec();
+            $times[count($times)] = $timeMillisec;
         }
 
         $symbol = $this->getSymbol();
-        
-        $timeInUse = DB::table('history')
-        ->where('SYMBOL' , $symbol)
-        ->whereIn('TIME' , $times)
-        ->lists('TIME');
-        
+
+        $timeInUse = DB::table('HISTORY')
+                ->where('SYMBOL', $symbol)
+                ->where('ORIGIN', 'ruayhoon')
+                ->whereIn('TIME', $times)
+                ->lists('TIME');
+
         $historiesInsert = array();
-        foreach ($histories as $history) {
-            $time = $history['TIME'];
-            
-            if(!in_array($time, $timeInUse)){
-                array_push($historiesInsert, $history);
+        foreach ($symbolBeans as $symbolBean) {
+            $timeMillisec = $symbolBean->getMillisec();
+
+            if (!in_array($timeMillisec, $timeInUse)) {
+                array_push($historiesInsert, (array) $symbolBean);
+                array_push($timeInUse, $timeMillisec);
             }
         }
+                
+        foreach (array_chunk($historiesInsert, 1000) as $insertValue) {
+            DB::table('HISTORY')->insert($insertValue);
+        }
         
-        DB::table('history')->insert($historiesInsert);
-        
-
     }
     
-    function getSymbol() {
+    public function getSymbol() {
+                
         if (!isset($this->symbol) || trim($this->symbol) == "") {
-            $this->symbol = "ADVANC*BK";
-        } else if (!strrpos($this->symbol, '*')) {
-            $this->symbol = $this->symbol . "*BK";
+            $this->symbol = "ADVANC";
         }
         return $this->symbol;
     }
 
-    function getResolution() {
+    public function getResolution() {
         if (isset($this->resolution) || trim($this->resolution) == "") {
             $this->resolution = "D";
         }
         return $this->resolution;
     }
 
-    function getFrom() {
+    public function getFrom() {
         if (isset($this->from) || trim($this->from) == "") {
             $this->from = strtotime(date("Y-m-d H:i:s"));
         }
         return $this->from;
     }
 
-    function getTo() {
+    public function getTo() {
         if (isset($this->to) || trim($this->to) == "") {
             $this->to = strtotime(date("Y-m-d H:i:s"));
         }
         return $this->to;
     }
 
-    function getUrl() {
-        $url = $this->url . $this->getCriteria();
+    public function getUrl() {
+        return $this->url;
+    }
+    
+    public function getUrlCri() {
+        $url = $this->getUrl() . $this->getCriteria();
         $symbol = $this->getSymbol();
         $resolution = $this->getResolution();
         $from = $this->getFrom();
@@ -132,26 +127,36 @@ class HistoryController extends Controller {
         return $url;
     }
 
-    function getCriteria() {
+    public function getCriteria() {
         return $this->criteria;
     }
 
-    function setSymbol($symbol) {
+    public function setSymbol($symbol) {
         $this->symbol = $symbol;
     }
 
-    function setResolution($resolution) {
+    public function setResolution($resolution) {
         $this->resolution = $resolution;
     }
 
-    function setFrom($from) {
+    public function setFrom($from) {
         $this->from = $from;
     }
 
-    function setTo($to) {
+    public function setTo($to) {
         $this->to = $to;
     }
+    protected function setUrl($url) {
+        $this->url = $url;
+    }
 
+    protected function setCriteria($criteria) {
+        $this->criteria = $criteria;
+    }
+
+    public function resetData(){
+        DB::update('update SYMBOL_NAME SET IS_USE = ?', ['1']);
+    }
 //    function setUrl($url) {
 //        $this->url = $url;
 //    }

@@ -19,6 +19,8 @@
 Route::get('/', 'Admins\LoginController@getIndex');
 
 
+// User Test 
+
 // Route DB
 Route::get('check-connect',function(){
 	if(DB::connection()->getDatabaseName())
@@ -33,7 +35,6 @@ Route::get('check-connect',function(){
 
 // model
 Route::get('check-model','HistoryController@getIndex');
-Route::get('sub-table','SubTableController@getIndex');
 
 // Route::controller('admin/index','Admins\DashboardController');
 
@@ -41,6 +42,9 @@ Route::get('sub-table','SubTableController@getIndex');
 // Route::controller('admin/login','Admins\LoginController');
  
 // Start Online Page
+
+
+// User
 Route::group(['prefix'=>'admin','middleware'=>'auth','namespace'=>'Admins'],function($param){
     Route::controller('blank','BlankController');
     Route::controller('login','LoginController');
@@ -49,32 +53,40 @@ Route::group(['prefix'=>'admin','middleware'=>'auth','namespace'=>'Admins'],func
     Route::controller('index', 'DashboardController');
 });
 
+// History
 
-//Route::get('history/get', 'History\GetController@getIndex');
-Route::get('history/get', 'History\LoadController@getIndex');
+Route::get('history/get', 'History\GetController@getIndex');
+Route::get('history/load', 'History\LoadController@getIndex');
 
-//Route::get('history/get2', 'History\RuayHoonGetController@getIndex');
-
-Route::get('history/get2', 'History\RuayHoonLoadController@getIndex');
+Route::get('history/get2', 'History\RuayHoonGetController@getIndex');
+Route::get('history/load2', 'History\RuayHoonLoadController@getIndex');
 
 Route::get('backup', 'Backup\BackupDBController@backup');
 
 
+Route::get('sub-table','History\SubTableController@getIndex');
 
+
+// All Page
 Route::get('pages/{category}', function($category){
     return view('admin.pages.'.$category);
 });
 
 
-//Route::bind('pages', function($slug) {
-//  return Page::whereSlug($slug)->first();
-//});
+// Chart 
+Route::get('single-stock','Charts\SingleStockController@getIndex');
 
 
-// Start Online Page
-// Route::group(['prefix'=>'admin','middleware'=>'auth','namespace'=>'Admins'],function(){
-//  Route::get('index',function(){
-//  return 'Login Success!!';
-//  });
-// });
+
+//service
+
+
+Route::get('getAllSymbol',function(){
+    
+    $symbolNames = DB::table('SYMBOL_NAME')->lists('SYMBOL');
+
+    return json_encode($symbolNames);
+    
+});
+
 

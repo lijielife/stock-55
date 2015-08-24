@@ -4,178 +4,171 @@ namespace App\Http\Controllers\History;
 
 //use Illuminate\Http\Request;
 //use Auth;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\History\HistoryController;
 use Illuminate\Support\Facades\Request;
-use Illuminate\Support\Facades\DB;
+use App\Beans\SymbolBean;
 
-class RuayHoonController extends Controller {
+//use Illuminate\Support\Facades\DB;
 
-    private $symbol;
-    private $resolution;
-    private $from;
-    private $to;
-    private $url = 'http://www.ruayhoon.com/loadvar.php?';
-    private $criteria = 'stock={symbol}';
+class RuayHoonController extends HistoryController {
+
+//    private $symbol;
+//    private $resolution;
+//    private $from;
+//    private $to;
+//    private $url = 'http://www.ruayhoon.com/loadvar.php?';
+//    private $criteria = 'stock={symbol}';
 
     public function __construct() {
         parent::__construct();
-        $this->symbol = Request::input('symbol');
-        $this->resolution = Request::input('resolution');
-        $this->from = Request::input('from');
-        $this->to = Request::input('to');
+        $this->setSymbol(Request::input('symbol'));
+        $this->setResolution('D');
+//        $this->setResolution(Request::input('resolution'));
+        $this->setUrl('http://www.ruayhoon.com/loadvar.php?');
+        $this->setCriteria('stock={symbol}');
+//        $this->setu (Request::input('from'));
+//        $this->setc = Request::input('to');
     }
 
-    protected function getHistoryFromJson($json) {
-        $histories = array();
-
-        for ($i = 0; $i < count($json->t); $i++) {
-            $history = array('SYMBOL' => $this->getSymbol()
-                , 'RESOLUTION' => $this->getResolution()
-                , 'TIME' => $json->t[$i]
-                , 'OPEN' => $json->o[$i]
-                , 'CLOSE' => $json->c[$i]
-                , 'HIGH' => $json->h[$i]
-                , 'LOW' => $json->l[$i]
-                , 'VOLUME' => $json->v[$i]);
-
-            array_push($histories, $history);
+    protected function process($symbolName) {
+        
+        $respone = new \stdClass();
+         
+        if ($symbolName !== null) {
+            $this->setSymbol($symbolName);
         }
 
-        return $histories;
-    }
+        $url = $this->getUrl();
+        $responeContent = file_get_contents($url);
+        $contents = explode("&", $responeContent);
 
-    protected function historyInsert($symbolBeans) {
+        $symbolBeans = array();
+        foreach ($contents as $content) {
+            $dataMap = explode("=", $content);
+            $index = $dataMap[0];
+            $datas = explode(";", $dataMap[1]);
 
-        $times = array();
-        foreach ($symbolBeans as $symbolBean) {
-            $timeMillisec = $symbolBean->getMillisec();
-            $times[count($times)] = $timeMillisec;
-        }
-
-        $symbol = $this->getSymbol();
-
-        $timeInUse = DB::table('history')
-                ->where('SYMBOL', $symbol)
-                ->where('ORIGIN', 'ruayhoon')
-                ->whereIn('TIME', $times)
-                ->lists('TIME');
-
-        $historiesInsert = array();
-        foreach ($symbolBeans as $symbolBean) {
-            $timeMillisec = $symbolBean->getMillisec();
-
-            if (!in_array($timeMillisec, $timeInUse)) {
-                array_push($historiesInsert, (array) $symbolBean);
+            switch ($index) {
+                case "cdate":
+                    $symbolBeans = $this->addCDate($symbolBeans, $datas);
+                    break;
+                case "copen":
+                    $symbolBeans = $this->addCOpen($symbolBeans, $datas);
+                    break;
+                case "chigh":
+                    $symbolBeans = $this->addCHigh($symbolBeans, $datas);
+                    break;
+                case "cclose":
+                    $symbolBeans = $this->addCClose($symbolBeans, $datas);
+                    break;
+                case "clow":
+                    $symbolBeans = $this->addCLow($symbolBeans, $datas);
+                    break;
+                case "cvolume":
+                    $symbolBeans = $this->addCVloume($symbolBeans, $datas);
+                    break;
             }
         }
-//        $historiesInserts = array();
-//        $highValue = 100000;
-//        $slice = count($historiesInsert) / $highValue;
-//
-//        if ($slice > 1) {
-//            for ($i = 0; $i < $slice; $i++) {
-//                array_push($historiesInserts, array_slice($historiesInsert, $slice * $highValue, ($slice + 1) * $highValue));
-//            }
-//        } else {
-//            array_push($historiesInserts, $historiesInsert);
-//        }
-
-
         
-        
-                
-                
-        foreach (array_chunk($historiesInsert, 1000) as $insertValue) {
-            DB::table('history')->insert($insertValue);
-        }
+        $this->historyInsert($symbolBeans);
+
+        $respone->data = $symbolBeans;
+        $respone->obj = $this;
+        $respone->count = count($symbolBeans);
+
+        return $respone;
     }
 
-    function getSymbol() {
-
-//        $symbol = $this->symbol;
-        if (!isset($this->symbol) || trim($this->symbol) == "") {
-            $this->symbol = "ADVANC";
+    public function getSymbol() {
+        $symbol = parent::getSymbol();
+        if (!isset($symbol) || trim($symbol) == "") {
+            $symbol = "SET";
         }
-//        else if (!strrpos($this->symbol, '*')) {
-//            $this->symbol = $this->symbol . "*BK";
-//        }
-        return strtoupper($this->symbol);
+        return strtoupper($symbol);
     }
 
-    function getResolution() {
-        if (isset($this->resolution) || trim($this->resolution) == "") {
-            $this->resolution = "D";
-        }
-        return $this->resolution;
-    }
 
-    function getFrom() {
-        if (isset($this->from) || trim($this->from) == "") {
-            $this->from = strtotime(date("Y-m-d H:i:s"));
-        }
-        return $this->from;
-    }
-
-    function getTo() {
-        if (isset($this->to) || trim($this->to) == "") {
-            $this->to = strtotime(date("Y-m-d H:i:s"));
-        }
-        return $this->to;
-    }
-
-    function getUrl() {
-        $url = $this->url . $this->getCriteria();
+    public function getUrl() {
+        $url = parent::getUrl() . $this->getCriteria();
         $symbol = $this->getSymbol();
-//        $resolution = $this->getResolution();
-//        $from = $this->getFrom();
-//        $to = $this->getTo();
-
         $url = str_replace("{symbol}", $symbol, $url);
-//        $url = str_replace("{resolution}", $resolution, $url);
-//        $url = str_replace("{from}", $from, $url);
-//        $url = str_replace("{to}", $to, $url);
-
         return $url;
     }
 
-    function getCriteria() {
-        return $this->criteria;
+    
+    
+    private function addData($function, $symbolBeans, $datas, $preFunc = null, $postFunc = null) {
+        $count = 0;
+        $symbol = $this->getSymbol();
+        foreach ($datas as $data) {
+            if (count($datas) == $count + 1) {
+                break;
+            }
+
+            $symbolBean = null;
+            if (isset($symbolBeans[$count])) {
+                $symbolBean = $symbolBeans[$count];
+            } else {
+                $symbolBean = new SymbolBean();
+            }
+            if ($preFunc) {
+                $data = $this->$preFunc($data);
+            }
+            $symbolBean->setSymbol($symbol);
+            $symbolBean->setResolution("D");
+            $symbolBean->setOrigin("ruayhoon");
+            $symbolBean->$function($data);
+
+
+            if ($postFunc) {
+                $this->$postFunc($symbolBean, $data);
+            }
+
+            $symbolBeans[$count++] = $symbolBean;
+        }
+        return $symbolBeans;
     }
 
-    function setSymbol($symbol) {
-        $this->symbol = $symbol;
+    public function setMillisec($symbolBean, $data) {
+        $symbolBean->setMillisec(strtotime($data));
     }
 
-    function setResolution($resolution) {
-        $this->resolution = $resolution;
+    public function dateFormat($data) {
+        return date("Y-m-d", strtotime($data));
     }
 
-    function setFrom($from) {
-        $this->from = $from;
+    public function numberFormat($data) {
+        try {
+            number_format((float)$data, 2);
+        } catch (Exception $exc) {
+            echo $exc->getTraceAsString();
+        }
+
+        return number_format((float)$data, 2);
     }
 
-    function setTo($to) {
-        $this->to = $to;
+    private function addCDate($symbolBeans, $datas) {
+        return $this->addData("setTime", $symbolBeans, $datas, "dateFormat", "setMillisec");
     }
 
-    protected function getSymbolIsUse() {
-
-        $symbolNames = DB::table('SYMBOL_NAME')
-                ->where('IS_USE', 1)
-                ->lists('SYMBOL');
-
-        return $symbolNames;
+    private function addCOpen($symbolBeans, $datas) {
+        return $this->addData("setOpen", $symbolBeans, $datas, "numberFormat");
     }
 
-    protected function updateIsNotUse($symbolName) {
-
-        DB::table('SYMBOL_NAME')->where('SYMBOL', $symbolName)->update(['IS_USE' => 0]);
+    private function addCHigh($symbolBeans, $datas) {
+        return $this->addData("setHigh", $symbolBeans, $datas, "numberFormat");
     }
 
-//    function setUrl($url) {
-//        $this->url = $url;
-//    }
-//    function setCriteria($criteria) {
-//        $this->criteria = $criteria;
-//    }
+    private function addCClose($symbolBeans, $datas) {
+        return $this->addData("setClose", $symbolBeans, $datas, "numberFormat");
+    }
+
+    private function addCLow($symbolBeans, $datas) {
+        return $this->addData("setLow", $symbolBeans, $datas, "numberFormat");
+    }
+
+    private function addCVloume($symbolBeans, $datas) {
+        return $this->addData("setVolume", $symbolBeans, $datas, "numberFormat");
+    }
+
 }

@@ -1,0 +1,155 @@
+
+update SYMBOL_NAME SET IS_USE = 1 WHERE ID > 492
+
+SET SQL_SAFE_UPDATES = 0;
+
+
+
+DELETE FROM TABLE_NAME;
+DELETE FROM no_data;
+
+DELETE FROM history
+
+ WHERE ORIGIN = 'ruayhoon' and SYMBOL = 'TEAM'
+ 
+ 
+ 
+update SYMBOL_NAME SET IS_USE = 1 
+
+WHERE ID IN ('495'
+,'496'
+,'497'
+,'498'
+,'499'
+,'500'
+,'501'
+,'502'
+,'503'
+,'504'
+,'505'
+,'507'
+,'508'
+,'509'
+,'510'
+,'511'
+,'512'
+,'513'
+,'514'
+,'515'
+,'516'
+,'517'
+,'518'
+,'519'
+,'520'
+,'521'
+,'522'
+,'523'
+,'524'
+,'525'
+,'526'
+,'527'
+,'528'
+,'530'
+,'531'
+,'532'
+,'533'
+,'534'
+,'535'
+,'536'
+,'537'
+,'538'
+,'539'
+,'540'
+,'541'
+,'542'
+,'543'
+,'544'
+,'546'
+,'547'
+,'548'
+,'615'
+,'549'
+,'550'
+,'551'
+,'552'
+,'553'
+,'554'
+,'555'
+,'556'
+,'557'
+,'562'
+,'564'
+,'565'
+,'566'
+,'567'
+
+)
+
+SHOW ENGINE INNODB STATUS\G 
+
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TFD';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TFI';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TGCI';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TGPRO';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TH';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'THAI';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'THANA';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'THANI';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'THCOM';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'THE';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'THIP';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'THRE';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'THREL';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TIC';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TICON';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TIP';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TIPCO';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TISCO';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TIW';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TK';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TKS';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TKT';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TLUXE';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TMB';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TMC';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TMD';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TMI';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TMILL';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TMT';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TMW';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TNDT';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TNH';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TNITY';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TNPC';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TOG';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TOP';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TOPP';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TPA';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TPAC';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TPC';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TPCH';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TPCORP';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TPIPL';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TPOLY';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TPP';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TR';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TRC';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TREIT';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TRT';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TRU';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TRUBB';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TRUE';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TSC';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TSE';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TSF';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TSI';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TSR';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TSTE';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TSTH';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TTA';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TTCL';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TTW';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TUF';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TVD';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TVI';
+DELETE FROM history WHERE ORIGIN = 'ruayhoon'AND SYMBOL = 'TVO';
