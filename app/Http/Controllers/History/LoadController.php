@@ -13,7 +13,8 @@ class LoadController extends GetController {
     // สำหรับแสดงรายชื่อสมาชิก หรือ admin ที่มีอยู่ในปัจจุบัน
     public function getIndex() {
 //        $user = Users::orderBy('username')->paginate(50); //ทำการกำหนด จำนวน 50 แถวต่อ 1 หน้า
-
+        $this->is_insert = true;
+        
         set_time_limit(0);
 
         $this->resetData();
