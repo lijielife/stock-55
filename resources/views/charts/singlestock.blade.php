@@ -31,7 +31,7 @@
 <div class="row">
     <div class="col-md-4 col-md-offset-2">
         <div class="input-group">
-            <input type="text" id="datepicker" class="form-control" placeholder="To Date" >
+            <input type="text" id="fromDate" class="form-control datepicker" placeholder="From Date" >
             <span class="input-group-btn">
                 <button class="btn btn-default" type="button"><i class="glyphicon glyphicon-calendar"></i>
                 </button>
@@ -39,9 +39,8 @@
         </div>
     </div>
     <div class="col-md-4">
-
         <div class="input-group">
-            <input type="text" id="datepicker" class="form-control" placeholder="From Date" >
+            <input type="text" id="toDate" class="form-control datepicker" placeholder="To Date" >
             <span class="input-group-btn">
                 <button class="btn btn-default" type="button"><i class="glyphicon glyphicon-calendar"></i>
                 </button>
@@ -51,8 +50,7 @@
 </div>
 <script type="text/javascript">
     $(function () {
-        $("#datepicker").datepicker();
-        $('#datetimepicker1').datepicker();
+        $(".datepicker").datepicker();
     });
 </script>
 </div>

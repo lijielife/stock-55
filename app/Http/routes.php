@@ -93,9 +93,23 @@ Route::get('single-stock','Charts\SingleStockController@getIndex');
 
 Route::get('getAllSymbol',function(){
     
-    $symbolNames = SymbolName::lists('SYMBOL');
+//    Cache::forget('getAllSymbol');
 
-    return json_encode($symbolNames);
+    return Cache::get('getAllSymbol', function() { 
+        $symbolNames = SymbolName::lists('SYMBOL');
+        if(count($symbolNames)){
+        
+            Cache::add('getAllSymbol', 'allSymbol', json_encode($symbolNames));
+
+            return json_encode($symbolNames);
+            
+        }
+        return json_encode([]);
+        
+    });
+
+    
+    
     
 });
 
