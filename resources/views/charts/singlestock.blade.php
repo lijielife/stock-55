@@ -3,6 +3,28 @@
 
 
 <script src="{{asset('/assets/bower_components/typeahead/js/bootstrap3-typeahead.js')}}"></script>
+<script src="{{asset('/assets/bower_components/typeahead/js/bootstrap3-typeahead.js')}}"></script>
+
+
+<!--<script src="http://code.highcharts.com/stock/highstock.js"></script>
+<script src="http://code.highcharts.com/stock/modules/exporting.js"></script>-->
+
+<script src="http://code.highcharts.com/stock/highstock.js"></script>
+<script src="http://code.highcharts.com/stock/modules/exporting.js"></script>
+        
+<script src="{{asset('/assets/dist/js/highcharts-fn.js')}}" type="text/javascript"></script>
+<script src="{{asset('/assets/dist/js/highchart-theme.js')}}" type="text/javascript"></script>
+
+
+<script type="text/javascript">
+    var $getAllSymbol = "{{url('getAllSymbol')}}";
+    var $getSingleStock = "{{url('getSingleStock')}}?symbol=";
+
+</script>
+
+
+<script src="{{asset('/assets/js/single-stock.js')}}" type="text/javascript"></script>
+
 <!--<script src="{{asset('/assets/bower_components/typeahead/js/jquery.mockjax.js')}}"></script>-->
 <!--<script src="{{asset('/assets/bower_components/typeahead/js/bootstrap-typeahead.js')}}"></script>-->
 <!--<link href="{{asset('/assets/bower_components/typeahead/css/typeaheadjs.css')}}" rel="stylesheet">-->
@@ -19,9 +41,9 @@
         <div class="input-group">
             <input id="symbol" type="text" 
                    class="col-md-12 form-control" placeholder="Symbol..." 
-                   autocomplete="off" />
+                   autocomplete="off" value="SET"/>
             <span class="input-group-btn">
-                <button class="btn btn-default" type="button"><i class="fa fa-search"></i>
+                <button class="btn btn-default" type="button" id="searchButton"><i class="fa fa-search"></i>
                 </button>
             </span>
         </div>
@@ -48,19 +70,13 @@
         </div>
     </div>
 </div>
-<script type="text/javascript">
-$(function() {
 
-    $(".datepicker").datepicker({ dateFormat: 'dd-mm-yy' });
-    
-    var $fromDate = new Date();
-    $fromDate.setMonth($fromDate.getMonth() - 6);
-    $("#fromDate").datepicker("setDate", $fromDate);
 
-    $("#toDate").datepicker("setDate", new Date());
+<div class="row show-grid">
+    <div id="container" style="height: 700px; min-width: 410px"></div>
+</div>
 
-});
-</script>
+
 </div>
 
 <!--        <div class="form-group input-group">
@@ -74,19 +90,6 @@ $(function() {
 <!--</div>-->
 </div>
 
-<script>
-    $(function() {
-
-        function displayResult(item) {
-            $('.alert').show().html('You selected <strong>' + item.value + '</strong>: <strong>' + item.text + '</strong>');
-        }
-
-        $.get("{{url('getAllSymbol')}}", function(data) {
-            $("#symbol").typeahead({source: data, onSelect: displayResult});
-        }, 'json');
-
-    });
-</script>
 
 @stop
 

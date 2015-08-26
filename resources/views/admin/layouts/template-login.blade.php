@@ -9,7 +9,7 @@
     <meta name="author" content="">
 	<meta name="robot" content="noindex, nofollow" />
 
-    <title>Saimok Administrators Login</title>
+    <title>Super Charts</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="{{asset('/assets/bower_components/bootstrap/dist/css/bootstrap.min.css')}}" rel="stylesheet">

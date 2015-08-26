@@ -9,7 +9,7 @@
     <meta name="author" content="">
 	<meta name="robot" content="noindex, nofollow" />
 
-    <title>SB Admin 2 - Bootstrap Admin Theme Modify by Saimok</title>
+    <title>Super Charts</title>
 
     
     <!-- Bootstrap Core CSS -->
@@ -36,7 +36,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html">SB Admin v2.0 Modify By Saimok</a>
+                <a class="navbar-brand" href="#">Super Charts</a>
             </div>
             <!-- /.navbar-header -->
 

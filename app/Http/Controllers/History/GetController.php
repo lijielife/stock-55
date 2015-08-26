@@ -49,11 +49,11 @@ class GetController extends HistoryController {
                 $symbolBean->setResolution($this->getResolution());
                 $symbolBean->setMillisec($json->t[$i]);
                 $symbolBean->setTime(date("Y-m-d", $json->t[$i]));
-                $symbolBean->setOpen(number_format($json->o[$i], 2));
-                $symbolBean->setHigh(number_format($json->h[$i], 2));
-                $symbolBean->setLow(number_format($json->l[$i], 2));
-                $symbolBean->setClose(number_format($json->c[$i], 2));
-                $symbolBean->setVolume(number_format($json->v[$i], 0));
+                $symbolBean->setOpen(number_format($json->o[$i], 2, '.', ''));
+                $symbolBean->setHigh(number_format($json->h[$i], 2, '.', ''));
+                $symbolBean->setLow(number_format($json->l[$i], 2, '.', ''));
+                $symbolBean->setClose(number_format($json->c[$i], 2, '.', ''));
+                $symbolBean->setVolume(number_format($json->v[$i], 0, '.', ''));
                 $symbolBean->setUpdated_at(date('Y-m-d H:i:s'));
                 $symbolBean->setCreated_at(date('Y-m-d H:i:s'));
                 $symbolBean->setOrigin("investor");

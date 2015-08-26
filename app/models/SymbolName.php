@@ -10,8 +10,7 @@ class SymbolName extends Model {
     
     
     protected $table = 'SYMBOL_NAME'; // กำหนดชื่อของตารางที่ต้องการเรียกใช้
-    protected $fillable = array('ID', 'SYMBOL', 'IN_USE', 'UPDATED_AT', 'CREATED_AT');
-    
+    protected $fillable = array('ID', 'SYMBOL', 'IS_USE', 'UPDATED_AT', 'CREATED_AT');
     
     public static function getSymbolIsUse(){
     

@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\SymbolName;
+use App\Models\History;
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -109,11 +110,62 @@ Route::get('getAllSymbol',function(){
     });
     
     return $ret;
-
-    
-    
     
 });
+
+Route::get('getSingleStock', function(){
+    
+    $symbol = Request::input('symbol');
+    $cacheName = 'getSingleStock' . $symbol;
+    
+//    Cache::forget($cacheName);
+//    
+//    
+//    header('Content-type: application/json');
+//
+//  // Do not cache the response
+//    header('Cache-Control: no-cache, must-revalidate');
+//    header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');  
+     
+    $ret = Cache::get($cacheName, function() use( &$cacheName) { 
+        $symbol = Request::input('symbol');
+        $historys = App\Models\History::where("symbol", $symbol)->get();
+        if(count($historys)){
+        
+            $datas = array();
+            
+            foreach ($historys as $history) {
+                $data = array();
+                array_push($data, $history->millisec * 1000);
+                array_push($data, (double)$history->OPEN);
+                array_push($data, (double)$history->HIGH);
+                array_push($data, (double)$history->LOW);
+                array_push($data, (double)$history->CLOSE);
+                array_push($data, (double)$history->VOLUME);
+                  
+                array_push($datas , $data);
+                        
+//    protected $fillable = array('ID', 'SYMBOL', 'RESOLUTION', 'MILLISEC', 'TIME'
+//        , 'OPEN', 'CLOSE', 'HIGH', 'LOW', 'VOLUME', 'ORIGIN', 'UPDATED_AT', 'CREATED_AT');
+                
+            }
+            
+            
+//            $symbol = Request::input('symbol');
+//            $cacheName = 'getSingleStock' . $symbol;
+
+            Cache::add($cacheName, json_encode($datas), date('Y-m-d H:i:s'));
+
+            return json_encode($datas);
+            
+        }
+        return json_encode([]);
+        
+    });
+    
+    return $ret;
+});
+
 
 
 
