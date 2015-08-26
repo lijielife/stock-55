@@ -139,14 +139,14 @@ class RuayHoonController extends HistoryController {
 
     public function numberFormat($data) {
         try {
-            number_format((float)$data, 2);
+            number_format((float)$data, 2, '.', '');
         } catch (Exception $exc) {
             echo $exc->getTraceAsString();
         }
 
-        return number_format((float)$data, 2);
+        return number_format((float)$data, 2, '.', '');
     }
-
+    
     private function addCDate($symbolBeans, $datas) {
         return $this->addData("setTime", $symbolBeans, $datas, "dateFormat", "setMillisec");
     }
@@ -168,7 +168,7 @@ class RuayHoonController extends HistoryController {
     }
 
     private function addCVloume($symbolBeans, $datas) {
-        return $this->addData("setVolume", $symbolBeans, $datas, "numberFormat");
+        return $this->addData("setVolume", $symbolBeans, $datas, null);
     }
 
 }

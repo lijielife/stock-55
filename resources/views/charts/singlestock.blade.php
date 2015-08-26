@@ -18,7 +18,7 @@
 
 <script type="text/javascript">
     var $getAllSymbol = "{{url('getAllSymbol')}}";
-    var $getSingleStock = "{{url('getSingleStock')}}?symbol=";
+    var $getSingleStock = "{{url('getSingleStock')}}";
 
 </script>
 

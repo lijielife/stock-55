@@ -1,11 +1,3 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-
-
 $(function () {
 
     function displayResult(item) {
@@ -17,7 +9,7 @@ $(function () {
     }, 'json');
 
 
-    $(".datepicker").datepicker({dateFormat: 'dd-mm-yy'});
+    $(".datepicker").datepicker({dateFormat: 'yy-mm-dd'});
 
     var $fromDate = new Date();
     $fromDate.setMonth($fromDate.getMonth() - 6);
@@ -28,11 +20,20 @@ $(function () {
 
     $("#searchButton").click(function () {
         var $val = $("#symbol").val();
+        var $fromDate = $("#fromDate").val();
+        var $toDate = $("#toDate").val();
+        
+        $fromDate = new Date($fromDate).getTime() / 1000;
+        $toDate = new Date($toDate).getTime() / 1000;
+
+        var $url = $getSingleStock + "?symbol=" +  $val
+                + "&fromDate=" + $fromDate 
+                + "&toDate=" + $toDate;
         if (!$val) {
             return;
         }
         $(function () {
-            $.getJSON($getSingleStock + $val, function (data) {
+            $.getJSON($url, function (data) {
 
 //            $.getJSON("http://www.highcharts.com/samples/data/jsonp.php?a=e&filename=aapl-ohlc.json&callback=?", function (data) {
                 // create the chart
