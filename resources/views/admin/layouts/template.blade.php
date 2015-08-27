@@ -36,14 +36,15 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">Super Charts</a>
+                <a class="navbar-brand" href="<?php echo URL::to('pages/index') ?>">
+                    <i class="fa fa-dashboard fa-fw"></i> Super Charts</a>
             </div>
             <!-- /.navbar-header -->
 
             @include('admin.layouts.inc-header')
             <!-- /.navbar-top-links -->
 
-            @include('admin.layouts.inc-left-sidebar')
+            <?php //@include('admin.layouts.inc-left-sidebar') ?>
             <!-- /.navbar-static-side -->
         </nav>
 

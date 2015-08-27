@@ -2,9 +2,9 @@
 
 
 
-    <li>
+<!--    <li>
         <a href="<?php echo URL::to('pages/index') ?>"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
-    </li>
+    </li>-->
 
 
     <li class="dropdown">
@@ -24,17 +24,42 @@
                 </ul>
             </li>
             <li class="divider"></li>
+
+            <li>
+                <a href="<?php echo URL::to('pages/tables') ?>"><i class="fa fa-table fa-fw"></i> Tables</a>
+            </li>
+            <li>
+                <a href="<?php echo URL::to('pages/forms') ?>"><i class="fa fa-edit fa-fw"></i> Forms</a>
+            </li>
+
+            <li class="divider"></li>
+
             <li class="dropdown-submenu">
-                <a tabindex="-1" href="#"><i class="fa fa-files-o fa-fw"></i>RuayHoon</a>
+                <a tabindex="-1" href="#"><i class="fa fa-wrench fa-fw"></i> UI Elements</a>
                 <ul class="dropdown-menu">
                     <li>
-                        <a href="<?php echo URL::to('pages/flot') ?>">Flot Charts</a>
+                        <a href="<?php echo URL::to('pages/panels-wells') ?>">Panels and Wells</a>
                     </li>
                     <li>
-                        <a href="<?php echo URL::to('pages/morris') ?>">Morris.js Charts</a>
+                        <a href="<?php echo URL::to('pages/buttons') ?>">Buttons</a>
+                    </li>
+                    <li>
+                        <a href="<?php echo URL::to('pages/notifications') ?>">Notifications</a>
+                    </li>
+                    <li>
+                        <a href="<?php echo URL::to('pages/typography') ?>">Typography</a>
+                    </li>
+                    <li>
+                        <a href="<?php echo URL::to('pages/icons') ?>"> Icons</a>
+                    </li>
+                    <li>
+                        <a href="<?php echo URL::to('pages/grid') ?>">Grid</a>
                     </li>
                 </ul>
             </li>
+
+
+
             <li class="divider"></li>
             <li>
                 <a href="<?php echo URL::to('backup') ?>">Backup</a>
@@ -46,40 +71,7 @@
         </ul>
     </li>
 
-    <li>
-        <a href="<?php echo URL::to('pages/tables') ?>"><i class="fa fa-table fa-fw"></i> Tables</a>
-    </li>
-    <li>
-        <a href="<?php echo URL::to('pages/forms') ?>"><i class="fa fa-edit fa-fw"></i> Forms</a>
-    </li>
 
-    <li class="dropdown">
-        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-            <i class="fa fa-wrench fa-fw"></i> UI Elements <i class="fa fa-caret-down"></i>
-        </a>
-
-        <ul class="dropdown-menu dropdown-messages">
-            <li>
-                <a href="<?php echo URL::to('pages/panels-wells') ?>">Panels and Wells</a>
-            </li>
-            <li>
-                <a href="<?php echo URL::to('pages/buttons') ?>">Buttons</a>
-            </li>
-            <li>
-                <a href="<?php echo URL::to('pages/notifications') ?>">Notifications</a>
-            </li>
-            <li>
-                <a href="<?php echo URL::to('pages/typography') ?>">Typography</a>
-            </li>
-            <li>
-                <a href="<?php echo URL::to('pages/icons') ?>"> Icons</a>
-            </li>
-            <li>
-                <a href="<?php echo URL::to('pages/grid') ?>">Grid</a>
-            </li>
-        </ul>
-        <!-- /.nav-second-level -->
-    </li>
 
     <li class="dropdown">
         <a id="dLabel" role="button" data-toggle="dropdown" data-target="#">
@@ -173,7 +165,7 @@
         <!-- /.nav-second-level -->
     </li>
 
-    <li class="dropdown">
+<!--    <li class="dropdown">
         <a class="dropdown-toggle" data-toggle="dropdown" href="#">
             <i class="fa fa-envelope fa-fw"></i>  <i class="fa fa-caret-down"></i>
         </a>
@@ -191,9 +183,9 @@
             </li>
             <li class="divider"></li>
         </ul>
-        <!-- /.dropdown-messages -->
+         /.dropdown-messages 
     </li>
-    <!-- /.dropdown -->
+     /.dropdown 
     <li class="dropdown">
         <a class="dropdown-toggle" data-toggle="dropdown" href="#">
             <i class="fa fa-bell fa-fw"></i>  <i class="fa fa-caret-down"></i>
@@ -214,12 +206,12 @@
                     </li>
 
                 </ul>
-                <!-- /.dropdown-alerts -->
+                 /.dropdown-alerts 
             </li>
         </ul>
-        <!-- /.dropdown-alerts -->
+         /.dropdown-alerts 
     </li>
-    <!-- /.dropdown -->
+     /.dropdown 
     <li class="dropdown">
         <a class="dropdown-toggle" data-toggle="dropdown" href="#">
             <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
@@ -233,7 +225,7 @@
             <li><a href="{{url('admin/login/logout')}}"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
             </li>
         </ul>
-        <!-- /.dropdown-user -->
-    </li>
+         /.dropdown-user 
+    </li>-->
     <!-- /.dropdown -->
 </ul>

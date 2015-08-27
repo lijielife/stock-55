@@ -1,8 +1,8 @@
 <?php
 
-use App\Models\SymbolName;
+//use App\Models\SymbolName;
 
-use App\Models\History;
+//use App\Models\History;
 /*
   |--------------------------------------------------------------------------
   | Application Routes
@@ -84,82 +84,9 @@ Route::get('single-stock', 'Charts\SingleStockController@getIndex');
 //});
 
 
-Route::get('getAllSymbol', function() {
+Route::get('getAllSymbol', 'Service\SingleStockService@getAllSymbol');
 
-//    Cache::forget('getAllSymbol');
-
-    $ret = Cache::get('getAllSymbol', function() {
-                $symbolNames = SymbolName::lists('SYMBOL');
-                if (count($symbolNames)) {
-
-                    Cache::add('getAllSymbol', json_encode($symbolNames), date('Y-m-d H:i:s'));
-
-                    return json_encode($symbolNames);
-                }
-                return json_encode([]);
-            });
-
-    return $ret;
-});
-
-Route::get('getSingleStock', function() {
-
-    $symbol = Request::input('symbol');
-    $fromDate = Request::input('fromDate');
-    $toDate = Request::input('toDate');
-    $cacheName = 'getSingleStock' . $symbol . $fromDate . $toDate;
-
-    Cache::forget($cacheName);
-//    
-//    
-//    header('Content-type: application/json');
-//
-//  // Do not cache the response
-//    header('Cache-Control: no-cache, must-revalidate');
-//    header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');  
-
-    $ret = Cache::get($cacheName, function() use( &$cacheName) {
-                $symbol = Request::input('symbol');
-                $fromDate = Request::input('fromDate');
-                $toDate = Request::input('toDate');
-
-                $historys = History::where("symbol", $symbol)
-                        ->whereBetween("millisec", array($fromDate, $toDate)
-                        )
-                        ->get();
-
-                if (count($historys)) {
-
-                    $datas = array();
-
-                    foreach ($historys as $history) {
-                        $data = array();
-                        array_push($data, $history->MILLISEC * 1000);
-                        array_push($data, (double) $history->OPEN);
-                        array_push($data, (double) $history->HIGH);
-                        array_push($data, (double) $history->LOW);
-                        array_push($data, (double) $history->CLOSE);
-                        array_push($data, (double) $history->VOLUME);
-
-                        array_push($datas, $data);
-
-//    protected $fillable = array('ID', 'SYMBOL', 'RESOLUTION', 'MILLISEC', 'TIME'
-//        , 'OPEN', 'CLOSE', 'HIGH', 'LOW', 'VOLUME', 'ORIGIN', 'UPDATED_AT', 'CREATED_AT');
-                    }
-
-
-//            $symbol = Request::input('symbol');
-//            $cacheName = 'getSingleStock' . $symbol;
-
-                    Cache::add($cacheName, json_encode($datas), date('Y-m-d H:i:s'));
-
-                    return json_encode($datas);
-                }
-                return json_encode([]);
-            });
-
-    return $ret;
-});
+Route::get('getSingleStock', 'Service\SingleStockService@getSingleStock');
 
 
 
