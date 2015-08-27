@@ -3,7 +3,6 @@ use Auth;
 use Illuminate\Routing\Controller;
 use App\Http\Requests\Admins\LoginRequest;
 
-
 class LoginController extends Controller {
 	
 	public function getIndex(){
@@ -19,9 +18,13 @@ class LoginController extends Controller {
 		//echo '[Username : '. $username .'][Password : '. $password .']';
 		
 		if(Auth::attempt(['username' => $username,'password'=>$password,'type'=>'admin'],$request->has('remember'))){
-			return redirect()->intended('/admin/index');
+//                    Request->session->put("username", $username);
+//                    session(['key' => 'value']);
+                    $request->session()->set('username', $username);
+                    
+                    return redirect()->intended('/admin/index');
 		}else{
-			return redirect()->back()->with('message',"Error!! Username or Password Incorrect. \nPlease try again.");;
+                    return redirect()->back()->with('message',"Error!! Username or Password Incorrect. \nPlease try again.");;
 		}
 	}
 	

@@ -61,7 +61,7 @@ class GetController extends HistoryController {
                 array_push($datas, $symbolBean);
             }
 
-            $this->historyInsert($datas);
+            $this->historyInsert($datas, 'investor');
         }
         return $datas;
     }
@@ -75,5 +75,5 @@ class GetController extends HistoryController {
         }
         return $symbol;
     }
-
+    
 }

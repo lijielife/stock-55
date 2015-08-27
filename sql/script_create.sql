@@ -1,4 +1,4 @@
-CREATE TABLE `test_stock`.`mas_side` (
+CREATE TABLE `super_stock_db`.`mas_side` (
   `ID` INT NOT NULL AUTO_INCREMENT COMMENT '',
   `SIDE_CODE` INT NULL COMMENT '',
   `SIDE_NAME` VARCHAR(45) NULL COMMENT '',
@@ -6,7 +6,7 @@ CREATE TABLE `test_stock`.`mas_side` (
   UNIQUE INDEX `SIDE_CODE_UNIQUE` (`SIDE_CODE` ASC)  COMMENT '');
   
   
-CREATE TABLE `test_stock`.`mas_broker` (
+CREATE TABLE `super_stock_db`.`mas_broker` (
   `ID` INT NOT NULL AUTO_INCREMENT COMMENT '',
   `BROKER_CODE` VARCHAR(45) NULL COMMENT '',
   `BROKER_NAME` VARCHAR(45) NULL COMMENT '',
@@ -14,7 +14,7 @@ CREATE TABLE `test_stock`.`mas_broker` (
   UNIQUE INDEX `BROKER_CODE_UNIQUE` (`BROKER_CODE` ASC)  COMMENT '');
   
   
-CREATE TABLE `test_stock`.`data_log` (
+CREATE TABLE `super_stock_db`.`data_log` (
   `ID` INT NOT NULL AUTO_INCREMENT COMMENT '',
   `SIDE_ID` INT NOT NULL COMMENT '',
   `SYMBOL_ID` VARCHAR(45) NOT NULL COMMENT '',
@@ -34,7 +34,7 @@ CREATE TABLE `test_stock`.`data_log` (
   PRIMARY KEY (`ID`)  COMMENT '');
 
   
-  CREATE TABLE `test_stock`.`log_map` (
+  CREATE TABLE `super_stock_db`.`log_map` (
   `ID` INT NOT NULL AUTO_INCREMENT COMMENT '',
   `MAP_SRC` INT NULL COMMENT '',
   `MAP_DESC` INT NULL COMMENT '',
@@ -45,11 +45,11 @@ CREATE TABLE `test_stock`.`data_log` (
   UNIQUE INDEX `MAP_VOL_UNIQUE` (`MAP_VOL` ASC)  COMMENT '',
   CONSTRAINT `MAP_SRC`
     FOREIGN KEY (`MAP_SRC`)
-    REFERENCES `test_stock`.`data_log` (`ID`)
+    REFERENCES `super_stock_db`.`data_log` (`ID`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `MAP_DESC`
     FOREIGN KEY (`MAP_DESC`)
-    REFERENCES `test_stock`.`data_log` (`ID`)
+    REFERENCES `super_stock_db`.`data_log` (`ID`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);

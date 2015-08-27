@@ -10,18 +10,22 @@ use App\Beans\SymbolBean;
 //use App\Models\History;
 class LoadController extends GetController {
 
-    
-    protected $is_insert = true; 
-    
+    protected $is_insert = true;
+
     // สำหรับแสดงรายชื่อสมาชิก หรือ admin ที่มีอยู่ในปัจจุบัน
+
     public function getIndex() {
-//        $user = Users::orderBy('username')->paginate(50); //ทำการกำหนด จำนวน 50 แถวต่อ 1 หน้า
-        
+
+        return view('admin.history.load', ["urlLoad" => url('/history/loadData')
+            , "urlGetStatus" => url('/history/getStatus')]);
+    }
+
+    public function loadData() {
         set_time_limit(0);
 
 //        $this->resetData();
 
-        $respone = new \stdClass();
+//        $respone = array();
 
         $symbolNames = $this->getSymbolIsUse();
 
@@ -29,9 +33,11 @@ class LoadController extends GetController {
             if (strpos($symbolName, "&") !== false) {
                 continue;
             }
-            
+
             try {
-                $respone = $this->process($symbolName);
+                $data = $this->process($symbolName);
+//                array_push($respone, array("symbolName" => $symbolName
+//                    , "count" => $data->count));
             } catch (Exception $e) {
                 continue;
             } finally {
@@ -39,7 +45,14 @@ class LoadController extends GetController {
             }
         }
 
-        return view('admin.history.index', ['respone' => $respone]);
+//        if(empty($respone)){
+            $respone = parent::getCount('investor');
+//        }
+        return json_encode($respone);
+    }
+
+    public function getStatus($origin = 'investor') {
+        return json_encode(parent::getStatus($origin));
     }
 
 }

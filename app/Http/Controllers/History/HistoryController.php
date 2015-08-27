@@ -43,7 +43,7 @@ class HistoryController extends Controller {
         
     }
     
-    protected function historyInsert($symbolBeans){
+    protected function historyInsert($symbolBeans, $origin){
     
         if (!$this->is_insert) {
             return;
@@ -55,13 +55,13 @@ class HistoryController extends Controller {
             $times[count($times)] = $timeMillisec;
         }
 
-        $symbol = $this->getSymbol();
+        $symbol = str_replace("*BK", "", $this->getSymbol());
 
         $timeInUse = DB::table('HISTORY')
                 ->where('SYMBOL', $symbol)
-                ->where('ORIGIN', 'ruayhoon')
-                ->whereIn('TIME', $times)
-                ->lists('TIME');
+                ->where('ORIGIN', $origin)
+                ->whereIn('MILLISEC', $times)
+                ->lists('MILLISEC');
 
         $historiesInsert = array();
         foreach ($symbolBeans as $symbolBean) {
@@ -163,4 +163,34 @@ class HistoryController extends Controller {
 //    function setCriteria($criteria) {
 //        $this->criteria = $criteria;
 //    }
+    
+    public function getStatus($origin) {
+        $commit = DB::table('HISTORY')
+                ->where('origin', $origin)
+                ->distinct()
+                ->count('symbol');
+        
+        $total = DB::table('SYMBOL_NAME')->count('SYMBOL');
+        
+        return array("commit" => $commit, "total" => $total,  "percent" => (int)floor (($commit / $total) * 100));
+//        SELECT count(distinct symbol) FROM super_stock_db.history;
+    }
+    
+    
+    public function getCount($origin) {
+        
+        $ret = array();
+        $values = DB::table('HISTORY')
+                    ->select(DB::raw('count(*) as cnt, symbol'))
+                    ->where('origin', $origin)
+                    ->groupBy('symbol')
+                     ->get();
+         
+        foreach ($values as $value){
+            array_push($ret, array("symbolName" => $value->symbol
+                    , "count" => $value->cnt));
+        }
+        return $ret;
+    }
+    
 }

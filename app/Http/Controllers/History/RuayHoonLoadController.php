@@ -13,21 +13,29 @@ class RuayHoonLoadController extends RuayHoonController {
     protected $is_insert = true; 
     // สำหรับแสดงรายชื่อสมาชิก หรือ admin ที่มีอยู่ในปัจจุบัน
     public function getIndex() {
+
+        return view('admin.history.load', ["urlLoad" => url('/history/loadData2')
+            , "urlGetStatus" => url('/history/getStatus2')]);
+    }
+
+    public function loadData() {
 //        $user = Users::orderBy('username')->paginate(50); //ทำการกำหนด จำนวน 50 แถวต่อ 1 หน้า
 
         set_time_limit(0);
 
-        $this->resetData();
+//        $this->resetData();
         
-        $respone = new \stdClass();
+//        $respone = array();
 
         $symbolNames = $this->getSymbolIsUse();
 
         foreach ($symbolNames as $symbolName) {
 
             try {
-                $respone = $this->process($symbolName);
-//                echo $symbolName . " : " . count($respone->data) . " Rows <br/>";
+                $data = $this->process($symbolName);
+//                array_push($respone, array("symbolName" => $symbolName
+//                    , "count" => $data->count));
+                
             } catch (Exception $e) {
                 continue;
             } finally {
@@ -36,6 +44,14 @@ class RuayHoonLoadController extends RuayHoonController {
             $this->updateIsNotUse($symbolName);
         }
 
-        return view('admin.history.index', ['respone' => $respone]);
+//        if(empty($respone)){
+            $respone = parent::getCount('ruayhoon');
+//        }
+        
+        return json_encode($respone);
+    }
+    
+    public function getStatus($origin = 'ruayhoon') {
+        return json_encode(parent::getStatus($origin));
     }
 }

@@ -70,7 +70,7 @@ class RuayHoonController extends HistoryController {
             }
         }
         
-        $this->historyInsert($symbolBeans);
+        $this->historyInsert($symbolBeans,  'ruayhoon');
 
         $respone->data = $symbolBeans;
         $respone->obj = $this;

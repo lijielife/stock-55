@@ -22,6 +22,7 @@ class Admins implements Middleware {
 			if($this->auth->user()->type !='admin'){
 				return $this->response->redirectTo('admin/login');
                         }
+//                    $request->session()->put('USER_ID', );
                     return $next($request);
 		}
 		return $this->response->redirectTo('admin/login');

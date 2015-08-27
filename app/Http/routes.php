@@ -52,10 +52,23 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth', 'namespace' => 'Admin
 // History
 
 Route::get('history/get', 'History\GetController@getIndex');
+//Route::get('history/load', 'History\LoadController@getIndex');
+
+
+
 Route::get('history/load', 'History\LoadController@getIndex');
+Route::get('history/loadData', 'History\LoadController@loadData');
+Route::get('history/getStatus', 'History\LoadController@getStatus');
+
 
 Route::get('history/get2', 'History\RuayHoonGetController@getIndex');
+
+
 Route::get('history/load2', 'History\RuayHoonLoadController@getIndex');
+Route::get('history/loadData2', 'History\RuayHoonLoadController@loadData');
+Route::get('history/getStatus2', 'History\RuayHoonLoadController@getStatus');
+
+//Route::get('history/load2', 'History\RuayHoonLoadController@getIndex');
 
 Route::get('backup', 'Backup\BackupDBController@backup');
 
