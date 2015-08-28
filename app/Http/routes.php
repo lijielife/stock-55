@@ -49,6 +49,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth', 'namespace' => 'Admin
     Route::controller('index', 'DashboardController');
 });
 
+
 // History
 
 Route::get('history/get', 'History\GetController@getIndex');
@@ -83,7 +84,22 @@ Route::get('pages/{category}', function($category) {
 
 
 // Chart 
-Route::get('single-stock', 'Charts\SingleStockController@getIndex');
+Route::get('single/stock', 'Charts\SingleStockController@getIndex');
+
+
+
+// Logs
+//Route::get('logs/active', 'Logs\LogsActiveController@getIndex');
+//Route::get('logs/import', 'Logs\LogsImportController@getIndex');
+
+Route::group(['prefix'=>'logs','middleware'=>'auth','namespace'=>'Logs'],function(){
+//    Route::controller('index','BlankController');
+//    Route::controller('user','UserController');
+    
+    Route::controller('active', 'LogsActiveController');
+    Route::controller('import','LogsImportController');
+//    Route::controller('upload','LogsUploadController');
+});
 
 
 

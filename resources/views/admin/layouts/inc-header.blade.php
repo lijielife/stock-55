@@ -78,6 +78,16 @@
             <i class="fa fa-files-o fa-fw"></i> User <span class="caret"></span>
         </a>
         <ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
+            
+            
+            <li>
+                <a href="<?php echo URL::to('logs/import') ?>">Logs Import</a>
+            </li>
+            
+            <li>
+                <a href="<?php echo URL::to('logs/active') ?>">Logs Active</a>
+            </li>
+            
             <li>
                 <a href="<?php echo URL::to('admin/blank') ?>">Blank Page</a>
             </li>
@@ -159,7 +169,7 @@
         </a>
         <ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
             <li>
-                <a href="<?php echo URL::to('single-stock') ?>">Single Stock</a>
+                <a href="<?php echo URL::to('single/stock') ?>">Single Stock</a>
             </li>
         </ul>
         <!-- /.nav-second-level -->
