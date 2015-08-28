@@ -52,7 +52,7 @@ class LogsImportController extends Controller {
             $masBrokers[$masBroker->BROKER_NAME] = $masBroker->ID;
         }
 
-        $symbolNames = array();
+        $symbolNames = array("1-1" => "123");
         foreach (SymbolName::get() as $symbolName) {
             $symbolNames[$symbolName->SYMBOL] = $symbolName->ID;
         }
@@ -67,6 +67,7 @@ class LogsImportController extends Controller {
             $rows->each(function($row)
                     use( &$masSides, &$masBrokers, &$symbolNames, &$dataLogs) {
 
+                $symbolNamesIn = $symbolNames;
 //                        $id = $row->id;
                 $side = $row->side_id;
                 $symbol = $row->symbol_id;
@@ -80,16 +81,50 @@ class LogsImportController extends Controller {
                 $broker = $row->broker_id;
                         $dw = ($row->is_dw ? true : false);
 
+                        if($row->is_dw || $row->is_dw == "true"){
+                            $dw = true;
+                        }
+                        
+                        
+                        if($row->is_dw || $row->is_dw == true){
+                            $dw = true;
+                        }
+                        
+                        
+                        if($row->is_dw || $row->is_dw == "TRUE"){
+                            $dw = true;
+                        }
+                        
                 $dataLog = (array) $row->toArray();
 
                 unset($dataLog["id"]);
                 
-                if (isset($side) && isset($symbol) && isset($broker) && isset($dw)) {
+                if (isset($side) && $side != ""
+                        && isset($symbol)  && $symbol != ""
+                        && isset($broker)  && $broker != ""
+                        && isset($dw) && $dw != "") {
 
-                    if (array_key_exists($side, $masSides) && array_key_exists($broker, $masBrokers) && array_key_exists($symbol, $symbolNames)) {
+                    if (!array_key_exists($symbol, $symbolNamesIn)) {
+//                        $symbolName = new SymbolName();
+//                        $symbolName->SYMBOL = $symbol;
+//                        $symbolName->IS_USE = 0;
+//                        $symbolName->created_at = date("Y-m-d H:i:s");
+//                        $symbolName->updated_at = date("Y-m-d H:i:s");
+                        
+                        $symbolVo = SymbolName::create(array("SYMBOL" => $symbol));
+                        
+                        $symbolNamesIn[$symbolVo->SYMBOL] = $symbolVo->ID;
+                        $symbolNamesIn[$symbolVo["SYMBOL"]] = $symbolVo["ID"];
+                        $symbolNamesIn[$symbol] = $symbolVo->ID;
+                        $symbolVo->SYMBOL = $symbol;
+//                        SymbolName::create(array())
+                    }
+                    
+                    
+                    if (array_key_exists($side, $masSides) && array_key_exists($broker, $masBrokers) && array_key_exists($symbol, $symbolNamesIn)) {
                         $sideId = $masSides[$side];
                         $brokerId = $masBrokers[$broker];
-                        $symbolId = $symbolNames[$symbol];
+                        $symbolId = $symbolNamesIn[$symbol];
                         $dataLog["is_dw"] = $dw;
 //                                $dataLog["date"]
 
@@ -108,6 +143,8 @@ class LogsImportController extends Controller {
                     } else {
                         return;
                     }
+                    
+                    
                 }
             });
         });
