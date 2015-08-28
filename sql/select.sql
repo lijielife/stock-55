@@ -1,14 +1,25 @@
 SELECT * FROM TABLE_NAME
 
-SELECT * FROM SYMBOL_NAME WHERE IS_USE = 1 
+SELECT COUNT(*) FROM TABLE_NAME
 
-SELECT * FROM history
+SELECT * FROM SYMBOL_NAME WHERE IS_USE = 1 limit 1 
+
+SELECT distinct SYMBOL FROM history  WHERE ORIGIN = 'investor' 
+
+
+SELECT * FROM history WHERE ORIGIN = 'ruayhoon'  AND SYMBOL = 'CPF'
 
 SELECT COUNT(distinct SYMBOL, ORIGIN ) FROM history
 
+SELECT COUNT(distinct SYMBOL) FROM history WHERE ORIGIN = 'ruayhoon' AND SYMBOL = 'ZMICO'
 
-SELECT COUNT(distinct SYMBOL) FROM history WHERE ORIGIN = 'ruayhoon' 
 
+SELECT SYMBOL, volume FROM history WHERE ORIGIN = 'ruayhoon'  AND SYMBOL = 'ZMICO'
+
+SELECT SYMBOL, volume FROM history WHERE ORIGIN = 'investor' 
+
+
+DROP TABLE SVOA_HISTORY
 
 SELECT  t2.Id, t2.SYMBOL 
 FROM (
@@ -20,3 +31,6 @@ FROM (
 
 ALTER TABLE `test_stock`.`.users`
 RENAME TO  `test_stock`.`users` ;
+
+
+SELECT * FROM NO_DATA                                                                                                                                                                                                                                                                                                                                                                                                                                                                 

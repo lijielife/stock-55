@@ -57,7 +57,7 @@
             progressLabel.text(getText());
             
             if ( !isSuccess ) {
-                setTimeout( getStatus, 2000 );
+                setTimeout( getStatus, 10000 );
             }
 
         });
@@ -88,7 +88,7 @@
 
         getStatus();
 
-        tokenTimeOut = setTimeout(getStatus, 5000);
+        tokenTimeOut = setTimeout(getStatus, 10000);
 
 
         $.ajax({

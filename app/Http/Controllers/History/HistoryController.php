@@ -68,6 +68,10 @@ class HistoryController extends Controller {
             $timeMillisec = $symbolBean->getMillisec();
 
             if (!in_array($timeMillisec, $timeInUse)) {
+                
+                $symbolBean->setUpdated_at(date('Y-m-d H:i:s'));
+                $symbolBean->setCreated_at(date('Y-m-d H:i:s'));
+                
                 array_push($historiesInsert, (array) $symbolBean);
                 array_push($timeInUse, $timeMillisec);
             }
