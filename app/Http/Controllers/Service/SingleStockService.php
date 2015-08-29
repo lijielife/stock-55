@@ -19,12 +19,12 @@ class SingleStockService extends Controller {
 //    Cache::forget('getAllSymbol');
 
 //        $ret = Cache::get('getAllSymbol', function() {
-                    $symbolNames = SymbolName::lists('SYMBOL');
-                    if (count($symbolNames)) {
+                    $masSymbols = MasSymbol::lists('SYMBOL');
+                    if (count($masSymbols)) {
 
-//                        Cache::add('getAllSymbol', json_encode($symbolNames), date('Y-m-d H:i:s'));
+//                        Cache::add('getAllSymbol', json_encode($masSymbols), date('Y-m-d H:i:s'));
 
-                        return json_encode($symbolNames);
+                        return json_encode($masSymbols);
                     }
                     return json_encode([]);
 //                });

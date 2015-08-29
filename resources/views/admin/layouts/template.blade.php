@@ -58,10 +58,17 @@
         </div>
         <!-- /#page-wrapper -->
 
+        
+      <div class="container" style="height: 30px;"></div>
+        
     </div>
     <!-- /#wrapper -->
 
-    
+    <footer class="footer">
+      <div class="container">
+        <p class="text-muted">Copyright © 2015 Super Charts Team</p>
+      </div>
+    </footer>
     
 </body>
 

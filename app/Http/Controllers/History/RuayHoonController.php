@@ -30,12 +30,12 @@ class RuayHoonController extends HistoryController {
 //        $this->setc = Request::input('to');
     }
 
-    protected function process($symbolName) {
+    protected function process($masSymbol) {
         
         $respone = new \stdClass();
          
-        if ($symbolName !== null) {
-            $this->setSymbol($symbolName);
+        if ($masSymbol !== null) {
+            $this->setSymbol($masSymbol);
         }
 
         $url = $this->getUrl();

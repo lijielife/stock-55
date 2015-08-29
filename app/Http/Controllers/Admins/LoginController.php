@@ -2,6 +2,8 @@
 use Auth;
 use Illuminate\Routing\Controller;
 use App\Http\Requests\Admins\LoginRequest;
+use App\Models\Users;
+use Session;
 
 class LoginController extends Controller {
 	
@@ -18,10 +20,8 @@ class LoginController extends Controller {
 		//echo '[Username : '. $username .'][Password : '. $password .']';
 		
 		if(Auth::attempt(['username' => $username,'password'=>$password,'type'=>'admin'],$request->has('remember'))){
-//                    Request->session->put("username", $username);
-//                    session(['key' => 'value']);
-                    $request->session()->set('username', $username);
-                    
+                    $users = Users::where('active', 'Y')->where('username', $username)->first();
+                    Session::put('username', $users);
                     return redirect()->intended('/admin/index');
 		}else{
                     return redirect()->back()->with('message',"Error!! Username or Password Incorrect. \nPlease try again.");;

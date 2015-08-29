@@ -6,7 +6,7 @@ class BackupDBController extends Controller {
 
     public function backup() {
 
-//        $symbolNames = $this->getSymbolIsUse();
+//        $masSymbols = $this->getSymbolIsUse();
         $re = exec('mysqldump --user=root --password=root --host=localhost  --no-data > c:/xampp/backup.sql');
         echo $re;
     }
@@ -15,11 +15,11 @@ class BackupDBController extends Controller {
     
     protected function getSymbolIsUse() {
 
-        $symbolNames = DB::table('TABLE_NAME')
+        $masSymbols = DB::table('TABLE_NAME')
                 ->where('IS_USE', 1)
                 ->lists('SYMBOL');
 
-        return $symbolNames;
+        return $masSymbols;
     }
     
 }

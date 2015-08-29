@@ -27,13 +27,13 @@ class RuayHoonLoadController extends RuayHoonController {
         
 //        $respone = array();
 
-        $symbolNames = $this->getSymbolIsUse();
+        $masSymbols = $this->getSymbolIsUse();
 
-        foreach ($symbolNames as $symbolName) {
+        foreach ($masSymbols as $masSymbol) {
 
             try {
-                $data = $this->process($symbolName);
-//                array_push($respone, array("symbolName" => $symbolName
+                $data = $this->process($masSymbol);
+//                array_push($respone, array("symbolName" => $masSymbol
 //                    , "count" => $data->count));
                 
             } catch (Exception $e) {
@@ -41,7 +41,7 @@ class RuayHoonLoadController extends RuayHoonController {
             } finally {
                 
             }
-            $this->updateIsNotUse($symbolName);
+            $this->updateIsNotUse($masSymbol);
         }
 
 //        if(empty($respone)){

@@ -24,15 +24,15 @@ class SubTableController extends Controller {
 //        $this->cleanData();
         $respone = new \stdClass();
                 
-        $symbolNames = $this->getSymbolIsUse();
-        foreach ($symbolNames as $symbolName) {
+        $masSymbols = $this->getSymbolIsUse();
+        foreach ($masSymbols as $masSymbol) {
 
             try {
                 $historiesInsertAll = array();
                 $historiesInsertTimeAll = array();
                 foreach ($this->origins as $origin) {
-                    $tableName = $this->getTableName($symbolName, $origin);
-                    $historys = $this->getHistoryByName($symbolName, $origin);
+                    $tableName = $this->getTableName($masSymbol, $origin);
+                    $historys = $this->getHistoryByName($masSymbol, $origin);
 
                     $historiesInsert = array();
                     foreach ($historys as $history) {
@@ -47,27 +47,27 @@ class SubTableController extends Controller {
                     }
 
 //                    if (count($historiesInsert) > 0) {
-//                        if ($this->createTable($tableName, $symbolName, $origin)) {
+//                        if ($this->createTable($tableName, $masSymbol, $origin)) {
 //                            foreach (array_chunk($historiesInsert, 1000) as $insertValue) {
 //                                DB::table($tableName)->insert($insertValue);
 //                            }
 //                        }
 //                    } else {
-//                        DB::table('NO_DATA')->insert(["SYMBOL_ORIGIN" => $symbolName . $origin, "SYMBOL" => $symbolName, "ORIGIN" => $origin]);
+//                        DB::table('NO_DATA')->insert(["SYMBOL_ORIGIN" => $masSymbol . $origin, "SYMBOL" => $masSymbol, "ORIGIN" => $origin]);
 //                    }
                 }
 
 
-                $tableName = $this->getTableName($symbolName, null);
+                $tableName = $this->getTableName($masSymbol, null);
 
                 if (count($historiesInsertAll) > 0) {
-                    if ($this->createTable($tableName, $symbolName)) {
+                    if ($this->createTable($tableName, $masSymbol)) {
                         foreach (array_chunk($historiesInsertAll, 1000) as $insertValue) {
                             DB::table($tableName)->insert($insertValue);
                         }
                     }
                 } else {
-                    DB::table('NO_DATA')->insert(["SYMBOL_ORIGIN" => $symbolName . "ALL", "SYMBOL" => $symbolName, "ORIGIN" => "ALL"]);
+                    DB::table('NO_DATA')->insert(["SYMBOL_ORIGIN" => $masSymbol . "ALL", "SYMBOL" => $masSymbol, "ORIGIN" => "ALL"]);
                 }
                 
                 
@@ -79,7 +79,7 @@ class SubTableController extends Controller {
             } catch (Exception $e) {
                 continue;
             } finally {
-                $this->updateIsNotUse($symbolName);
+                $this->updateIsNotUse($masSymbol);
             }
         }
                 
@@ -95,14 +95,14 @@ class SubTableController extends Controller {
 
         DB::table('TABLE_NAME')->DELETE();
         DB::table('NO_DATA')->DELETE();
-        DB::update('update SYMBOL_NAME set is_USE = ?', ['1']);
+        DB::update('update MAS_SYMBOL set is_USE = ?', ['1']);
     }
 
-    protected function updateIsNotUse($symbolName) {
-        DB::table('SYMBOL_NAME')->where('SYMBOL', $symbolName)->update(['IS_USE' => 0]);
+    protected function updateIsNotUse($masSymbol) {
+        DB::table('MAS_SYMBOL')->where('SYMBOL', $masSymbol)->update(['IS_USE' => 0]);
     }
 
-    protected function getTableName($symbolName, $origin) {
+    protected function getTableName($masSymbol, $origin) {
 
         $prefix = "";
         if ($origin !== null) {
@@ -110,28 +110,28 @@ class SubTableController extends Controller {
         }
 
         return $prefix .
-                str_replace("-", "", str_replace("&", "", str_replace("*", "", $symbolName)))
+                str_replace("-", "", str_replace("&", "", str_replace("*", "", $masSymbol)))
                 . "_HISTORY";
     }
 
     protected function getSymbolIsUse() {
 
-        $symbolNames = DB::table('SYMBOL_NAME')
+        $masSymbols = DB::table('MAS_SYMBOL')
                 ->where('IS_USE', 1)
                 ->lists('SYMBOL');
 
-        return $symbolNames;
+        return $masSymbols;
     }
 
-    protected function getHistoryByName($symbolName, $origin) {
+    protected function getHistoryByName($masSymbol, $origin) {
         $historys = DB::table('HISTORY')
-                ->where('SYMBOL', $symbolName)
+                ->where('SYMBOL', $masSymbol)
                 ->where('ORIGIN', $origin)
                 ->get();
         return $historys;
     }
 
-    public function createTable($tableName = null, $symbolName = null, $origin = "ALL") {
+    public function createTable($tableName = null, $masSymbol = null, $origin = "ALL") {
         if ($tableName != null) {
 
             DB::statement('drop table IF EXISTS ' . $tableName);
@@ -160,7 +160,7 @@ class SubTableController extends Controller {
 
             if (!$is_check) {
                 DB::table('TABLE_NAME')->insert(["table_name" => $tableName
-                    , "symbol" => $symbolName
+                    , "symbol" => $masSymbol
                     , "origin" => $origin]);
             }
 

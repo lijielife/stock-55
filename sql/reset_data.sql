@@ -1,7 +1,7 @@
 
-update SYMBOL_NAME SET IS_USE = 1 WHERE ID > 492
+update MAS_SYMBOL SET IS_USE = 1 WHERE ID > 492
 
-SET SQL_SAFE_UPDATES = 0;
+SET SQL_SAFE_UPDATES = 0;data_log
 
 
 
@@ -14,7 +14,7 @@ DELETE FROM history
  
  
  
-update SYMBOL_NAME SET IS_USE = 1 
+update MAS_SYMBOL SET IS_USE = 1 
 
 WHERE ID IN ('495'
 ,'496'

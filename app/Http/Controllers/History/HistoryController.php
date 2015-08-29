@@ -30,16 +30,16 @@ class HistoryController extends Controller {
 
     protected function getSymbolIsUse(){
     
-        $symbolNames = DB::table('SYMBOL_NAME')
+        $masSymbols = DB::table('MAS_SYMBOL')
         ->where('IS_USE' , 1)
         ->lists('SYMBOL');
         
-        return $symbolNames;
+        return $masSymbols;
     }
         
-    protected  function updateIsNotUse($symbolName){
+    protected  function updateIsNotUse($masSymbol){
         
-        DB::table('SYMBOL_NAME')->where('SYMBOL', $symbolName)->update(['IS_USE' => 0]);
+        DB::table('MAS_SYMBOL')->where('SYMBOL', $masSymbol)->update(['IS_USE' => 0]);
         
     }
     
@@ -159,7 +159,7 @@ class HistoryController extends Controller {
     }
 
     public function resetData(){
-        DB::update('update SYMBOL_NAME SET IS_USE = ?', ['1']);
+        DB::update('update MAS_SYMBOL SET IS_USE = ?', ['1']);
     }
 //    function setUrl($url) {
 //        $this->url = $url;
@@ -174,7 +174,7 @@ class HistoryController extends Controller {
                 ->distinct()
                 ->count('symbol');
         
-        $total = DB::table('SYMBOL_NAME')->count('SYMBOL');
+        $total = DB::table('MAS_SYMBOL')->count('SYMBOL');
         
         return array("commit" => $commit, "total" => $total,  "percent" => (int)floor (($commit / $total) * 100));
 //        SELECT count(distinct symbol) FROM super_stock_db.history;

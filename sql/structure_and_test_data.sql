@@ -1347,10 +1347,10 @@ CREATE TABLE IF NOT EXISTS `password_resets` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `symbol_name`
+-- Table structure for table `MAS_SYMBOL`
 --
 
-CREATE TABLE IF NOT EXISTS `symbol_name` (
+CREATE TABLE IF NOT EXISTS `MAS_SYMBOL` (
 `ID` int(11) NOT NULL,
   `SYMBOL` varchar(11) NOT NULL,
   `IS_USE` tinyint(1) NOT NULL DEFAULT '1',
@@ -1359,10 +1359,10 @@ CREATE TABLE IF NOT EXISTS `symbol_name` (
 ) ENGINE=InnoDB AUTO_INCREMENT=723 DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `symbol_name`
+-- Dumping data for table `MAS_SYMBOL`
 --
 
-INSERT INTO `symbol_name` (`ID`, `SYMBOL`, `IS_USE`, `CREATED_AT`, `UPDATED_AT`) VALUES
+INSERT INTO `MAS_SYMBOL` (`ID`, `SYMBOL`, `IS_USE`, `CREATED_AT`, `UPDATED_AT`) VALUES
 (107, '2S', 0, '2015-08-24', '2015-08-24'),
 (108, 'A', 0, '2015-08-24', '2015-08-24'),
 (109, 'AAV', 0, '2015-08-24', '2015-08-24'),
@@ -2064,9 +2064,9 @@ ALTER TABLE `password_resets`
  ADD KEY `password_resets_email_index` (`email`), ADD KEY `password_resets_token_index` (`token`);
 
 --
--- Indexes for table `symbol_name`
+-- Indexes for table `MAS_SYMBOL`
 --
-ALTER TABLE `symbol_name`
+ALTER TABLE `MAS_SYMBOL`
  ADD PRIMARY KEY (`ID`), ADD UNIQUE KEY `SYMBOL` (`SYMBOL`);
 
 --
@@ -2111,9 +2111,9 @@ MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `mas_side`
 MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
 --
--- AUTO_INCREMENT for table `symbol_name`
+-- AUTO_INCREMENT for table `MAS_SYMBOL`
 --
-ALTER TABLE `symbol_name`
+ALTER TABLE `MAS_SYMBOL`
 MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=723;
 --
 -- AUTO_INCREMENT for table `table_name`

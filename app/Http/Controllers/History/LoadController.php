@@ -27,21 +27,21 @@ class LoadController extends GetController {
 
 //        $respone = array();
 
-        $symbolNames = $this->getSymbolIsUse();
+        $masSymbols = $this->getSymbolIsUse();
 
-        foreach ($symbolNames as $symbolName) {
-            if (strpos($symbolName, "&") !== false) {
+        foreach ($masSymbols as $masSymbol) {
+            if (strpos($masSymbol, "&") !== false) {
                 continue;
             }
 
             try {
-                $data = $this->process($symbolName);
-//                array_push($respone, array("symbolName" => $symbolName
+                $data = $this->process($masSymbol);
+//                array_push($respone, array("symbolName" => $masSymbol
 //                    , "count" => $data->count));
             } catch (Exception $e) {
                 continue;
             } finally {
-                $this->updateIsNotUse($symbolName);
+                $this->updateIsNotUse($masSymbol);
             }
         }
 

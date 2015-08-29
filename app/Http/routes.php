@@ -61,9 +61,7 @@ Route::get('history/load', 'History\LoadController@getIndex');
 Route::get('history/loadData', 'History\LoadController@loadData');
 Route::get('history/getStatus', 'History\LoadController@getStatus');
 
-
 Route::get('history/get2', 'History\RuayHoonGetController@getIndex');
-
 
 Route::get('history/load2', 'History\RuayHoonLoadController@getIndex');
 Route::get('history/loadData2', 'History\RuayHoonLoadController@loadData');
@@ -106,9 +104,9 @@ Route::group(['prefix'=>'logs','middleware'=>'auth','namespace'=>'Logs'],functio
 //service
 //Route::get('getAllSymbol',function(){
 //    
-//    $symbolNames = DB::table('SYMBOL_NAME')->lists('SYMBOL');
+//    $masSymbols = DB::table('MAS_SYMBOL')->lists('SYMBOL');
 //
-//    return json_encode($symbolNames);
+//    return json_encode($masSymbols);
 //    
 //});
 

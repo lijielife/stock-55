@@ -1,14 +1,23 @@
-<?php namespace App\Http\Controllers;
+<?php
+
+namespace App\Http\Controllers;
 
 use Illuminate\Foundation\Bus\DispatchesCommands;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
+use Session;
 
 abstract class Controller extends BaseController {
 
-	use DispatchesCommands, ValidatesRequests;
-	public function __construct(){
-		$this->middleware('admins');
-	}
+    use DispatchesCommands,
+        ValidatesRequests;
+
+    protected $USER_ID;
+
+    public function __construct() {
+        $users = Session::get('username');
+        $this->USER_ID = $users->id;
+        $this->middleware('admins');
+    }
 
 }

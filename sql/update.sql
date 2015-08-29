@@ -1,4 +1,4 @@
-update super_stock_db.symbol_name t1
+update super_stock_db.MAS_SYMBOL t1
 inner join (
 	SELECT  symbol
 	FROM super_stock_db.history
@@ -12,7 +12,7 @@ SET SQL_SAFE_UPDATES = 0;
 
 
 
-update SYMBOL_NAME SET IS_USE = 1 where id in (
+update MAS_SYMBOL SET IS_USE = 1 where id in (
 216
 ,218
 ,219

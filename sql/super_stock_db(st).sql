@@ -130,10 +130,10 @@ CREATE TABLE IF NOT EXISTS `password_resets` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `symbol_name`
+-- Table structure for table `MAS_SYMBOL`
 --
 
-CREATE TABLE IF NOT EXISTS `symbol_name` (
+CREATE TABLE IF NOT EXISTS `MAS_SYMBOL` (
   `ID` int(11) NOT NULL,
   `SYMBOL` varchar(11) NOT NULL,
   `IS_USE` tinyint(1) NOT NULL DEFAULT '1',
@@ -224,9 +224,9 @@ ALTER TABLE `password_resets`
   ADD KEY `password_resets_token_index` (`token`);
 
 --
--- Indexes for table `symbol_name`
+-- Indexes for table `MAS_SYMBOL`
 --
-ALTER TABLE `symbol_name`
+ALTER TABLE `MAS_SYMBOL`
   ADD PRIMARY KEY (`ID`),
   ADD UNIQUE KEY `SYMBOL` (`SYMBOL`);
 
@@ -274,9 +274,9 @@ ALTER TABLE `mas_broker`
 ALTER TABLE `mas_side`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
 --
--- AUTO_INCREMENT for table `symbol_name`
+-- AUTO_INCREMENT for table `MAS_SYMBOL`
 --
-ALTER TABLE `symbol_name`
+ALTER TABLE `MAS_SYMBOL`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `table_name`
