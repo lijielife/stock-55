@@ -115,6 +115,8 @@ Route::get('getAllSymbol', 'Service\SingleStockService@getAllSymbol');
 
 Route::get('getSingleStock', 'Service\SingleStockService@getSingleStock');
 
+Route::get('getAllBroker', 'Service\SingleStockService@getAllBroker');
+
 
 
 

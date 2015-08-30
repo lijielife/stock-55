@@ -26,7 +26,7 @@ class LogsActiveController extends Controller {
                             SELECT MAX(UPDATED_AT) FROM DATA_LOG WHERE UPDATED_AT IS NOT NULL
             ) 
             AND dl.USER_ID = ?
-            ORDER BY SYMBOL, SIDE desc, dl.date, BROKER', [$this->USER_ID]);
+            ORDER BY BROKER, SYMBOL, SIDE desc, dl.date', [$this->USER_ID]);
         $stocks = array();
         foreach ($dataLogs as $dataLog) {
             $symbol = $dataLog->symbol;

@@ -64,6 +64,19 @@
     </div>
     <!-- /#wrapper -->
 
+    
+    
+    
+<!--    <button type="button" class="btn" 
+            style="position: fixed; bottom: 50px; right: 20px">
+        <i class="glyphicon glyphicon-chevron-ups">asd</i>
+    </button>-->
+    
+    <button type="button" class="btn back-to-top" 
+             style="position: fixed; bottom: 50px; right: 15px">
+            <i class="glyphicon glyphicon-chevron-up"></i>
+    </button>
+    
     <footer class="footer">
       <div class="container">
         <p class="text-muted">Copyright © 2015 Super Charts Team</p>

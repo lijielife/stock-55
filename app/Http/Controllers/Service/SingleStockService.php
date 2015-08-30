@@ -8,7 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\DB;
 
-use App\Models\SymbolName;
+use App\Models\MasSymbol;
 
 use App\Models\History;
 
@@ -30,6 +30,11 @@ class SingleStockService extends Controller {
 //                });
 
 //        return $ret;
+    }
+    
+    public function getAllBroker($param = null) {
+        $masBroker = \App\Models\MasBroker::all();
+        return json_encode($masBroker);
     }
 
     public function getSingleStock($param = null) {
