@@ -3,11 +3,8 @@
 	<link href="{{asset('/assets/jquery-ui-1.11.4/jquery-ui.theme.css')}}" rel="stylesheet">
 	<link href="{{asset('/assets/jquery-ui-1.11.4/jquery-ui.structure.css')}}" rel="stylesheet">-->
 
-<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
-  <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-  
-  
+    <link href="{{asset('/assets/jquery-ui-1.11.4/jquery-ui.css')}}" rel="stylesheet">
+    
     <!-- MetisMenu CSS -->
     <link href="{{asset('/assets/bower_components/metisMenu/dist/metisMenu.min.css')}}" rel="stylesheet">
 

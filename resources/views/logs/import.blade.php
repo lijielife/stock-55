@@ -1,6 +1,6 @@
 @extends('admin.layouts.template')
 @section('stylesheet')
-<link href="{{asset('assets/css/import.css')}}" rel="stylesheet" type="text/css"/>
+<link href="{{asset('assets/css/logs-import.css')}}" rel="stylesheet" type="text/css"/>
 @stop
 
 @section('content')
@@ -48,25 +48,7 @@
                     <div class="table-responsive " style="height: 650px;">
                         <div id="bodyDiv" class="bodyDiv">
                             <div id="scrollbox3" class="scrollbox3">
-                                <!--<div id="tablePlaceholder" class="grid_12 alpha omega">-->
-
                                 <table class="table table-striped table-bordered table-hover  table-fixed">
-<!--                                    <thead>
-                                        <tr>
-                                            <th class="text-center">คำสั่ง</th>
-                                            <th class="text-center">ชื่อ</th>
-                                            <th class="text-center">จำนวนหน่วย</th>
-                                            <th class="text-center">ราคา</th>
-                                            <th class="text-center">ค่าคอม</th>
-                                            <th class="text-center">ราคารวม</th>
-                                            <th class="text-center">ราคาสุทธิ</th>
-                                            <th class="text-center">วันที่</th>
-                                            <th class="text-center">นายหน้า</th>
-                                        </tr>
-                                    </thead>-->
-
-
-
                                     <tbody>
                                         @if($dataLogs)
                                         @foreach($dataLogs as $dataLog)

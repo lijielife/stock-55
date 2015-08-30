@@ -1,0 +1,84 @@
+.panel{
+    margin-bottom: 0px;
+    border-radius: 4px;
+}
+
+.panel-heading{
+    padding: 2px 3px;
+}
+
+.panel-clear-radius{
+    border-radius: 0px;
+}
+
+.panel-heading{
+    border-radius: 0px;
+}
+
+.col-md-left{
+    padding-right: 0px;
+    padding-left: 0px;
+}
+
+.col-md-right{
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.table>tbody>tr>td,
+.table>tbody>tr>th,
+.table>tfoot>tr>td,
+.table>tfoot>tr>th,
+.table>thead>tr>td,
+.table>thead>tr>th
+{
+    padding:4px;
+    line-height:1.42857143;
+    vertical-align:top;
+    border-top:1px solid #ddd
+}
+
+.ui-accordion .ui-accordion-content {
+    padding: 0px;
+    border-top: 0;
+    overflow: auto;
+}
+
+.ui-state-default { 
+    background: #E7F3E2; 
+    background-color: #E7F3E2; 
+}
+
+
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
+    background: #D1E0CB; 
+    background-color: #D1E0CB; 
+}
+
+
+.accordion-expand-holder {
+    text-align: center;
+    padding: 10px;
+}
+
+.ui-accordion .ui-accordion-header {
+	display: block;
+	cursor: pointer;
+	position: relative;
+	margin: 2px 0 0 0;
+	padding: .2em .2em .2em .7em;
+	min-height: 0; /* support: IE7 */
+	font-size: 100%;
+}
+.ui-accordion .ui-accordion-icons {
+	padding-left: 2.2em;
+}
+.ui-accordion .ui-accordion-icons .ui-accordion-icons {
+	padding-left: 2.2em;
+}
+.ui-accordion .ui-accordion-header .ui-accordion-header-icon {
+	position: absolute;
+	left: .5em;
+	top: 50%;
+	margin-top: -8px;
+}

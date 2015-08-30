@@ -1,47 +1,111 @@
-$(function () {
+$(function() {
 
-    function displayResult(item) {
-        $('.alert').show().html('You selected <strong>' + item.value + '</strong>: <strong>' + item.text + '</strong>');
-    }
+//    $('body, #scrollbox3').enscroll({
+//    showOnHover: false,
+//            verticalTrackClass: 'track3',
+//            verticalHandleClass: 'handle3',
+//            verticalScrolling: !0, 
+//            horizontalScrolling: !1, 
+//            verticalScrollerSide: "right",
+//            scrollIncrement: 40
+//            , minScrollbarLength: 40,
+//            pollChanges: !0, 
+//            drawCorner: !0,
+//            drawScrollButtons: !1,
+//            clickTrackToScroll: !0,
+//            easingDuration: 500, 
+//            propagateWheelEvent: !0,
+//            horizontalTrackClass: "horizontal-track",
+//            horizontalHandleClass: "horizontal-handle",
+//            scrollUpButtonClass: "scroll-up-btn",
+//            scrollDownButtonClass: "scroll-down-btn",
+//            scrollLeftButtonClass: "scroll-left-btn",
+//            scrollRightButtonClass: "scroll-right-btn",
+//            cornerClass: "scrollbar-corner", zIndex: 1,
+//            addPaddingToPane: !0,
+//            horizontalHandleHTML: '<div class="left"></div><div class="right"></div>',
+//            verticalHandleHTML: '<div class="top"></div><div class="bottom"></div>'
+//    }).width("90%");
 
-    $.get($getAllSymbol, function (data) {
-        $("#symbol").typeahead({source: data, onSelect: displayResult});
-    }, 'json');
+    $(function() {
+//        $("#accordion").accordion({
+//            heightStyle: "content",
+//            header: "h3",
+//            collapsible: true
+//        });
+
+//        $('#accordion .ui-accordion-header').click(function() {
+//            $(this).next().toggle();
+//            return false;
+//        }).next().hide();
+
+//        $('#accordion .ui-accordion-header').click(function() {
+//            $(this).next().toggle('slow');
+//            return false;
+//        }).next().hide();
 
 
-    $(".datepicker").datepicker({dateFormat: 'yy-mm-dd'});
+        var headers = $('#accordion .accordion-header');
+        var contentAreas = $('#accordion .ui-accordion-content');
+        var expandLink = $('.accordion-expand-all');
 
-    var $fromDate = new Date();
-    $fromDate.setMonth($fromDate.getMonth() - 6);
-    $("#fromDate").datepicker("setDate", $fromDate);
+// add the accordion functionality
+        headers.click(function() {
+            var panel = $(this).next();
+            var isOpen = panel.is(':visible');
 
-    $("#toDate").datepicker("setDate", new Date());
+            // open or close as necessary
+            panel[isOpen ? 'slideUp' : 'slideDown']()
+                    // trigger the correct custom event
+                    .trigger(isOpen ? 'hide' : 'show');
+            // stop the link from causing a pagescroll.
 
-
-    $("#searchButton").click(function () {
-        var $val = $("#symbol").val();
-        var $fromDate = $("#fromDate").val();
-        var $toDate = $("#toDate").val();
-        
-        $fromDate = new Date($fromDate).getTime() / 1000;
-        $toDate = new Date($toDate).getTime() / 1000;
-
-        var $url = $getSingleStock + "?symbol=" +  $val
-                + "&fromDate=" + $fromDate 
-                + "&toDate=" + $toDate;
-        if (!$val) {
-            return;
-        }
-        $(function () {
-            $.getJSON($url, function (data) {
-
-//            $.getJSON("http://www.highcharts.com/samples/data/jsonp.php?a=e&filename=aapl-ohlc.json&callback=?", function (data) {
-                // create the chart
-                initHighCharts("#container", data);
-            });
+//            $(this).removeClass();
+//            if(isOpen){
+//                $(this).prev().addClass("accordion-header ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-corner-all");   
+//            } else {
+//                $(this).prev().addClass("accordion-header ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-accordion-header-active ui-state-active ui-corner-top");   
+//            }
+            return false;
         });
 
-    }).click();
+// hook up the expand/collapse all
+        expandLink.click(function() {
+            var isAllOpen = $(this).data('isAllOpen');
 
+            contentAreas[isAllOpen ? 'hide' : 'show']()
+                    .trigger(isAllOpen ? 'hide' : 'show');
+        });
 
+// when panels open or close, check to see if they're all open
+        contentAreas.on({
+            // whenever we open a panel, check to see if they're all open
+            // if all open, swap the button to collapser
+            show: function() {
+                var isAllOpen = !contentAreas.is(':hidden');
+                if (isAllOpen) {
+                    expandLink.text('Collapse All')
+                            .data('isAllOpen', true);
+                }
+                $(this).prev().removeClass();
+                $(this).prev().addClass("accordion-header ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-accordion-header-active ui-state-active ui-corner-top");   
+            
+//                $(this).next().removeClass();
+//                $(this).next().addClass("accordion-header ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-accordion-header-active ui-state-active ui-corner-top");   
+            },
+            // whenever we close a panel, check to see if they're all open
+            // if not all open, swap the button to expander
+            hide: function() {
+                var isAllOpen = !contentAreas.is(':hidden');
+                if (!isAllOpen) {
+                    expandLink.text('Expand all')
+                            .data('isAllOpen', false);
+                }
+                
+                $(this).prev().removeClass();
+                $(this).prev().addClass("accordion-header ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-corner-all");   
+            
+            }
+        }).slideUp().hide();
+    });
 });
