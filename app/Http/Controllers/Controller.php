@@ -16,7 +16,9 @@ abstract class Controller extends BaseController {
 
     public function __construct() {
         $users = Session::get('username');
-        $this->USER_ID = $users->id;
+        if($users){
+            $this->USER_ID = $users->id;
+        }
         $this->middleware('admins');
     }
 
