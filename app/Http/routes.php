@@ -119,4 +119,17 @@ Route::get('getAllBroker', 'Service\SingleStockService@getAllBroker');
 
 
 
+Route::group(['prefix'=>'service','middleware'=>'auth','namespace'=>'Service'],function($names, $name1 = null, $name2 = null){
+    
+    Route::get('{name}', function($name) {
+        
+//        Route::controller($name, 'Service\SingleStockService');
+    
+//        Route::get('service/' . $name, 'Service\SingleStockService@' . $name);
+        $servicess = new App\Http\Controllers\Service\SingleStockService();
+        return $servicess->$name();
+    });
+
+});
+
 
