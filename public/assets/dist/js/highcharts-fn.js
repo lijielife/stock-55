@@ -43,12 +43,12 @@ initHighCharts = function ($id, $data) {
         },
         plotOptions: {
             candlestick: {
-                color: '#1a8ff8',
-                upColor: 'red'
+                color: 'red',
+                upColor: '#1a8ff8'
             },
             series: {
                 animation: {
-                    duration: 2000,
+                    duration: 500,
                     easing: 'swing'
                 }
             }
