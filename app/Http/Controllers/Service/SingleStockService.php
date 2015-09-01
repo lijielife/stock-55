@@ -32,6 +32,25 @@ class SingleStockService extends Controller {
 //        return $ret;
     }
     
+    
+    public function getActiveSymbol($param = null) {
+
+//    Cache::forget('getAllSymbol');
+
+//        $ret = Cache::get('getAllSymbol', function() {
+                    $masSymbols = MasSymbol::lists('SYMBOL');
+                    if (count($masSymbols)) {
+
+//                        Cache::add('getAllSymbol', json_encode($masSymbols), date('Y-m-d H:i:s'));
+
+                        return json_encode($masSymbols);
+                    }
+                    return json_encode([]);
+//                });
+
+//        return $ret;
+    }
+    
     public function getAllBroker($param = null) {
         $masBroker = \App\Models\MasBroker::all();
         return json_encode($masBroker);

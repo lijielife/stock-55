@@ -1,14 +1,18 @@
 
-<div id="navbar" class="navbar-collapse collapse">
+<div class="collapse navbar-collapse" id="navbar-collapse-1">
     <ul class="nav navbar-nav">
-        
+        <!--        <li><a href="#">Active Link</a></li>
+                <li><a href="#">Link</a></li>-->
+
         <li class="dropdown">
-            <a id="dLabel" role="button" data-toggle="dropdown" data-target="#">
-                <i class="fa fa-files-o fa-fw"></i>Example <span class="caret"></span>
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                Example <span class="caret"></span>
             </a>
-            <ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
-                <li class="dropdown-submenu">
-                    <a tabindex="-1" href="#"><i class="fa fa-envelope fa-fw"></i> Charts</a>
+            <ul class="dropdown-menu">
+                <li class="dropdown dropdown-submenu">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="fa fa-envelope fa-fw"></i>Charts 
+                    </a>
                     <ul class="dropdown-menu">
                         <li>
                             <a href="<?php echo URL::to('pages/flot') ?>">Flot Charts</a>
@@ -18,19 +22,17 @@
                         </li>
                     </ul>
                 </li>
-                <li class="divider"></li>
-
                 <li>
                     <a href="<?php echo URL::to('pages/tables') ?>"><i class="fa fa-table fa-fw"></i> Tables</a>
                 </li>
                 <li>
                     <a href="<?php echo URL::to('pages/forms') ?>"><i class="fa fa-edit fa-fw"></i> Forms</a>
                 </li>
-
                 <li class="divider"></li>
-
-                <li class="dropdown-submenu">
-                    <a tabindex="-1" href="#"><i class="fa fa-wrench fa-fw"></i> UI Elements</a>
+                <li class="dropdown dropdown-submenu">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="fa fa-wrench fa-fw"></i> UI Elements
+                    </a>
                     <ul class="dropdown-menu">
                         <li>
                             <a href="<?php echo URL::to('pages/panels-wells') ?>">Panels and Wells</a>
@@ -50,151 +52,156 @@
                         <li>
                             <a href="<?php echo URL::to('pages/grid') ?>">Grid</a>
                         </li>
-                    </ul>
-                </li>
-
-
-
-                <li class="divider"></li>
-                <li>
-                    <a href="<?php echo URL::to('backup') ?>">Backup</a>
-                </li>
-
-                <li>
-                    <a href="<?php echo URL::to('sub-table') ?>">Create Sub Table</a>
-                </li>
-            </ul>
-        </li>
-
-
-
-        <li class="dropdown">
-            <a id="dLabel" role="button" data-toggle="dropdown" data-target="#" tabindex="-1">
-                <i class="fa fa-files-o fa-fw"></i> User <span class="caret"></span>
-            </a>
-            <ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
-
-
-                <li>
-                    <a href="<?php echo URL::to('logs/import') ?>">Logs Import</a>
-                </li>
-
-                <li>
-                    <a href="<?php echo URL::to('logs/active') ?>">Logs Active</a>
-                </li>
-
-                <li>
-                    <a href="<?php echo URL::to('admin/blank') ?>">Blank Page</a>
-                </li>
-                <li>
-                    <a href="<?php echo URL::to('admin/login') ?>">Login Page</a>
-                </li>
-                <li>
-                    <a href="<?php echo URL::to('admin/user') ?>">User Page</a>
-                </li>
-
-                <li class="divider"></li>
-                <li class="dropdown-submenu">
-                    <a tabindex="-1" href="#"><i class="fa fa-files-o fa-fw"></i>Test</a>
-                    <ul class="dropdown-menu">
-                        <!--<li><a tabindex="-1" href="#">Second level</a></li>-->
-                        <!--                    <li class="dropdown-submenu">
-                                                <a href="#">Even More..</a>
-                                                <ul class="dropdown-menu">
-                                                    <li><a href="#">3rd level</a></li>
-                                                    <li><a href="#">3rd level</a></li>
-                                                </ul>
-                                            </li>-->
-                        <li>
-                            <a href="<?php echo URL::to('check-connect') ?>">Check Connect</a>
-                        </li>
-                        <li>
-                            <a href="<?php echo URL::to('check-model') ?>">Check Model</a>
+                        <li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown Link 4</a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">Dropdown Submenu Link 4.1</a></li>
+                                <li><a href="#">Dropdown Submenu Link 4.2</a></li>
+                                <li><a href="#">Dropdown Submenu Link 4.3</a></li>
+                                <li><a href="#">Dropdown Submenu Link 4.4</a></li>
+                            </ul>
                         </li>
                     </ul>
                 </li>
             </ul>
         </li>
 
-
         <li class="dropdown">
-            <a id="dLabel" role="button" data-toggle="dropdown" data-target="#">
-                <i class="fa fa-files-o fa-fw"></i>History <span class="caret"></span>
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <i class="fa fa-list"></i> Logs <span class="caret"></span>
             </a>
-            <ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
-                <li class="dropdown-submenu">
-                    <a tabindex="-1" href="#"><i class="fa fa-files-o fa-fw"></i>Investor</a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a href="<?php echo URL::to('history/get') ?>">Get History</a>
-                        </li>
-                        <li>
-                            <a href="<?php echo URL::to('history/load') ?>">Load History</a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="divider"></li>
-                <li class="dropdown-submenu">
-                    <a tabindex="-1" href="#"><i class="fa fa-files-o fa-fw"></i>RuayHoon</a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a href="<?php echo URL::to('history/get2') ?>">Get History</a>
-                        </li>
+            <ul class="dropdown-menu">
 
-                        <li>
-                            <a href="<?php echo URL::to('history/load2') ?>">Load History</a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="divider"></li>
+
                 <li>
-                    <a href="<?php echo URL::to('backup') ?>">Backup</a>
+                    <a href="<?php echo URL::to('logs/import') ?>">
+                        <i class="glyphicon glyphicon-save"></i> Import                    
+                    </a>
                 </li>
 
                 <li>
-                    <a href="<?php echo URL::to('sub-table') ?>">Create Sub Table</a>
+                    <a href="<?php echo URL::to('logs/active') ?>">
+                        <i class="fa fa-inbox"></i> Active
+                    </a>
                 </li>
+
+                <!--                <li>
+                                    <a href="<?php echo URL::to('admin/blank') ?>">Blank Page</a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo URL::to('admin/login') ?>">Login Page</a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo URL::to('admin/user') ?>">User Page</a>
+                                </li>-->
+
+                <li class="divider"></li>
             </ul>
         </li>
 
 
         <li class="dropdown">
-            <a id="dLabel" role="button" data-toggle="dropdown" data-target="#">
-                <i class="fa fa-files-o fa-fw"></i>Charts <span class="caret"></span>
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <i class="fa fa-bar-chart-o fa-fw"></i>Charts  <span class="caret"></span>
             </a>
-            <ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
+            <ul class="dropdown-menu">
                 <li>
                     <a href="<?php echo URL::to('single/stock') ?>">Single Stock</a>
                 </li>
             </ul>
-            <!-- /.nav-second-level -->
         </li>
-        <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
-            <ul class="dropdown-menu">
-                <li><a href="#">Action</a></li>
-                <li><a href="#">Another action</a></li>
-                <li><a href="#">Something else here</a></li>
-                <li role="separator" class="divider"></li>
-                <li class="dropdown-header">Nav header</li>
-                <li><a href="#">Separated link</a></li>
-                <li><a href="#">One more separated link</a></li>
-            </ul>
-        </li>
+
     </ul>
 
-    
-            <!--<ul class="nav navbar-nav navbar-right">-->
-<!--              <li class="active"><a href="./">Default <span class="sr-only">(current)</span></a></li>
-              <li><a href="../navbar-static-top/">Static top</a></li>
-              <li><a href="../navbar-fixed-top/">Fixed top</a></li>-->
-            <!--</ul>-->
-          <!--</div>/.nav-collapse--> 
-          
+
 
     <ul class="nav navbar-nav navbar-right">
-        <!--    <li><a href="<?php echo URL::to('pages/index') ?>"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a></li>-->
-        
+
+
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <i class="fa fa-gears fa-fw"></i> <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+
+                <li class="dropdown dropdown-submenu push-left">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="fa fa-database"></i> Data
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li class="dropdown dropdown-submenu push-left">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                Investor
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="<?php echo URL::to('history/get') ?>">Get History</a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo URL::to('history/load') ?>">Load History</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="divider"></li>
+                        <li class="dropdown dropdown-submenu push-left">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                RuayHoon
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="<?php echo URL::to('history/get') ?>">Get History</a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo URL::to('history/load') ?>">Load History</a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="divider"></li>
+                        <li>
+                            <a href="<?php echo URL::to('backup') ?>">Backup</a>
+                        </li>
+
+                        <li>
+                            <a href="<?php echo URL::to('sub-table') ?>">Create Sub Table</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="dropdown dropdown-submenu push-left">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="fa fa-users"></i> Users
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="<?php echo URL::to('admin/user') ?>">
+                                User Page
+                            </a>
+                        </li>
+                    </ul>
+
+                </li>
+                <li class="dropdown dropdown-submenu">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="glyphicon glyphicon-play"></i> Test
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="<?php echo URL::to('check-connect') ?>">
+                                Test Connection
+                            </a>
+                        </li>
+                        <li>
+                            <a href="<?php echo URL::to('check-model') ?>">
+                                Test Model
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+
+<!--    <li><a href="<?php echo URL::to('pages/index') ?>"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a></li>-->
+
 
         <!--    <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
@@ -243,7 +250,8 @@
                  /.dropdown-alerts 
             </li>
              /.dropdown 
-        -->    <li class="dropdown">
+        -->    
+        <li class="dropdown">
             <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                 <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
             </a>
@@ -260,4 +268,5 @@
         </li>
         <!-- /.dropdown -->
     </ul>
-</div><!--/.nav-collapse -->
+
+</div><!-- /.navbar-collapse -->
