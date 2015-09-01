@@ -16,7 +16,6 @@ namespace App\Http\Controllers\Service;
 
 class MapDataLogsService extends Controller {
     
-    
     public function getAllSymbol($param = null) {
         $masSymbols = MasSymbol::lists('SYMBOL');
         if (count($masSymbols)) {
