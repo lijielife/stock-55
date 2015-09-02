@@ -156,8 +156,8 @@
 
 <script type="text/javascript">
 
-var $getAllSymbol = "{{url('getAllSymbol')}}";
-var $getAllBroker = "{{url('getAllBroker')}}";
+var $getAllSymbol = "{{url('service/single/getAllSymbol')}}";
+var $getAllBroker = "{{url('service/single/getAllBroker')}}";
 //    var $getSingleStock = "{{url('getSingleStock')}}";
 
 </script>

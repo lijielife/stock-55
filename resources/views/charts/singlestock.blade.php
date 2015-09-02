@@ -17,8 +17,8 @@
 
 
 <script type="text/javascript">
-var $getAllSymbol = "{{url('getAllSymbol')}}";
-var $getSingleStock = "{{url('getSingleStock')}}";
+var $getAllSymbol = "{{url('service/single/getAllSymbol')}}";
+var $getSingleStock = "{{url('service/single/getSingleStock')}}";
 
 </script>
 

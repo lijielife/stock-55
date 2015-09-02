@@ -111,25 +111,32 @@ Route::group(['prefix'=>'logs','middleware'=>'auth','namespace'=>'Logs'],functio
 //});
 
 
-Route::get('getAllSymbol', 'Service\SingleStockService@getAllSymbol');
+//Route::get('getAllSymbol', 'Service\SingleStockService@getAllSymbol');
+//
+//Route::get('getSingleStock', 'Service\SingleStockService@getSingleStock');
+//
+//Route::get('getAllBroker', 'Service\SingleStockService@getAllBroker');
 
-Route::get('getSingleStock', 'Service\SingleStockService@getSingleStock');
-
-Route::get('getAllBroker', 'Service\SingleStockService@getAllBroker');
 
 
-
-Route::group(['prefix'=>'service','middleware'=>'auth','namespace'=>'Service'],function($names, $name1 = null, $name2 = null){
+Route::group(['prefix'=>'service/single','middleware'=>'auth','namespace'=>'Service'],function($names, $name1 = null, $name2 = null){
     
     Route::get('{name}', function($name) {
-        
-//        Route::controller($name, 'Service\SingleStockService');
-    
-//        Route::get('service/' . $name, 'Service\SingleStockService@' . $name);
         $servicess = new App\Http\Controllers\Service\SingleStockService();
         return $servicess->$name();
     });
 
 });
+
+
+Route::group(['prefix'=>'service/mapdata','middleware'=>'auth','namespace'=>'Service'],function($names, $name1 = null, $name2 = null){
+    
+    Route::get('{name}', function($name) {
+        $servicess = new App\Http\Controllers\Service\MapDataLogsService();
+        return $servicess->$name();
+    });
+
+});
+
 
 
