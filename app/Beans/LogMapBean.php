@@ -66,4 +66,9 @@ class LogMapBean {
         $this->dataLogDesc = $dataLogDesc;
     }
 
+    function getDataToInsert(){
+        return array('MAP_SRC' => $this->mapSrc
+                , 'MAP_DESC' => $this->mapDesc
+                , 'MAP_VOL' => $this->mapVol);
+    }
 }

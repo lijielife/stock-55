@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Service;
 //use Illuminate\Http\Request;
 //use Auth;
 use App\Models\DataLog;
+use App\Models\LogMap;
 use App\Http\Controllers\Controller;
 //use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\DB;
@@ -15,48 +16,174 @@ use Illuminate\Support\Facades\DB;
 use App\Beans\MapDataLogsGetAllDataBean;
 use App\Beans\DataLogBean;
 use App\Beans\LogMapBean;
+use App\Beans\MapDataLogsPlanBean;
 
 class MapDataLogsService extends Controller {
 
     private $buyCode = "001";
-    private $sellCode = "002"; 
-    
+    private $sellCode = "002";
+
     public function autoMap() {
         $mapDataLogsBean = new MapDataLogsGetAllDataBean($this->getAllData());
         $symbols = (array) $mapDataLogsBean->getSymbols();
 
         $idIsUse = array();
         foreach ($symbols as $symbol => $sides) {
-            if(array_key_exists($this->buyCode, $sides) && array_key_exists($this->sellCode, $sides)){
+            if (array_key_exists($this->buyCode, $sides) && array_key_exists($this->sellCode, $sides)) {
                 $buySides = $sides["001"];
                 $sellSides = $sides["002"];
-                
+
                 foreach ($buySides as $buySide) {
                     $buySide = new DataLogBean($buySide);
-                    $buyNetAmount = (float)$buySide->getNetAmount();
-                    
-                    $sellSideTemp = new DataLogBean();
-                    $diffTemp = 0;
+                    $buyPrice = (float) $buySide->getPrice();
+                    $buyVolume = (int) $buySide->getVolume();
+
+                    $sellSideTemp = NULL;
+//                    $diffTemp = 0;
+
+                    $sellCadedate = array();
                     foreach ($sellSides as $sellSide) {
-                        if(in_array($sellSide->getId(), $idIsUse)){
+                        if (in_array($sellSide->getId(), $idIsUse)) {
                             continue;
                         }
                         $sellSide = new DataLogBean($sellSide);
-                        $sellNetAmount = (float)$sellSide->getNetAmount();
-                        $diff = $sellNetAmount - $buyNetAmount;
-                        if($diff > $diffTemp){
+                        $sellPrice = (float) $sellSide->getPrice();
+                        $sellVolume = (int) $sellSide->getVolume();
+                        $diff = (float) $sellPrice - $buyPrice;
+
+                        // ถ้าราคาขายมากกว่าราคา ซื้อเก็บไว้ก่อน
+                        if ($diff > 0 && $sellVolume <= $buyVolume) {
+                            $sellCadedate[$diff . "_" . $sellVolume . "_" . $sellSide->getId()] = $sellSide;
+                        }
+                    }
+
+                    arsort($sellCadedate);
+//                    asort($sellCadedate);
+
+                    $plans = array();
+                    foreach ($sellCadedate as $id => $sellSide) {
+                        $sellVolume = (int) $sellSide->getVolume();
+                        if ($buyVolume == $sellVolume) {
                             $sellSideTemp = $sellSide;
-                            $diffTemp = $diff;
-                        } 
+//                            $diffTemp = $diff;
+                        } else if ($sellVolume < $buyVolume) {
+                            foreach ($plans as $key => $plan) {
+                                $totalVolume = $plan->getTotalVolume();
+                                $sellTotalVolume = $sellVolume->getTotalVolume();
+                                if($totalVolume + $sellTotalVolume > $buyVolume){
+                                    array_pull($plans, $key);
+                                } else {
+                                    $plan->addDataLogBeanArr($sellVolume);
+                                }
+                            }
+                            $this->addPlan($plans);
+                        }
                     }
                     
-                    if($diffTemp > 0){
-                        \array_push($idIsUse, $sellSideTemp->getId());
+                    if($sellSideTemp !== NULL){
                         
+                        \array_push($idIsUse, $idIsUse, $sellSideTemp->getId());
+
+                        $this->saveDataToDB($buySide, array($sellSide));
+                        break;
+
+                    } else {
+                        
+                        usort($plans, "plansCmp");
+
+                        $plan = $this->selectPlan($plans, $buySide);
+
+                        $this->saveDataToDB($idIsUse, $buySide, $plan->getDataLogBeanArr());
                     }
                 }
             }
         }
+    }
+
+    
+    function plansCmp($a, $b)
+    {
+        return strcmp($a->getAvgPrice(), $b->getAvgPrice());
+    }
+    
+    private function selectPlan(&$plans, $buySide) {
+        $planSelect = new MapDataLogsPlanBean;
+        $diffPriceTemp = 0;
+        $diffVolTemp = 0;
+        
+        $planCadedate = array();
+        foreach ($plans as $key => $plan) {
+            $price = (float)$plan->getPrice();
+            $volume = (int)$plan->getTotalVolume();
+            $buyprice = (float)$buySide->getPrice();
+            $buyVolume = (int)$buySide->getTotalVolume();
+            $diff = $price - $buyprice;
+            
+            if($volume == $buyVolume){
+                if($diff > $diffPriceTemp){
+                    $diffPriceTemp = $diff;
+                    $planSelect = $plan;
+                    $diffVolTemp = $buyVolume;
+                    array_pull($plans, $key);
+                    continue;
+                } 
+            }
+            $planCadedate[$diff . "_" . $volume . "_" . $sellSide->getId()] = $plan;
+        }
+        
+        if(empty($planCadedate)){
+            return $planSelect;
+        } else {
+            arsort($planCadedate);
+            return array_pop($planCadedate);
+        }
+
+    }
+    private function addPlan(&$plans, $sellVolume) {
+        $mapDataLogsPlanBean = new MapDataLogsPlanBean();
+        $mapDataLogsPlanBean->addDataLogBeanArr($sellVolume);
+        array_push($plans, $mapDataLogsPlanBean);
+    }
+
+    private function saveDataToDB(&$idIsUse, $dataLogSrcBean, $dataLogDescBeans) {
+        $srcVolume = 0;
+        $srcAmount = 0.0000;
+        $srcId = $dataLogSrcBean->getId();
+        foreach ($dataLogDescBeans as $dataLogDescBean) {
+            $descId = $dataLogDescBean->getId();
+            $descAmount = (float)$dataLogDescBean->getAmount();
+            $descVolume = (int)$dataLogDescBean->getVolume();
+            
+            $srcAmount += $descAmount;
+            $srcVolume += $descAmount;
+            
+            $this->insertLogMap($srcId, $descId, $descVolume);
+            
+            \array_push($idIsUse, $descId);
+            
+            
+            $this->updateDataLog($descId, $descVolume, $descAmount / $descVolume);
+                    
+        }
+        $this->updateDataLog($srcId, $srcVolume, $srcAmount / $srcVolume);
+                    
+                        
+    }
+
+    private function updateDataLog($id, $volume, $prices) {
+        DataLog::where("ID", $id)
+            ->update(['MAP_VOL' => $volume
+                , 'MAP_AVG' => $prices]);
+    }
+
+    private function insertLogMap($srcId, $descId, $descVolume) {
+        
+        $logMapBean = new LogMapBean();
+        $logMapBean->setMapSrc($srcId);
+        $logMapBean->setMapDesc($descId);
+        $logMapBean->setMapVol($descVolume);
+
+        LogMap::insert($logMapBean->getDataToInsert());
     }
 
     private function getAllData() {
@@ -88,8 +215,8 @@ class MapDataLogsService extends Controller {
         LEFT JOIN super_stock_db.mas_side msd on (msd.id = dad.SIDE_ID)
         LEFT JOIN super_stock_db.mas_symbol msy on (msy.id = da.SYMBOL_ID)
         LEFT JOIN super_stock_db.mas_symbol msyd on (msyd.id = dad.SYMBOL_ID)
-        WHERE da.USER_ID = ? 
-        ORDER BY da.BROKER_ID, da.symbol_id, da.SIDE_ID, da.price
+        WHERE da.USER_ID = ? AND da.SYMBOL_ID = 76
+        ORDER BY da.BROKER_ID, da.symbol_id, da.SIDE_ID, da.price DESC, da.VOLUME DESC
         ", [$this->USER_ID]);
 
         $mapDataLogsBean = new MapDataLogsGetAllDataBean();
@@ -98,16 +225,28 @@ class MapDataLogsService extends Controller {
             $sideSrc = $dataLog->SIDE_CODE_SRC;
 
             $dataLogSrcBean = $this->getDataLogSrcBean($dataLog);
+            if ($dataLogSrcBean === NULL) {
+                continue;
+            }
+
             $logMapBean = $this->getLogMapBean($dataLog);
             $dataLogDescBean = $this->getDataLogDescBean($dataLog);
 
-            //set data to Obj
-            $dataLogSrcBean->pushLogMap($logMapBean);
+            if ($logMapBean !== NULL) {
 
-            $logMapBean->setDataLogSrc($dataLogSrcBean);
-            $logMapBean->setDataLogDesc($dataLogDescBean);
+                //set data to Obj
+                $dataLogSrcBean->pushLogMap($logMapBean);
 
-            $dataLogDescBean->pushLogMap($logMapBean);
+                $logMapBean->setDataLogSrc($dataLogSrcBean);
+
+
+                if ($dataLogDescBean !== NULL) {
+
+                    $logMapBean->setDataLogDesc($dataLogDescBean);
+
+                    $dataLogDescBean->pushLogMap($logMapBean);
+                }
+            }
 
             //push data to map
             $mapDataLogsBean->pushSide($dataLogSrcBean, $symbolSrc, $sideSrc);
@@ -117,52 +256,60 @@ class MapDataLogsService extends Controller {
 
     private function getDataLogSrcBean($dataLog) {
 
-        $dataLogBean = new DataLogBean();
-        $dataLogBean->setId($dataLog->ID_SRC);
-        $dataLogBean->setSideId($dataLog->SIDE_ID_SRC);
-        $dataLogBean->setSideCode($dataLog->SIDE_CODE_SRC);
-        $dataLogBean->setSideName($dataLog->SIDE_NAME_SRC);
-        $dataLogBean->setSymbolId($dataLog->SYMBOL_ID_SRC);
-        $dataLogBean->setVolume($dataLog->VOLUME_SRC);
-        $dataLogBean->setPrice($dataLog->PRICE_SRC);
-        $dataLogBean->setAmount($dataLog->AMOUNT_SRC);
-        $dataLogBean->setVat($dataLog->VAT_SRC);
-        $dataLogBean->setNetAmount($dataLog->NET_AMOUNT_SRC);
-        $dataLogBean->setDate($dataLog->DATE_SRC);
-        $dataLogBean->setBrokerId($dataLog->BROKER_ID_SRC);
-        $dataLogBean->setMapVol($dataLog->MAP_VOL_SRC);
+        if ($dataLog->ID_SRC !== null) {
+            $dataLogBean = new DataLogBean();
+            $dataLogBean->setId($dataLog->ID_SRC);
+            $dataLogBean->setSideId($dataLog->SIDE_ID_SRC);
+            $dataLogBean->setSideCode($dataLog->SIDE_CODE_SRC);
+            $dataLogBean->setSideName($dataLog->SIDE_NAME_SRC);
+            $dataLogBean->setSymbolId($dataLog->SYMBOL_ID_SRC);
+            $dataLogBean->setVolume($dataLog->VOLUME_SRC);
+            $dataLogBean->setPrice($dataLog->PRICE_SRC);
+            $dataLogBean->setAmount($dataLog->AMOUNT_SRC);
+            $dataLogBean->setVat($dataLog->VAT_SRC);
+            $dataLogBean->setNetAmount($dataLog->NET_AMOUNT_SRC);
+            $dataLogBean->setDate($dataLog->DATE_SRC);
+            $dataLogBean->setBrokerId($dataLog->BROKER_ID_SRC);
+            $dataLogBean->setMapVol($dataLog->MAP_VOL_SRC);
 
-        return $dataLogBean;
+            return $dataLogBean;
+        }
+        return NULL;
     }
 
     private function getLogMapBean($dataLog) {
 
-        $logMapBean = new LogMapBean();
-        $logMapBean->setId($dataLog->MAP_ID);
-        $logMapBean->setMapSrc($dataLog->MAP_SRC);
-        $logMapBean->setMapDesc($dataLog->MAP_DESC);
-        $logMapBean->setMapVol($dataLog->MAP_VOL);
-        return $logMapBean;
+        if ($dataLog->MAP_ID !== null) {
+            $logMapBean = new LogMapBean();
+            $logMapBean->setId($dataLog->MAP_ID);
+            $logMapBean->setMapSrc($dataLog->MAP_SRC);
+            $logMapBean->setMapDesc($dataLog->MAP_DESC);
+            $logMapBean->setMapVol($dataLog->MAP_VOL);
+            return $logMapBean;
+        }
+        return NULL;
     }
 
     private function getDataLogDescBean($dataLog) {
 
-        $dataLogBean = new DataLogBean();
-        $dataLogBean->setId($dataLog->ID_DESC);
-        $dataLogBean->setSideId($dataLog->SIDE_ID_DESC);
-        $dataLogBean->setSideCode($dataLog->SIDE_CODE_DESC);
-        $dataLogBean->setSideName($dataLog->SIDE_NAME_DESC);
-        $dataLogBean->setSymbolId($dataLog->SYMBOL_ID_DESC);
-        $dataLogBean->setVolume($dataLog->VOLUME_DESC);
-        $dataLogBean->setPrice($dataLog->PRICE_DESC);
-        $dataLogBean->setAmount($dataLog->AMOUNT_DESC);
-        $dataLogBean->setVat($dataLog->VAT_DESC);
-        $dataLogBean->setNetAmount($dataLog->NET_AMOUNT_DESC);
-        $dataLogBean->setDate($dataLog->DATE_DESC);
-        $dataLogBean->setBrokerId($dataLog->BROKER_ID_DESC);
-        $dataLogBean->setMapVol($dataLog->MAP_VOL_DESC);
-
-        return $dataLogBean;
+        if ($dataLog->ID_DESC !== null) {
+            $dataLogBean = new DataLogBean();
+            $dataLogBean->setId($dataLog->ID_DESC);
+            $dataLogBean->setSideId($dataLog->SIDE_ID_DESC);
+            $dataLogBean->setSideCode($dataLog->SIDE_CODE_DESC);
+            $dataLogBean->setSideName($dataLog->SIDE_NAME_DESC);
+            $dataLogBean->setSymbolId($dataLog->SYMBOL_ID_DESC);
+            $dataLogBean->setVolume($dataLog->VOLUME_DESC);
+            $dataLogBean->setPrice($dataLog->PRICE_DESC);
+            $dataLogBean->setAmount($dataLog->AMOUNT_DESC);
+            $dataLogBean->setVat($dataLog->VAT_DESC);
+            $dataLogBean->setNetAmount($dataLog->NET_AMOUNT_DESC);
+            $dataLogBean->setDate($dataLog->DATE_DESC);
+            $dataLogBean->setBrokerId($dataLog->BROKER_ID_DESC);
+            $dataLogBean->setMapVol($dataLog->MAP_VOL_DESC);
+            return $dataLogBean;
+        }
+        return NULL;
     }
 
 }

@@ -17,6 +17,7 @@ class DataLogBean {
     public $date;
     public $brokerId;
     public $mapVol;
+    public $mapAvg;
     public $isDw;
     public $createdAt;
     public $createdBy;
@@ -86,6 +87,10 @@ class DataLogBean {
         return $this->mapVol;
     }
 
+    public function getMapAvg() {
+        $this->mapAvg;
+    }
+    
     public function getIsDw() {
         return $this->isDw;
     }
@@ -166,6 +171,10 @@ class DataLogBean {
         $this->mapVol = $mapVol;
     }
 
+    public function setMapAvg($mapAvg) {
+        $this->mapAvg = $mapAvg;
+    }
+    
     public function setIsDw($isDw) {
         $this->isDw = $isDw;
     }
@@ -202,6 +211,23 @@ class DataLogBean {
         array_push($this->logMap, $logMap);
     }
 
-
+//    function getDataToInsert() {
+//        return array('ID'
+//            , 'SIDE_ID'
+//            , 'SYMBOL_ID'
+//            , 'VOLUME'
+//            , 'PRICE'
+//            , 'AMOUNT'
+//            , 'VAT'
+//            , 'at_pay'
+//            , 'NET_AMOUNT'
+//            , 'DATE'
+//            , 'BROKER_ID'
+//            , 'CREATED_AT'
+//            , 'CREATED_BY'
+//            , 'UPDATED_AT'
+//            , 'UPDATED_BY'
+//            , 'USER_ID');
+//    }
 
 }
