@@ -85,12 +85,8 @@ class MapDataLogsService extends Controller {
                     }
                     
                     if($sellSideTemp !== NULL){
-                        
-//                        \array_push($idIsUse, $idIsUse, $sellSideTemp->getId());
-
                         $this->saveDataToDB($idIsUse, $buySide, array($sellSide));
                         break;
-
                     } else {
                         
                         if(!empty($plans)){
