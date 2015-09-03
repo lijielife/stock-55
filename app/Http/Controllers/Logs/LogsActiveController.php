@@ -66,6 +66,7 @@ class LogsActiveController extends Controller {
 //            AND dl.USER_ID = ?
 //            ORDER BY BROKER, SYMBOL, SIDE desc, dl.date', [$this->USER_ID]);
         $stocks = array();
+        
         foreach ($dataLogs as $dataLog) {
             $symbol = $dataLog->SYMBOL_SRC;
             $side = $dataLog->SIDE_NAME_SRC;
