@@ -84,11 +84,11 @@
                             <tbody>
                                 @foreach($datas as $data)
                                 <tr class="text-right">
-                                    <td>{{$data->volume}}</td>
-                                    <td>{{$data->price}}</td>
-                                    <td>{{$data->net_amount}}</td>
-                                    <td>{{$data->date}}</td>
-                                    <td>{{$data->broker}}</td>
+                                    <td>{{$data->VOLUME_SRC}}</td>
+                                    <td>{{$data->PRICE_SRC}}</td>
+                                    <td>{{$data->NET_AMOUNT_SRC}}</td>
+                                    <td>{{$data->DATE_SRC}}</td>
+                                    <td>{{$data->BROKER_NAME_SRC}}</td>
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -118,11 +118,11 @@
                             <tbody>
                                 @foreach($datas as $data)
                                 <tr class="text-right">
-                                    <td>{{$data->volume}}</td>
-                                    <td>{{$data->price}}</td>
-                                    <td>{{$data->net_amount}}</td>
-                                    <td>{{$data->date}}</td>
-                                    <td>{{$data->broker}}</td>
+                                    <td>{{$data->VOLUME_SRC}}</td>
+                                    <td>{{$data->PRICE_SRC}}</td>
+                                    <td>{{$data->NET_AMOUNT_SRC}}</td>
+                                    <td>{{$data->DATE_SRC}}</td>
+                                    <td>{{$data->BROKER_NAME_SRC}}</td>
                                 </tr>
                                 @endforeach
                             </tbody>

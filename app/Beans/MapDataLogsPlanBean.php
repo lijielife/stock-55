@@ -15,6 +15,12 @@ class MapDataLogsPlanBean {
             $this->dataLogBeanArr = $mapDataLogsPlanBean->getDataLogBeanArr();
         }
     }
+    
+    
+    function getId() {
+        return md5(serialize($this->dataLogBeanArr));
+    }
+    
     function getAvgPrice() {
         $avgPrice = 0;
         $totalVolume = 0;

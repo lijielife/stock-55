@@ -30,8 +30,8 @@ class LogsImportController extends Controller {
             LEFT JOIN MAS_BROKER mbk ON (dl.BROKER_ID = mbk.ID)
             LEFT JOIN MAS_SIDE ms ON (dl.SIDE_ID = ms.ID)
             LEFT JOIN USERS us ON (dl.USER_ID = us.ID)
-            WHERE dl.UPDATED_AT = (
-                    SELECT MAX(UPDATED_AT) FROM DATA_LOG WHERE UPDATED_AT IS NOT NULL
+            WHERE dl.CREATED_AT = (
+                    SELECT MAX(CREATED_AT) FROM DATA_LOG WHERE UPDATED_AT IS NOT NULL
             ) 
             AND dl.USER_ID = ?
             ORDER BY SYMBOL, BROKER, VOLUME', [$this->USER_ID]);
