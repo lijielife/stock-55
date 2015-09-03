@@ -1,52 +1,69 @@
-<?php namespace App\Beans; // การกำหนดที่อยู่ของ Bean
+<?php
+
+namespace App\Beans; // การกำหนดที่อยู่ของ Bean
 
 class LogMapBean {
+
+    public $id;
+    public $mapSrc;
+    public $mapDesc;
+    public $mapVol;
+    private $dataLogSrc;
+    private $dataLogDesc;
+
+    function __construct($logMapBean = null) {
+        if($logMapBean !== null){
+            foreach ($logMapBean as $key => $value) {
+                $this->$key = $value;
+            }
+        }
+    }
     
-  private $id;
-  private $map_src;
-  private $map_desc;
-  private $map_vol;
-  private $dataLogDesc;
-  
-  function getId() {
-      return $this->id;
-  }
+    function getId() {
+        return $this->id;
+    }
+    function setId($id) {
+        $this->id = $id;
+    }
+    public function getMapSrc() {
+        return $this->mapSrc;
+    }
 
-  function getMap_src() {
-      return $this->map_src;
-  }
+    public function getMapDesc() {
+        return $this->mapDesc;
+    }
 
-  function getMap_desc() {
-      return $this->map_desc;
-  }
+    public function getMapVol() {
+        return $this->mapVol;
+    }
 
-  function getMap_vol() {
-      return $this->map_vol;
-  }
+    public function setMapSrc($mapSrc) {
+        $this->mapSrc = $mapSrc;
+    }
 
-  function setId($id) {
-      $this->id = $id;
-  }
+    public function setMapDesc($mapDesc) {
+        $this->mapDesc = $mapDesc;
+    }
 
-  function setMap_src($map_src) {
-      $this->map_src = $map_src;
-  }
+    public function setMapVol($mapVol) {
+        $this->mapVol = $mapVol;
+    }
 
-  function setMap_desc($map_desc) {
-      $this->map_desc = $map_desc;
-  }
+    
+    function getDataLogSrc() {
+        return $this->dataLogSrc;
+    }
 
-  function setMap_vol($map_vol) {
-      $this->map_vol = $map_vol;
-  }
+    function setDataLogSrc($dataLogSrc) {
+        $this->dataLogSrc = $dataLogSrc;
+    }
 
-  function getDataLogDesc() {
-      return $this->dataLogDesc;
-  }
+    function getDataLogDesc() {
+        return $this->dataLogDesc;
+    }
 
-  function setDataLogDesc($dataLogDesc) {
-      $this->dataLogDesc = $dataLogDesc;
-  }
-
+    function setDataLogDesc($dataLogDesc) {
+        $this->dataLogDesc = $dataLogDesc;
+    }
 
 }

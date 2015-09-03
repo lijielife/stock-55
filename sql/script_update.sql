@@ -16,3 +16,6 @@ ALTER TABLE `mas_symbol` ADD `IS_W` BOOLEAN NOT NULL AFTER `IS_USE`;
 -- 29/08/58
 ALTER TABLE `super_stock_db`.`users` 
 ADD UNIQUE INDEX `username_UNIQUE` (`username` ASC)  COMMENT '';
+
+-- 02/09/58
+ALTER TABLE `data_log` ADD `MAP_VOL` INT(11) NOT NULL DEFAULT '0' AFTER `BROKER_ID`;

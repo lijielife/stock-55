@@ -1,167 +1,207 @@
-<?php namespace App\Beans; // การกำหนดที่อยู่ของ Bean
+<?php
+
+namespace App\Beans; // การกำหนดที่อยู่ของ Bean
 
 class DataLogBean {
 
-  private $id;
-  private $side_id;
-  private $symbol_id;
-  private $volume;
-  private $price;
-  private $amount;
-  private $vat;
-  private $net_amount;
-  private $date;
-  private $broker_id;
-  private $is_dw;
-  private $created_at;
-  private $created_by;
-  private $updated_at;
-  private $updated_by;
-  private $user_id; 
-  private $logMap = array();
+    public $id;
+    public $sideId;
+    public $sideCode;
+    public $sideName;
+    public $symbolId;
+    public $volume;
+    public $price;
+    public $amount;
+    public $vat;
+    public $netAmount;
+    public $date;
+    public $brokerId;
+    public $mapVol;
+    public $isDw;
+    public $createdAt;
+    public $createdBy;
+    public $updatedAt;
+    public $updatedBy;
+    public $userId;
+    public $logMap = array();
 
-  function getId() {
-      return $this->id;
-  }
+    
+    function __construct($dataLogBean = null) {
+        if($dataLogBean !== null){
+            foreach ($dataLogBean as $key => $value) {
+                $this->$key = $value;
+            }
+        }
+    }
+    
+    public function getId() {
+        return $this->id;
+    }
 
-  function getSide_id() {
-      return $this->side_id;
-  }
+    public function getSideId() {
+        return $this->sideId;
+    }
 
-  function getSymbol_id() {
-      return $this->symbol_id;
-  }
+    public function getSideCode() {
+        return $this->sideCode;
+    }
 
-  function getVolume() {
-      return $this->volume;
-  }
+    public function getSideName() {
+        return $this->sideName;
+    }
 
-  function getPrice() {
-      return $this->price;
-  }
+    public function getSymbolId() {
+        return $this->symbolId;
+    }
 
-  function getAmount() {
-      return $this->amount;
-  }
+    public function getVolume() {
+        return $this->volume;
+    }
 
-  function getVat() {
-      return $this->vat;
-  }
+    public function getPrice() {
+        return $this->price;
+    }
 
-  function getNet_amount() {
-      return $this->net_amount;
-  }
+    public function getAmount() {
+        return $this->amount;
+    }
 
-  function getDate() {
-      return $this->date;
-  }
+    public function getVat() {
+        return $this->vat;
+    }
 
-  function getBroker_id() {
-      return $this->broker_id;
-  }
+    public function getNetAmount() {
+        return $this->netAmount;
+    }
 
-  function getIs_dw() {
-      return $this->is_dw;
-  }
+    public function getDate() {
+        return $this->date;
+    }
 
-  function getCreated_at() {
-      return $this->created_at;
-  }
+    public function getBrokerId() {
+        return $this->brokerId;
+    }
 
-  function getCreated_by() {
-      return $this->created_by;
-  }
+    public function getMapVol() {
+        return $this->mapVol;
+    }
 
-  function getUpdated_at() {
-      return $this->updated_at;
-  }
+    public function getIsDw() {
+        return $this->isDw;
+    }
 
-  function getUpdated_by() {
-      return $this->updated_by;
-  }
+    public function getCreatedAt() {
+        return $this->createdAt;
+    }
 
-  function getUser_id() {
-      return $this->user_id;
-  }
+    public function getCreatedBy() {
+        return $this->createdBy;
+    }
 
-  function setId($id) {
-      $this->id = $id;
-  }
+    public function getUpdatedAt() {
+        return $this->updatedAt;
+    }
 
-  function setSide_id($side_id) {
-      $this->side_id = $side_id;
-  }
+    public function getUpdatedBy() {
+        return $this->updatedBy;
+    }
 
-  function setSymbol_id($symbol_id) {
-      $this->symbol_id = $symbol_id;
-  }
+    public function getUserId() {
+        return $this->userId;
+    }
 
-  function setVolume($volume) {
-      $this->volume = $volume;
-  }
+    public function getLogMap() {
+        return $this->logMap;
+    }
 
-  function setPrice($price) {
-      $this->price = $price;
-  }
+    public function setId($id) {
+        $this->id = $id;
+    }
 
-  function setAmount($amount) {
-      $this->amount = $amount;
-  }
+    public function setSideId($sideId) {
+        $this->sideId = $sideId;
+    }
 
-  function setVat($vat) {
-      $this->vat = $vat;
-  }
+    public function setSideCode($sideCode) {
+        $this->sideCode = $sideCode;
+    }
 
-  function setNet_amount($net_amount) {
-      $this->net_amount = $net_amount;
-  }
+    public function setSideName($sideName) {
+        $this->sideName = $sideName;
+    }
 
-  function setDate($date) {
-      $this->date = $date;
-  }
+    public function setSymbolId($symbolId) {
+        $this->symbolId = $symbolId;
+    }
 
-  function setBroker_id($broker_id) {
-      $this->broker_id = $broker_id;
-  }
+    public function setVolume($volume) {
+        $this->volume = $volume;
+    }
 
-  function setIs_dw($is_dw) {
-      $this->is_dw = $is_dw;
-  }
+    public function setPrice($price) {
+        $this->price = $price;
+    }
 
-  function setCreated_at($created_at) {
-      $this->created_at = $created_at;
-  }
+    public function setAmount($amount) {
+        $this->amount = $amount;
+    }
 
-  function setCreated_by($created_by) {
-      $this->created_by = $created_by;
-  }
+    public function setVat($vat) {
+        $this->vat = $vat;
+    }
 
-  function setUpdated_at($updated_at) {
-      $this->updated_at = $updated_at;
-  }
+    public function setNetAmount($netAmount) {
+        $this->netAmount = $netAmount;
+    }
 
-  function setUpdated_by($updated_by) {
-      $this->updated_by = $updated_by;
-  }
+    public function setDate($date) {
+        $this->date = $date;
+    }
 
-  function setUser_id($user_id) {
-      $this->user_id = $user_id;
-  }
+    public function setBrokerId($brokerId) {
+        $this->brokerId = $brokerId;
+    }
 
-  function getLogMap() {
-      return $this->logMap;
-  }
+    public function setMapVol($mapVol) {
+        $this->mapVol = $mapVol;
+    }
 
-  function setLogMap($logMap) {
-      $this->logMap = $logMap;
-  }
+    public function setIsDw($isDw) {
+        $this->isDw = $isDw;
+    }
 
-  function pullLogMap($key) {
-      return array_pull($this->logMap, $key);
-  }
+    public function setCreatedAt($createdAt) {
+        $this->createdAt = $createdAt;
+    }
 
-  function pushLogMap($logMap) {
-      array_push($this->logMap, $logMap);
-  }
-  
+    public function setCreatedBy($createdBy) {
+        $this->createdBy = $createdBy;
+    }
+
+    public function setUpdatedAt($updatedAt) {
+        $this->updatedAt = $updatedAt;
+    }
+
+    public function setUpdatedBy($updatedBy) {
+        $this->updatedBy = $updatedBy;
+    }
+
+    public function setUserId($userId) {
+        $this->userId = $userId;
+    }
+
+    public function setLogMap($logMap) {
+        $this->logMap = $logMap;
+    }
+
+    function popLogMap() {
+        return array_pop($this->logMaps);
+    }
+
+    function pushLogMap($logMap) {
+        array_push($this->logMap, $logMap);
+    }
+
+
+
 }
