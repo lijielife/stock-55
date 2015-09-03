@@ -27,7 +27,7 @@ class LogsActiveController extends Controller {
             , da.`PRICE` as PRICE_SRC, da.`AMOUNT` as AMOUNT_SRC, da.`VAT` as VAT_SRC
             , da.`NET_AMOUNT` as NET_AMOUNT_SRC, da.`DATE` as DATE_SRC, da.`BROKER_ID` as BROKER_ID_SRC 
             , mbk.`BROKER_NAME` as BROKER_NAME_SRC 
-            , da.`MAP_VOL` as MAP_VOL_SRC
+            , da.`MAP_VOL` as MAP_VOL_SRC, da.`MAP_AVG` as MAP_AVG_SRC
 
             , ma.`ID`as MAP_ID , ma.`MAP_SRC` , ma.`MAP_DESC` , ma.`MAP_VOL` 
 
@@ -38,10 +38,10 @@ class LogsActiveController extends Controller {
             , dad.`PRICE` as PRICE_DESC, dad.`AMOUNT` as AMOUNT_DESC, dad.`VAT` as VAT_DESC
             , dad.`NET_AMOUNT` as NET_AMOUNT_DESC , dad.`DATE` as DATE_DESC , dad.`BROKER_ID` as BROKER_ID_DESC 
             , mbkd.`BROKER_NAME` as BROKER_NAME_DESC
-            , da.`MAP_VOL` as MAP_VOL_DESC
+            , da.`MAP_VOL` as MAP_VOL_DESC, dad.`MAP_AVG` as MAP_AVG_DESC
 
         FROM super_stock_db.DATA_LOG da
-        LEFT JOIN super_stock_db.LOG_MAP ma on (da.ID = ma.MAP_DESC)
+        LEFT JOIN super_stock_db.LOG_MAP ma on (da.ID = ma.MAP_SRC)
         LEFT JOIN super_stock_db.DATA_LOG dad on (dad.ID = ma.MAP_DESC)
         LEFT JOIN super_stock_db.MAS_SIDE ms on (ms.id = da.SIDE_ID)
         LEFT JOIN super_stock_db.MAS_SIDE msd on (msd.id = dad.SIDE_ID)
@@ -49,7 +49,7 @@ class LogsActiveController extends Controller {
         LEFT JOIN super_stock_db.MAS_SYMBOL msyd on (msyd.id = dad.SYMBOL_ID)
         LEFT JOIN super_stock_db.MAS_BROKER mbk ON (da.SYMBOL_ID = mbk.ID)
         LEFT JOIN super_stock_db.MAS_BROKER mbkd ON (dad.BROKER_ID = mbkd.ID)
-        WHERE da.USER_ID = ? 
+        WHERE da.USER_ID = ? AND da.MAP_VOL = ''
         ORDER BY da.BROKER_ID, da.SYMBOL_ID, da.SIDE_ID desc, da.date
         ", [$this->USER_ID]);
         
