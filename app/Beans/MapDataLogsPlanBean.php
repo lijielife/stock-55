@@ -4,14 +4,14 @@ namespace App\Beans; // การกำหนดที่อยู่ของ B
 
 class MapDataLogsPlanBean {
 
-//    private $avgPrice;
-//    private $totalVolume;
+    private $avgPrice;
+    private $totalVolume;
     private $dataLogBeanArr = array();
     
     function __construct($mapDataLogsPlanBean = null) {
         if($mapDataLogsPlanBean !== null){
-//            $this->avgPrice = $mapDataLogsPlanBean->getAvgPrice();
-//            $this->totalVolume = $mapDataLogsPlanBean->getTotalVolume();
+            $this->avgPrice = $mapDataLogsPlanBean->getAvgPrice();
+            $this->totalVolume = $mapDataLogsPlanBean->getTotalVolume();
             $this->dataLogBeanArr = $mapDataLogsPlanBean->getDataLogBeanArr();
         }
     }
@@ -28,7 +28,8 @@ class MapDataLogsPlanBean {
             $avgPrice += (float)$dataLogBean->getAmount();
             $totalVolume += (int)$dataLogBean->getVolume();
         }
-        return ($totalVolume > 0 ? $avgPrice / $totalVolume : -1);
+        $this->avgPrice = ($totalVolume > 0 ? number_format((float)$avgPrice / $totalVolume, 4, '.', '') : -1);
+        return $this->avgPrice;
     }
 
     function getTotalVolume() {
@@ -36,7 +37,8 @@ class MapDataLogsPlanBean {
         foreach ($this->dataLogBeanArr as $dataLogBean) {
             $totalVolume += (int)$dataLogBean->getVolume();
         }
-        return $totalVolume;
+        $this->totalVolume =  $totalVolume;
+        return $this->totalVolume;
     }
 
     function getDataLogBeanArr() {
