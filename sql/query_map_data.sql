@@ -17,7 +17,6 @@ SELECT
             , dad.`NET_AMOUNT` as NET_AMOUNT_DESC , dad.`DATE` as DATE_DESC , dad.`BROKER_ID` as BROKER_ID_DESC 
             , da.`MAP_VOL` as MAP_VOL_DESC, dad.`MAP_AVG` as MAP_AVG_DESC
 
-
         FROM super_stock_db.data_log da
         LEFT JOIN super_stock_db.log_map ma on (da.ID = ma.MAP_SRC)
         LEFT JOIN super_stock_db.data_log dad on (dad.ID = ma.MAP_DESC)
@@ -25,5 +24,9 @@ SELECT
         LEFT JOIN super_stock_db.mas_side msd on (msd.id = dad.SIDE_ID)
         LEFT JOIN super_stock_db.mas_symbol msy on (msy.id = da.SYMBOL_ID)
         LEFT JOIN super_stock_db.mas_symbol msyd on (msyd.id = dad.SYMBOL_ID)
-        WHERE da.USER_ID = 1 AND da.MAP_VOL = ''
-        ORDER BY da.BROKER_ID, da.SYMBOL_ID, da.SIDE_ID desc, da.date
+        WHERE da.USER_ID = 1 
+            AND (ms.SIDE_CODE <> '003' AND ms.SIDE_CODE IS NOT NULL) 
+            AND (msd.SIDE_CODE <> '003' OR msd.SIDE_CODE IS NULL)
+            AND ma.ID IS NULL
+        ORDER BY da.BROKER_ID, da.symbol_id, da.SIDE_ID, da.price DESC, da.VOLUME DESC
+        

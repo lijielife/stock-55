@@ -96,10 +96,13 @@ Route::group(['prefix'=>'logs','middleware'=>'auth','namespace'=>'Logs'],functio
     
     Route::controller('active', 'LogsActiveController');
     Route::controller('import','LogsImportController');
+    
+
 //    Route::controller('upload','LogsUploadController');
 });
 
 
+Route::post('logs/active', 'Logs\LogsActiveController@getIndex');
 
 //service
 //Route::get('getAllSymbol',function(){
@@ -136,7 +139,19 @@ Route::group(['prefix'=>'service/mapdata','middleware'=>'auth','namespace'=>'Ser
         return $servicess->$name();
     });
 
+
+//    Route::post('{name}', function($name) {
+//        $servicess = new App\Http\Controllers\Service\MapDataLogsService();
+//        return $servicess->$name();
+//    });
+    
 });
 
+//Route::any('foo/bar', 'AuthController@login');
+
+//    Route::any('foo/bar', function()
+//    {
+//        return 'Hello World';
+//    });
 
 

@@ -1,5 +1,8 @@
 
 
+DELETE FROM super_stock_db.log_map
+
+
 DELETE FROM super_stock_db.history WHERE symbol IN (
 
 	SELECT * FROM (
@@ -11,6 +14,11 @@ DELETE FROM super_stock_db.history WHERE symbol IN (
     
 )
 
+
+DELETE FROM super_stock_db.data_log WHERE ID in (1729
+,1816
+,2103
+,2206)
 
 
 DELETE FROM super_stock_db.history WHERE symbol in(

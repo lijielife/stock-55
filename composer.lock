@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "a3d0c6e337b1714039cc0d8437177499",
+    "hash": "c69349910ed38d9d356c1f06376eea66",
     "packages": [
         {
             "name": "classpreloader/classpreloader",
@@ -217,6 +217,52 @@
             "time": "2014-12-20 21:24:13"
         },
         {
+            "name": "illuminate/html",
+            "version": "v5.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/illuminate/html.git",
+                "reference": "3d1009bb8e0f25720c914af5c1f4015dd373c9ef"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/illuminate/html/zipball/3d1009bb8e0f25720c914af5c1f4015dd373c9ef",
+                "reference": "3d1009bb8e0f25720c914af5c1f4015dd373c9ef",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/http": "~5.0",
+                "illuminate/session": "~5.0",
+                "illuminate/support": "~5.0",
+                "php": ">=5.4.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "5.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Illuminate\\Html\\": ""
+                },
+                "files": [
+                    "helpers.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylorotwell@gmail.com"
+                }
+            ],
+            "time": "2015-01-01 16:31:18"
+        },
+        {
             "name": "jakub-onderka/php-console-color",
             "version": "0.1",
             "source": {
@@ -363,16 +409,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v5.1.13",
+            "version": "v5.1.16",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "2226a0abfe3776c5023601e59d496784d1de21fd"
+                "reference": "e34dcc0c57e0f560248aec5128161256ff8bf4e1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/2226a0abfe3776c5023601e59d496784d1de21fd",
-                "reference": "2226a0abfe3776c5023601e59d496784d1de21fd",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/e34dcc0c57e0f560248aec5128161256ff8bf4e1",
+                "reference": "e34dcc0c57e0f560248aec5128161256ff8bf4e1",
                 "shasum": ""
             },
             "require": {
@@ -487,20 +533,20 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2015-09-02 16:18:46"
+            "time": "2015-09-04 12:46:14"
         },
         {
             "name": "league/flysystem",
-            "version": "1.0.11",
+            "version": "1.0.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/flysystem.git",
-                "reference": "c16222fdc02467eaa12cb6d6d0e65527741f6040"
+                "reference": "7323424a9d39c24e597ed3f2144419dfbb52e086"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/c16222fdc02467eaa12cb6d6d0e65527741f6040",
-                "reference": "c16222fdc02467eaa12cb6d6d0e65527741f6040",
+                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/7323424a9d39c24e597ed3f2144419dfbb52e086",
+                "reference": "7323424a9d39c24e597ed3f2144419dfbb52e086",
                 "shasum": ""
             },
             "require": {
@@ -568,7 +614,7 @@
                 "sftp",
                 "storage"
             ],
-            "time": "2015-07-28 20:41:58"
+            "time": "2015-09-05 12:06:41"
         },
         {
             "name": "maatwebsite/excel",

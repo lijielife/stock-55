@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Logs;
 
-//use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Request;
 //use Auth;
 use App\Http\Controllers\Controller;
 //use Illuminate\Support\Facades\Request;
@@ -16,10 +16,13 @@ class LogsActiveController extends Controller {
     }
 
     private function getActiveDataLogs() {
-        
+        $symbolName = Request::input('symbol');
+        $brokerId = Request::input('broker');
+//        $symbol = Request::input('symbol');
+//        $symbol = Request::input('symbol');
         
         $dataLogs = DB::select(
-                        "SELECT 
+        "SELECT 
             da.`ID` as ID_SRC , da.`SIDE_ID` as SIDE_ID_SRC 
             , ms.`SIDE_CODE` as SIDE_CODE_SRC, ms.`SIDE_NAME` as SIDE_NAME_SRC
             , da.`SYMBOL_ID` as SYMBOL_ID_SRC, msy.`SYMBOL` as SYMBOL_SRC
@@ -47,10 +50,21 @@ class LogsActiveController extends Controller {
         LEFT JOIN super_stock_db.MAS_SIDE msd on (msd.id = dad.SIDE_ID)
         LEFT JOIN super_stock_db.MAS_SYMBOL msy on (msy.id = da.SYMBOL_ID)
         LEFT JOIN super_stock_db.MAS_SYMBOL msyd on (msyd.id = dad.SYMBOL_ID)
-        LEFT JOIN super_stock_db.MAS_BROKER mbk ON (da.SYMBOL_ID = mbk.ID)
+        LEFT JOIN super_stock_db.MAS_BROKER mbk ON (da.BROKER_ID = mbk.ID)
         LEFT JOIN super_stock_db.MAS_BROKER mbkd ON (dad.BROKER_ID = mbkd.ID)
-        WHERE da.USER_ID = ? AND da.MAP_VOL = ''
-        ORDER BY da.BROKER_ID, da.SYMBOL_ID, da.SIDE_ID desc, da.date
+        WHERE da.USER_ID = ? 
+            AND (ms.SIDE_CODE <> '003' AND ms.SIDE_CODE IS NOT NULL) 
+            AND (msd.SIDE_CODE <> '003' OR msd.SIDE_CODE IS NULL)
+            AND (
+                    ma.ID IS NULL OR da.ID IN (
+                        SELECT da.ID
+                        FROM data_log da
+                        JOIN log_map lm on (da.ID = lm.MAP_SRC)
+                        GROUP BY da.ID, da.VOLUME
+                        having da.VOLUME <> SUM(lm.MAP_VOL)
+                    )
+                )
+        ORDER BY da.BROKER_ID, da.symbol_id, da.SIDE_ID, da.price DESC, da.VOLUME DESC
         ", [$this->USER_ID]);
         
         
@@ -68,24 +82,31 @@ class LogsActiveController extends Controller {
         $stocks = array();
         
         foreach ($dataLogs as $dataLog) {
+            $brokerIdSrc = $dataLog->BROKER_NAME_SRC;
             $symbol = $dataLog->SYMBOL_SRC;
             $side = $dataLog->SIDE_NAME_SRC;
-            if (array_key_exists($symbol, $stocks)) {
-                $sides = &$stocks[$symbol];
-                $this->checkSide($sides, $side, $dataLog);
+            if(array_key_exists($brokerIdSrc, $stocks)){
+                $symbols = &$stocks[$brokerIdSrc];
+                if (array_key_exists($symbol, $symbols)) {
+                    $sides = &$symbols[$symbol];
+                    $this->checkSide($sides, $side, $dataLog);
+                } else {
+                    $this->getNewChild($symbols, $symbol, $side, $dataLog);
+                }
             } else {
-                $this->getNewChild($stocks, $symbol, $side, $dataLog);
+                $stocks[$brokerIdSrc] = array();
+                $this->getNewChild($stocks[$brokerIdSrc], $symbol, $side, $dataLog);
             }
         }
         return $stocks;
     }
 
-    private function getNewChild(&$stocks, $symbol, $side, $dataLog) {
+    private function getNewChild(&$symbols, $symbol, $side, $dataLog) {
         $sides = array();
         $datas = array();
         array_push($datas, $dataLog);
         $sides[$side] = $datas;
-        $stocks[$symbol] = $sides;
+        $symbols[$symbol] = $sides;
     }
 
     private function getNewSide(&$sides, $side, $dataLog) {

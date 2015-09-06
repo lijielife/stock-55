@@ -61,6 +61,8 @@
     padding: 10px;
 }
 
+
+
 .ui-accordion .ui-accordion-header {
 	display: block;
 	cursor: pointer;
@@ -71,12 +73,62 @@
 	font-size: 100%;
 }
 .ui-accordion .ui-accordion-icons {
-	padding-left: 2.2em;
+	padding-left: 1em;
 }
+
 .ui-accordion .ui-accordion-icons .ui-accordion-icons {
+	padding-left: 1em;
+}
+
+.ui-accordion .ui-accordion-header .ui-accordion-header-icon {
+	position: absolute;
+	left: .5em;
+	top: 50%;
+	margin-top: -8px;
+}
+
+/*sub header*/ 
+/*.ui-accordion .ui-sub-accordion-content {
+    display: block;
+    cursor: pointer;
+    position: relative;
+    margin: 2px 0 0 0;
+    padding: .2em .2em .2em .7em;
+    min-height: 0; 
+    support: IE7
+    font-size: 100%;
+}*/
+.ui-sub-state-default { 
+    background: #E7F3E2; 
+    background-color: #E7F3E2; 
+}
+
+
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
+    background: #D1E0CB; 
+    background-color: #D1E0CB; 
+}
+
+
+.ui-accordion .ui-accordion-sub-header {
+	display: block;
+	cursor: pointer;
+	position: relative;
+	margin: 2px 0 0 0;
+	padding: .2em .2em .2em .7em;
+	min-height: 0; /* support: IE7 */
+	font-size: 100%;
+}
+
+.ui-accordion .ui-accordion-sub-icons {
 	padding-left: 2.2em;
 }
-.ui-accordion .ui-accordion-header .ui-accordion-header-icon {
+
+.ui-accordion .ui-accordion-sub-icons .ui-accordion-sub-icons {
+	padding-left: 2.2em;
+}
+
+.ui-accordion .ui-accordion-sub-header .ui-accordion-sub-header-icon {
 	position: absolute;
 	left: .5em;
 	top: 50%;

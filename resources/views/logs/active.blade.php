@@ -11,7 +11,12 @@
 
 
     <div class="row">
-        <form role="form">
+        <!--<form method="POST" action="http://localhost/stock/public/logs/active" accept-charset="UTF-8">-->
+            <!--<input name="_token" type="hidden" value="UuEwgy6B1xNrKWOEYRl5eW1FWUfAuKu8jlNRGGiO">-->
+        <form role="form" action="{{url('logs/active')}}" method="post" id="formSearch">
+            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="symbol" value="test" id="subSymbol">
+            <input type="hidden" name="broker" value="testb" id="subBroker">
             <fieldset >
                 <div class="row">
                     <div class="form-group col-md-6 col-md-offset-3">
@@ -27,10 +32,10 @@
                                         <span class="caret"></span>
                                     </button>
                                     <ul class="dropdown-menu" id="brokerMenu">
-                                        <li><a href="#" value="0">-</a></li>
+                                        <li><a href="#" value="">All</a></li>
                                     </ul>
                                 </div>
-                                <button class="btn btn-success" type="button" id="searchButton">
+                                <button class="btn btn-success" type="submit" id="searchButton">
                                     <i class="fa fa-search"></i>
                                 </button>
                                 <button type="button" class="btn btn-danger">
@@ -44,8 +49,8 @@
         </form>
     </div>
 
-    
-    
+
+
     <button type="button" class="btn accordion-expand-holder accordion-expand-all" 
             style="position: fixed; top: 55px; right: 15px">
         <i class="glyphicon glyphicon-plus"></i>
@@ -58,91 +63,103 @@
     <div id="accordion" class="ui-accordion ui-widget ui-helper-reset"> 
 
 
+
         @if($stocks)
-        @foreach($stocks as $stock => $sides)
+        @foreach($stocks as $broker => $symbols)
         <h3 class="accordion-header ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-corner-all">
-            {{$stock}}</h3>
+            {{$broker}}</h3>
         <div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom">
 
-            @if($sides)
-            @foreach($sides as $side => $datas)
 
-            @if($side == "ซื้อ")      
-            <div class="col-md-6 col-md-left">
-                <div class="panel panel-primary panel-clear-radius">
-                    <div class="table-responsive">
-                        <table class="table table-striped table-bordered table-hover">
-                            <thead>
-                                <tr class="info">
-                                    <th class="text-center">จำนวน</th>
-                                    <th class="text-center">ราคา</th>
-                                    <th class="text-center">รวม</th>
-                                    <th class="text-center">วันที่</th>
-                                    <th class="text-center">โบรค</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($datas as $data)
-                                <tr class="text-right">
-                                    <td>{{$data->VOLUME_SRC}}</td>
-                                    <td>{{$data->PRICE_SRC}}</td>
-                                    <td>{{$data->NET_AMOUNT_SRC}}</td>
-                                    <td>{{$data->DATE_SRC}}</td>
-                                    <td>{{$data->BROKER_NAME_SRC}}</td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+            @if($symbols)
+            @foreach($symbols as $symbol => $sides)
+            <h3 class="accordion-sub-header ui-accordion-header ui-helper-reset ui-sub-state-default ui-accordion-sub-icons ui-corner-all ui-accordion-sub">
+                {{$symbol}}</h3>
+            <div class="ui-accordion-content ui-helper-reset ui-sub-widget-content ui-corner-bottom ui-accordion-sub">
+
+                @if($sides)
+                @foreach($sides as $side => $datas)
+
+                @if($side == "ซื้อ")      
+                <div class="col-md-6 col-md-left">
+                    <div class="panel panel-primary panel-clear-radius">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered table-hover">
+                                <thead>
+                                    <tr class="info">
+                                        <th class="text-center">จำนวน</th>
+                                        <th class="text-center">ราคา</th>
+                                        <th class="text-center">รวม</th>
+                                        <th class="text-center">วันที่</th>
+                                        <th class="text-center">โบรค</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($datas as $data)
+                                    <tr class="text-right">
+                                        <td>{{$data->VOLUME_SRC}}</td>
+                                        <td>{{$data->PRICE_SRC}}</td>
+                                        <td>{{$data->NET_AMOUNT_SRC}}</td>
+                                        <td>{{$data->DATE_SRC}}</td>
+                                        <td>{{$data->BROKER_NAME_SRC}}</td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.table-responsive -->
                     </div>
-                    <!-- /.table-responsive -->
+                    <!-- /.panel -->
                 </div>
-                <!-- /.panel -->
-            </div>
-            <!-- /.col-md-6 -->
+                <!-- /.col-md-6 -->
 
-            @elseif($side == "ขาย")
+                @elseif($side == "ขาย")
 
-            <div class="col-md-6 col-md-right">
-                <div class="panel panel-red panel-clear-radius">
-                    <div class="table-responsive">
-                        <table class="table table-striped table-bordered table-hover">
-                            <thead>
-                                <tr class="danger">
-                                    <th class="text-center">จำนวน</th>
-                                    <th class="text-center">ราคา</th>
-                                    <th class="text-center">รวม</th>
-                                    <th class="text-center">วันที่</th>
-                                    <th class="text-center">โบรค</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($datas as $data)
-                                <tr class="text-right">
-                                    <td>{{$data->VOLUME_SRC}}</td>
-                                    <td>{{$data->PRICE_SRC}}</td>
-                                    <td>{{$data->NET_AMOUNT_SRC}}</td>
-                                    <td>{{$data->DATE_SRC}}</td>
-                                    <td>{{$data->BROKER_NAME_SRC}}</td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                <div class="col-md-6 col-md-right">
+                    <div class="panel panel-red panel-clear-radius">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered table-hover">
+                                <thead>
+                                    <tr class="danger">
+                                        <th class="text-center">จำนวน</th>
+                                        <th class="text-center">ราคา</th>
+                                        <th class="text-center">รวม</th>
+                                        <th class="text-center">วันที่</th>
+                                        <th class="text-center">โบรค</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($datas as $data)
+                                    <tr class="text-right">
+                                        <td>{{$data->VOLUME_SRC}}</td>
+                                        <td>{{$data->PRICE_SRC}}</td>
+                                        <td>{{$data->NET_AMOUNT_SRC}}</td>
+                                        <td>{{$data->DATE_SRC}}</td>
+                                        <td>{{$data->BROKER_NAME_SRC}}</td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.table-responsive -->
                     </div>
-                    <!-- /.table-responsive -->
+                    <!-- /.panel -->
                 </div>
-                <!-- /.panel -->
-            </div>
-            <!-- /.col-md-6 -->
+                <!-- /.col-md-6 -->
 
-            @endif
+                @endif
+
+                @endforeach
+                @endif
+            </div>
 
             @endforeach
             @endif
+
         </div>
 
         @endforeach
         @endif
-
     </div>
 
 </div>
