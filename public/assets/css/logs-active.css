@@ -7,7 +7,7 @@
     padding: 2px 3px;
 }
 
-.panel-clear-radius{
+/*.panel-clear-radius{
     border-radius: 0px;
 }
 
@@ -23,6 +23,43 @@
 .col-md-right{
     padding-left: 0px;
     padding-right: 0px;
+}*/
+
+table {
+    display: table;
+    border-collapse: separate;
+    border-spacing: 1px;
+    border-color: #ddd;
+}
+
+.table>tbody>tr.price>td, 
+.table>tbody>tr.price>th, 
+.table>tbody>tr>td.price, 
+.table>tfoot>tr.price>td, 
+.table>tfoot>tr.price>th, 
+.table>tfoot>tr>td.price,  
+.table>thead>tr.price>td, 
+.table>thead>tr.price>th, 
+.table>thead>tr>td.price{
+    background-color: #DDDDDD;
+}
+
+.table>tbody>tr>th.price, 
+.table>tfoot>tr>th.price, 
+.table>thead>tr>th.price {
+    background-color: #C7C7C7;
+}
+
+.table>tbody>tr>th.info, 
+.table>tfoot>tr>th.info, 
+.table>thead>tr>th.info {
+    background-color: #9EC6E9;
+}
+
+.table>tbody>tr>th.danger, 
+.table>tfoot>tr>th.danger, 
+.table>thead>tr>th.danger {
+    background-color: #E8A7A7;
 }
 
 .table>tbody>tr>td,
@@ -39,20 +76,20 @@
 }
 
 .ui-accordion .ui-accordion-content {
-    padding: 0px;
+    padding: 0.5em 2em;
     border-top: 0;
     overflow: auto;
 }
 
 .ui-state-default { 
-    background: #E7F3E2; 
-    background-color: #E7F3E2; 
+    background: #D5E7F8; 
+    background-color: #D5E7F8; 
 }
 
 
 .ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
-    background: #D1E0CB; 
-    background-color: #D1E0CB; 
+    background: #7AB1E8; 
+    background-color: #7AB1E8; 
 }
 
 
@@ -104,9 +141,9 @@
 }
 
 
-.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
-    background: #D1E0CB; 
-    background-color: #D1E0CB; 
+.ui-sub-state-active, .ui-widget-content .ui-sub-state-active, .ui-widget-header .ui-sub-state-active {
+    background: #B9E9BA; 
+    background-color: #B9E9BA; 
 }
 
 

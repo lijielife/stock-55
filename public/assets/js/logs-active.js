@@ -102,7 +102,7 @@ $(function() {
 
                     $prev.removeClass();
                     if($isSub){
-                        $prev.addClass("accordion-header ui-accordion-header ui-helper-reset ui-state-default ui-accordion-sub-icons ui-accordion-header-active ui-state-active ui-corner-top ui-accordion-sub"); 
+                        $prev.addClass("accordion-header ui-accordion-header ui-helper-reset ui-state-default ui-accordion-sub-icons ui-accordion-header-active ui-sub-state-active ui-corner-top ui-accordion-sub"); 
                     } else {
                         $prev.addClass("accordion-header ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-accordion-header-active ui-state-active ui-corner-top");   
                     }

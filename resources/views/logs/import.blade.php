@@ -23,7 +23,6 @@
     <!--<div class="panel panel-default">-->
     <div class="panel-body">
         <div class="dataTable_wrapper">
-
             <div class="row">
                 <div class="table-responsive " style="margin-right: 10px;">
                     <table class="table table-striped table-bordered table-hover  table-fixed" style="margin-bottom: 0px;">

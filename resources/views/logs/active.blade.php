@@ -72,36 +72,28 @@
 
 
             @if($symbols)
-            @foreach($symbols as $symbol => $sides)
+            @foreach($symbols as $symbol => $datas)
             <h3 class="accordion-sub-header ui-accordion-header ui-helper-reset ui-sub-state-default ui-accordion-sub-icons ui-corner-all ui-accordion-sub">
                 {{$symbol}}</h3>
             <div class="ui-accordion-content ui-helper-reset ui-sub-widget-content ui-corner-bottom ui-accordion-sub">
 
-                @if($sides)
-                @foreach($sides as $side => $datas)
-
-                @if($side == "ซื้อ")      
-                <div class="col-md-6 col-md-left">
+                <div class="col-md-10 col-md-offset-1 col-md-left">
                     <div class="panel panel-primary panel-clear-radius">
                         <div class="table-responsive">
                             <table class="table table-striped table-bordered table-hover">
                                 <thead>
-                                    <tr class="info">
-                                        <th class="text-center">จำนวน</th>
-                                        <th class="text-center">ราคา</th>
-                                        <th class="text-center">รวม</th>
-                                        <th class="text-center">วันที่</th>
-                                        <th class="text-center">โบรค</th>
+                                    <tr>
+                                        <th class="text-center info">ซื้อ</th>
+                                        <th class="text-center price">ราคา</th>
+                                        <th class="text-center danger">ขาย</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach($datas as $data)
                                     <tr class="text-right">
-                                        <td>{{$data->VOLUME_SRC}}</td>
-                                        <td>{{$data->PRICE_SRC}}</td>
-                                        <td>{{$data->NET_AMOUNT_SRC}}</td>
-                                        <td>{{$data->DATE_SRC}}</td>
-                                        <td>{{$data->BROKER_NAME_SRC}}</td>
+                                        <td class="info">{{($data->VOLUME_BUY == 0 ? '' : $data->VOLUME_BUY)}}</td>
+                                        <td class="text-center price">{{$data->PRICE_SRC}}</td>
+                                        <td class="danger">{{($data->VOLUME_SELL == 0 ? '' : $data->VOLUME_SELL)}}</td>
                                     </tr>
                                     @endforeach
                                 </tbody>
@@ -112,45 +104,6 @@
                     <!-- /.panel -->
                 </div>
                 <!-- /.col-md-6 -->
-
-                @elseif($side == "ขาย")
-
-                <div class="col-md-6 col-md-right">
-                    <div class="panel panel-red panel-clear-radius">
-                        <div class="table-responsive">
-                            <table class="table table-striped table-bordered table-hover">
-                                <thead>
-                                    <tr class="danger">
-                                        <th class="text-center">จำนวน</th>
-                                        <th class="text-center">ราคา</th>
-                                        <th class="text-center">รวม</th>
-                                        <th class="text-center">วันที่</th>
-                                        <th class="text-center">โบรค</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($datas as $data)
-                                    <tr class="text-right">
-                                        <td>{{$data->VOLUME_SRC}}</td>
-                                        <td>{{$data->PRICE_SRC}}</td>
-                                        <td>{{$data->NET_AMOUNT_SRC}}</td>
-                                        <td>{{$data->DATE_SRC}}</td>
-                                        <td>{{$data->BROKER_NAME_SRC}}</td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                        <!-- /.table-responsive -->
-                    </div>
-                    <!-- /.panel -->
-                </div>
-                <!-- /.col-md-6 -->
-
-                @endif
-
-                @endforeach
-                @endif
             </div>
 
             @endforeach
