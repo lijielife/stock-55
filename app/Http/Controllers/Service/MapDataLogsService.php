@@ -9,10 +9,7 @@ use App\Models\LogMap;
 use App\Http\Controllers\Controller;
 //use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\DB;
-//
-//use App\Models\MasSymbol;
-//
-//use App\Models\History;
+use Illuminate\Support\Facades\Request;
 use App\Beans\MapDataLogsGetAllDataBean;
 use App\Beans\DataLogBean;
 use App\Beans\LogMapBean;
@@ -273,6 +270,13 @@ class MapDataLogsService extends Controller {
 
     private function getAllData() {
 
+//        Requ
+        $this->symbol = Request::input('symbol');
+        $this->resolution = Request::input('broker');
+//        $this->from = Request::input('from');
+//        $this->to = Request::input('to');
+        
+        
         $dataLogs = DB::select(
                         "SELECT 
             da.`ID` as ID_SRC , da.`SIDE_ID` as SIDE_ID_SRC 

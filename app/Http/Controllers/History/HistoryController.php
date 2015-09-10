@@ -7,7 +7,7 @@ namespace App\Http\Controllers\History;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\DB;
-use App\Beans\SymbolBean;
+//use App\Beans\SymbolBean;
 
 class HistoryController extends Controller {
 
