@@ -1,7 +1,7 @@
 @extends('admin.layouts.template')
 
 @section('stylesheet')
-<link href="{{asset('assets/css/logs-active.css')}}" rel="stylesheet" type="text/css"/>
+<link href="{{asset('assets/css/logs-profile.css')}}" rel="stylesheet" type="text/css"/>
 @stop
 
 
@@ -11,9 +11,9 @@
 
 
     <div class="row">
-        <!--<form method="POST" action="http://localhost/stock/public/logs/active" accept-charset="UTF-8">-->
+        <!--<form method="POST" action="http://localhost/stock/public/logs/single" accept-charset="UTF-8">-->
             <!--<input name="_token" type="hidden" value="UuEwgy6B1xNrKWOEYRl5eW1FWUfAuKu8jlNRGGiO">-->
-        <form role="form" action="{{url('logs/active')}}" method="post" id="formSearch">
+        <form role="form" action="{{url('logs/single')}}" method="post" id="formSearch">
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
 <!--            <input type="hidden" name="symbol" value="test" id="subSymbol">
             <input type="hidden" name="broker" value="testb" id="subBroker">-->
@@ -37,7 +37,6 @@
                                 </div>-->
                                 <div class="btn-group">
                                     <select class="selected form-control" id="brokerMenu" name="broker">
-                                        <option value="">All</option>
                                         @if($brokers)
                                         @foreach($brokers as $broker)
                                             <option value="{{$broker->ID}}" 
@@ -134,7 +133,7 @@
 
 @section('scripts')
 <script src="{{asset('/assets/bower_components/typeahead/js/bootstrap3-typeahead.js')}}"></script>
-<script src="{{asset('/assets/js/logs-active.js')}}" type="text/javascript"></script>
+<script src="{{asset('/assets/js/logs-profile.js')}}" type="text/javascript"></script>
 
 <script type="text/javascript">
 

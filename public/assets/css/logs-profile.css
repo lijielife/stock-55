@@ -1,0 +1,173 @@
+.panel{
+    margin-bottom: 0px;
+    border-radius: 4px;
+}
+
+.panel-heading{
+    padding: 2px 3px;
+}
+
+/*.panel-clear-radius{
+    border-radius: 0px;
+}
+
+.panel-heading{
+    border-radius: 0px;
+}
+
+.col-md-left{
+    padding-right: 0px;
+    padding-left: 0px;
+}
+
+.col-md-right{
+    padding-left: 0px;
+    padding-right: 0px;
+}*/
+
+table {
+    display: table;
+    border-collapse: separate;
+    border-spacing: 1px;
+    border-color: #ddd;
+}
+
+.table>tbody>tr.price>td, 
+.table>tbody>tr.price>th, 
+.table>tbody>tr>td.price, 
+.table>tfoot>tr.price>td, 
+.table>tfoot>tr.price>th, 
+.table>tfoot>tr>td.price,  
+.table>thead>tr.price>td, 
+.table>thead>tr.price>th, 
+.table>thead>tr>td.price{
+    background-color: #DDDDDD;
+}
+
+.table>tbody>tr>th.price, 
+.table>tfoot>tr>th.price, 
+.table>thead>tr>th.price {
+    background-color: #C7C7C7;
+}
+
+.table>tbody>tr>th.info, 
+.table>tfoot>tr>th.info, 
+.table>thead>tr>th.info {
+    background-color: #9EC6E9;
+}
+
+.table>tbody>tr>th.danger, 
+.table>tfoot>tr>th.danger, 
+.table>thead>tr>th.danger {
+    background-color: #E8A7A7;
+}
+
+.table>tbody>tr>td,
+.table>tbody>tr>th,
+.table>tfoot>tr>td,
+.table>tfoot>tr>th,
+.table>thead>tr>td,
+.table>thead>tr>th
+{
+    padding:4px;
+    line-height:1.42857143;
+    vertical-align:top;
+    border-top:1px solid #ddd
+}
+
+.ui-accordion .ui-accordion-content {
+    padding: 0.5em 2em;
+    border-top: 0;
+    overflow: auto;
+}
+
+.ui-state-default { 
+    background: #D5E7F8; 
+    background-color: #D5E7F8; 
+}
+
+
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
+    background: #7AB1E8; 
+    background-color: #7AB1E8; 
+}
+
+
+.accordion-expand-holder {
+    text-align: center;
+    padding: 10px;
+}
+
+
+
+.ui-accordion .ui-accordion-header {
+	display: block;
+	cursor: pointer;
+	position: relative;
+	margin: 2px 0 0 0;
+	padding: .2em .2em .2em .7em;
+	min-height: 0; /* support: IE7 */
+	font-size: 100%;
+}
+.ui-accordion .ui-accordion-icons {
+	padding-left: 1em;
+}
+
+.ui-accordion .ui-accordion-icons .ui-accordion-icons {
+	padding-left: 1em;
+}
+
+.ui-accordion .ui-accordion-header .ui-accordion-header-icon {
+	position: absolute;
+	left: .5em;
+	top: 50%;
+	margin-top: -8px;
+}
+
+/*sub header*/ 
+/*.ui-accordion .ui-sub-accordion-content {
+    display: block;
+    cursor: pointer;
+    position: relative;
+    margin: 2px 0 0 0;
+    padding: .2em .2em .2em .7em;
+    min-height: 0; 
+    support: IE7
+    font-size: 100%;
+}*/
+.ui-sub-state-default { 
+    background: #E7F3E2; 
+    background-color: #E7F3E2; 
+}
+
+
+.ui-sub-state-active, .ui-widget-content .ui-sub-state-active, .ui-widget-header .ui-sub-state-active {
+    background: #B9E9BA; 
+    background-color: #B9E9BA; 
+}
+
+
+.ui-accordion .ui-accordion-sub-header {
+	display: block;
+	cursor: pointer;
+	position: relative;
+	margin: 2px 0 0 0;
+	padding: .2em .2em .2em .7em;
+	min-height: 0; /* support: IE7 */
+	font-size: 100%;
+}
+
+.ui-accordion .ui-accordion-sub-icons {
+	padding-left: 2.2em;
+}
+
+.ui-accordion .ui-accordion-sub-icons .ui-accordion-sub-icons {
+	padding-left: 2.2em;
+}
+
+.ui-accordion .ui-accordion-sub-header .ui-accordion-sub-header-icon {
+	position: absolute;
+	left: .5em;
+	top: 50%;
+	margin-top: -8px;
+}

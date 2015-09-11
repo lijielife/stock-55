@@ -84,6 +84,11 @@
                     </a>
                 </li>
 
+                <li>
+                    <a href="<?php echo URL::to('logs/profile') ?>">
+                        <i class="fa fa-list"></i> Profile
+                    </a>
+                </li>
                 <!--                <li>
                                     <a href="<?php echo URL::to('admin/blank') ?>">Blank Page</a>
                                 </li>

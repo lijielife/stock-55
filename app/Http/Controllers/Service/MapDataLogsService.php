@@ -278,7 +278,7 @@ class MapDataLogsService extends Controller {
         
         
         $dataLogs = DB::select(
-                        "SELECT 
+        "SELECT 
             da.`ID` as ID_SRC , da.`SIDE_ID` as SIDE_ID_SRC 
             , ms.`SIDE_CODE` as SIDE_CODE_SRC, ms.`SIDE_NAME` as SIDE_NAME_SRC
             , da.`SYMBOL_ID` as SYMBOL_ID_SRC, msy.`SYMBOL` as SYMBOL_SRC

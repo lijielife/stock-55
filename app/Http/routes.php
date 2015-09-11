@@ -96,6 +96,7 @@ Route::group(['prefix'=>'logs','middleware'=>'auth','namespace'=>'Logs'],functio
     
     Route::controller('active', 'LogsActiveController');
     Route::controller('import','LogsImportController');
+    Route::controller('profile','LogsProfileController');
     
 
 //    Route::controller('upload','LogsUploadController');
@@ -122,7 +123,7 @@ Route::post('logs/active', 'Logs\LogsActiveController@getIndex');
 
 
 
-Route::group(['prefix'=>'service/single','middleware'=>'auth','namespace'=>'Service'],function($names, $name1 = null, $name2 = null){
+Route::group(['prefix'=>'service/single','middleware'=>'auth','namespace'=>'Service'],function(){
     
     Route::get('{name}', function($name) {
         $servicess = new App\Http\Controllers\Service\SingleStockService();
@@ -132,7 +133,7 @@ Route::group(['prefix'=>'service/single','middleware'=>'auth','namespace'=>'Serv
 });
 
 
-Route::group(['prefix'=>'service/mapdata','middleware'=>'auth','namespace'=>'Service'],function($names, $name1 = null, $name2 = null){
+Route::group(['prefix'=>'service/mapdata','middleware'=>'auth','namespace'=>'Service'],function(){
     
     Route::get('{name}', function($name) {
         $servicess = new App\Http\Controllers\Service\MapDataLogsService();

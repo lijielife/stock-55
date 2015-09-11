@@ -9,16 +9,15 @@ use App;
 //use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\DB;
 
-class LogsActiveController extends Controller {
+class LogsProfileController extends Controller {
 
     public function getIndex() {
-        
         $symbolName = Request::input('symbol');
         $brokerId = Request::input('broker');
         
         $stocks = $this->getActiveDataLogs();
         $brokerAll = json_decode(App::make('App\Http\Controllers\Service\SingleStockService')->getAllBroker());
-        return view('logs.active', 
+        return view('logs.profile', 
                     [
                         'stocks' => $stocks, 
                         'brokers' => $brokerAll,
@@ -29,14 +28,12 @@ class LogsActiveController extends Controller {
     }
 
     private function getActiveDataLogs() {
-        $symbolName = Request::input('symbol');
+        $symbolNameIn = Request::input('symbol');
         $brokerIdIn = Request::input('broker');
         
         $brokerId = ($brokerIdIn === ''? null : $brokerIdIn);
-//        $symbol = Request::input('symbol');
-//        $symbol = Request::input('symbol');
-        
-//         AND da.BROKER_ID = 2 AND da.SYMBOL_ID = 76
+        $symbolName = ($symbolNameIn === ''? null : $symbolNameIn);
+
         $dataLogs = DB::select(
         "SELECT DISTINCT
             da.`BROKER_ID` as BROKER_ID_SRC , mbk.`BROKER_NAME` as BROKER_NAME_SRC 
