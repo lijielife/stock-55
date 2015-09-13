@@ -485,3 +485,8 @@ footer {
     height: 20px;
     background-color: #f5f5f5;
 }
+
+/*.input-group-addon {
+    min-width:300px;
+    text-align:left;
+}*/

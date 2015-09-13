@@ -1,32 +1,6 @@
 @extends('admin.layouts.template')
 @section('content')
 
-
-<script src="{{asset('/assets/bower_components/typeahead/js/bootstrap3-typeahead.js')}}"></script>
-<script src="{{asset('/assets/bower_components/typeahead/js/bootstrap3-typeahead.js')}}"></script>
-
-
-<!--<script src="http://code.highcharts.com/stock/highstock.js"></script>
-<script src="http://code.highcharts.com/stock/modules/exporting.js"></script>-->
-
-<script src="http://code.highcharts.com/stock/highstock.js"></script>
-<script src="http://code.highcharts.com/stock/modules/exporting.js"></script>
-
-<script src="{{asset('/assets/dist/js/highcharts-fn.js')}}" type="text/javascript"></script>
-<script src="{{asset('/assets/dist/js/highchart-theme.js')}}" type="text/javascript"></script>
-
-
-<script type="text/javascript">
-var $getAllSymbol = "{{url('service/single/getAllSymbol')}}";
-var $getSingleStock = "{{url('service/single/getSingleStock')}}";
-
-</script>
-
-
-<script src="{{asset('/assets/js/single-stock.js')}}" type="text/javascript"></script>
-
-<!--<script src="{{asset('/assets/bower_components/typeahead/js/jquery.mockjax.js')}}"></script>-->
-<!--<script src="{{asset('/assets/bower_components/typeahead/js/bootstrap-typeahead.js')}}"></script>-->
 <!--<link href="{{asset('/assets/bower_components/typeahead/css/typeaheadjs.css')}}" rel="stylesheet">-->
 
         <!--<script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>-->
@@ -45,7 +19,15 @@ var $getSingleStock = "{{url('service/single/getSingleStock')}}";
                         <input id="symbol" type="text" 
                                class="col-md-12 form-control" placeholder="Symbol..." 
                                autocomplete="off" value="SET"/>
+                        
                         <span class="input-group-btn">
+                            <div class="btn-group">
+                                <select class="selected form-control" id="timeFrame">
+                                    <option value="1">D</option>
+                                    <option value="2">W</option>
+                                    <option value="3">M</option>
+                                </select>
+                            </div>
                             <button class="btn btn-default" type="button" id="searchButton"><i class="fa fa-search"></i>
                             </button>
                         </span>
@@ -82,7 +64,7 @@ var $getSingleStock = "{{url('service/single/getSingleStock')}}";
 
 
 <div class="row">
-    <div id="container" style="height: 700px; min-width: 410px"></div>
+    <div id="container" style="height: 900px; min-width: 410px"></div>
 </div>
 
 
@@ -102,3 +84,38 @@ var $getSingleStock = "{{url('service/single/getSingleStock')}}";
 
 @stop
 
+
+@section('scripts')
+
+
+
+<script src="{{asset('/assets/bower_components/typeahead/js/bootstrap3-typeahead.js')}}"></script>
+<script src="{{asset('/assets/bower_components/typeahead/js/bootstrap3-typeahead.js')}}"></script>
+
+
+<!--<script src="http://code.highcharts.com/stock/highstock.js"></script>
+<script src="http://code.highcharts.com/stock/modules/exporting.js"></script>-->
+
+<!--<script src="http://code.highcharts.com/stock/highstock.js"></script>-->
+<script src="http://code.highcharts.com/stock/modules/exporting.js"></script>
+<!--<script src="https://rawgithub.com/laff/technical-indicators/master/technical-indicators.src.js"></script>-->
+
+<script src="{{asset('/assets/dist/js/highchart-custom.js')}}" type="text/javascript"></script>
+<script src="{{asset('/assets/dist/js/highcharts-fn.js')}}" type="text/javascript"></script>
+<script src="{{asset('/assets/dist/js/highchart-theme.js')}}" type="text/javascript"></script>
+<script src="{{asset('/assets/dist/js/highstock-plugin.js')}}" type="text/javascript"></script>
+
+
+<script type="text/javascript">
+var $getAllSymbol = "{{url('service/single/getAllSymbol')}}";
+var $getSingleStock = "{{url('service/single/getSingleStock')}}";
+
+</script>
+
+
+<script src="{{asset('/assets/js/single-stock.js')}}" type="text/javascript"></script>
+
+<!--<script src="{{asset('/assets/bower_components/typeahead/js/jquery.mockjax.js')}}"></script>-->
+<!--<script src="{{asset('/assets/bower_components/typeahead/js/bootstrap-typeahead.js')}}"></script>-->
+
+@stop
