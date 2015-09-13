@@ -3,10 +3,8 @@
 namespace App\Http\Controllers\Logs;
 
 use Illuminate\Support\Facades\Request;
-//use Auth;
 use App\Http\Controllers\Controller;
 use App;
-//use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\DB;
 
 class LogsProfileController extends Controller {
@@ -15,122 +13,140 @@ class LogsProfileController extends Controller {
         $symbolName = Request::input('symbol');
         $brokerId = Request::input('broker');
         
-        $stocks = $this->getActiveDataLogs();
+        $stocks = $this->getDataLogs();
         $brokerAll = json_decode(App::make('App\Http\Controllers\Service\SingleStockService')->getAllBroker());
         return view('logs.profile', 
                     [
-                        'stocks' => $stocks, 
+                        'stocks' => $this->calData($stocks), 
                         'brokers' => $brokerAll,
                         'symbolName' => $symbolName, 
                         'brokerId' => $brokerId
                     ]
                 );
     }
+    
+    private function calData($stocks){
+        $stocksRet = array();
+        $total = 0;
+        $totalNetAmount = 0;
+        $totalVolume = 0;
+        $avgPrice = 0;
+//        $i = 0;
+        $max = 0;
+        foreach ($stocks as $stock) {
+            
+            $stock->PRICE = number_format($stock->PRICE, 2, '.', '');
+            $stock->NET_AMOUNT = number_format($stock->NET_AMOUNT, 2, '.', '');
+            
+            $sideCode = $stock->SIDE_CODE;
+            $volume = (int)$stock->VOLUME;
+            $price = (float)$stock->PRICE;
+            $netAmount = (float)$stock->NET_AMOUNT;
+            
+            
+            if($sideCode == '001'){
+                $total += $volume;
+                
+                $totalNetAmount += $netAmount;
+                $totalVolume += $volume;
 
-    private function getActiveDataLogs() {
+            } else if($sideCode == '002'){
+                $total -= $volume;
+                
+                $totalNetAmount -= $netAmount;
+                $totalVolume -= $volume;
+            } else if($sideCode == '003'){
+                $totalNetAmount -= $netAmount;
+            }
+            
+            
+            
+            if($totalVolume > 0){
+                $avgPrice = $totalNetAmount / $totalVolume;
+            } else {
+                $avgPrice = 0;
+            }
+            
+            
+            $valueBeforeVat = $price * $total;
+            if($sideCode == '003'){
+                
+                $date = $stock->DATE;
+                $symbol = $stock->SYMBOL;
+                $tableName = $this->getTableName($symbol);
+                $priceInDay = DB::table($tableName)
+                        ->where('TIME', $date)
+                        ->lists('CLOSE')[0];
+                    
+                $valueBeforeVat = $priceInDay * $total;
+                $value = ($valueBeforeVat) - (($valueBeforeVat * 0.001578) + (($valueBeforeVat * 0.001578) * 7 / 100));
+                $result = (($valueBeforeVat) - ($valueBeforeVat * 0.001578) - (($valueBeforeVat * 0.001578) * 7 / 100)) - ($avgPrice * $totalVolume);
+            } else {
+                $value = ($valueBeforeVat) - (($valueBeforeVat * 0.001578) + (($valueBeforeVat * 0.001578) * 7 / 100));
+                $result = (($valueBeforeVat) - ($valueBeforeVat * 0.001578) - (($valueBeforeVat * 0.001578) * 7 / 100)) - ($avgPrice * $totalVolume);
+            }
+            
+            if($value > $max){
+                $max = $value;
+            }
+            $resultPercent = ($result / $max) * 100;
+            
+            $portIndex = ($valueBeforeVat * 100) / ($total * $avgPrice);
+            
+            
+            //เหลือ
+            $stock->TOTAL = number_format($total, 0);
+            //มูลค่าหุ้น
+            $stock->VALUE = number_format($value, 2) ;
+            //ผล
+            $stock->RESULT = number_format($result, 2) ;
+            //%
+            $stock->RESULT_PERCENT = number_format($resultPercent, 2) ;
+            //ทุนคงเหลือ	หุ้นคงเหลือ
+            $stock->TOTAL_NET_AMOUNT = number_format($totalNetAmount, 2) ;
+            //ราคาเฉลี่ย
+            $stock->AVG_PRICE = number_format($avgPrice, 4) ;
+            
+            $stock->PORT_INDEX = number_format($portIndex, 2) ;
+            
+//            if(AND(M4=0,B4="ขาย"), (O4 / MAX(N$4:N)) * 100,(O4 / MAX(N$4:N)) * 100))
+                
+            array_push($stocksRet, $stock);
+//            $stocksRet[count($stocks) - $i++] = $stock;
+        }
+        
+        return array_reverse($stocksRet);
+    }
+
+    private function getDataLogs() {
         $symbolNameIn = Request::input('symbol');
         $brokerIdIn = Request::input('broker');
         
         $brokerId = ($brokerIdIn === ''? null : $brokerIdIn);
-        $symbolName = ($symbolNameIn === ''? null : $symbolNameIn);
+        $symbolName = ($symbolNameIn === '' || $symbolNameIn === null ? '' : $symbolNameIn);
 
         $dataLogs = DB::select(
         "SELECT DISTINCT
-            da.`BROKER_ID` as BROKER_ID_SRC , mbk.`BROKER_NAME` as BROKER_NAME_SRC 
-            , da.`SYMBOL_ID` as SYMBOL_ID_SRC, msy.`SYMBOL` as SYMBOL_SRC
-            , da.`PRICE` as PRICE_SRC
-            ,SUM( CASE WHEN ms.`SIDE_CODE` = '001' THEN da.`VOLUME` - da.`MAP_VOL`
-                ELSE 0
-                END ) as VOLUME_BUY
-            ,SUM( CASE WHEN ms.`SIDE_CODE` = '002' THEN da.`VOLUME` - da.`MAP_VOL`
-                ELSE 0
-                END ) as VOLUME_SELL
-            , SUM( da.`VOLUME` - da.`MAP_VOL` )as VOLUME_ALL
+            da.*
+            , msy.SYMBOL, msd.SIDE_CODE, msd.SIDE_NAME
+            , GROUP_CONCAT(ma.MAP_DESC SEPARATOR ',') as MATCHER
         FROM super_stock_db.DATA_LOG da
         LEFT JOIN super_stock_db.LOG_MAP ma on (da.ID = ma.MAP_SRC)
         LEFT JOIN super_stock_db.DATA_LOG dad on (dad.ID = ma.MAP_DESC)
-        LEFT JOIN super_stock_db.MAS_SIDE ms on (ms.id = da.SIDE_ID)
-        LEFT JOIN super_stock_db.MAS_SIDE msd on (msd.id = dad.SIDE_ID)
+        LEFT JOIN super_stock_db.MAS_SIDE msd on (msd.id = da.SIDE_ID)
         LEFT JOIN super_stock_db.MAS_SYMBOL msy on (msy.id = da.SYMBOL_ID)
         LEFT JOIN super_stock_db.MAS_SYMBOL msyd on (msyd.id = dad.SYMBOL_ID)
         LEFT JOIN super_stock_db.MAS_BROKER mbk ON (da.BROKER_ID = mbk.ID)
         LEFT JOIN super_stock_db.MAS_BROKER mbkd ON (dad.BROKER_ID = mbkd.ID)
         WHERE da.USER_ID = ? 
-            AND (ms.SIDE_CODE <> '003' AND ms.SIDE_CODE IS NOT NULL) 
-            AND (msd.SIDE_CODE <> '003' OR msd.SIDE_CODE IS NULL)
-            AND (
-                    ma.ID IS NULL OR da.ID IN (
-                        SELECT da.ID
-                        FROM data_log da
-                        JOIN log_map lm on (da.ID = lm.MAP_SRC)
-                        GROUP BY da.ID, da.VOLUME
-                        having da.VOLUME <> SUM(lm.MAP_VOL)
-                    )
-                ) 
+
             AND (? IS null OR msy.SYMBOL = ?)
             AND (? IS null OR mbk.ID = ?)
-            
-        GROUP BY da.BROKER_ID, mbk.BROKER_NAME, da.symbol_id, msy.SYMBOL, da.PRICE
-        ORDER BY da.BROKER_ID, da.symbol_id, da.price DESC, da.VOLUME DESC
-        ", [$this->USER_ID, $symbolName, $symbolName, $brokerId, $brokerId]);
-        
-        
-//        $dataLogs = DB::select('SELECT msy.symbol, ms.side_name as side, dl.volume, dl.price, dl.amount, dl.vat, dl.net_amount, dl.date, mbk.broker_name  as broker, us.name
-//            FROM DATA_LOG dl
-//            LEFT JOIN MAS_SYMBOL msy ON (dl.SYMBOL_ID = msy.ID)
-//            LEFT JOIN MAS_BROKER mbk ON (dl.BROKER_ID = mbk.ID)
-//            LEFT JOIN MAS_SIDE ms ON (dl.SIDE_ID = ms.ID)
-//            LEFT JOIN USERS us ON (dl.USER_ID = us.ID)
-//            WHERE dl.CREATED_AT = (
-//                            SELECT MAX(CREATED_AT) FROM DATA_LOG WHERE UPDATED_AT IS NOT NULL
-//            ) 
-//            AND dl.USER_ID = ?
-//            ORDER BY BROKER, SYMBOL, SIDE desc, dl.date', [$this->USER_ID]);
-        $stocks = array();
-        
-        foreach ($dataLogs as $dataLog) {
-            $brokerIdSrc = $dataLog->BROKER_NAME_SRC;
-            $symbol = $dataLog->SYMBOL_SRC;
-            if(array_key_exists($brokerIdSrc, $stocks)){
-                $symbols = &$stocks[$brokerIdSrc];
-                if (array_key_exists($symbol, $symbols)) {
-                    $datas = $symbols[$symbol];
-                    array_push($datas, $dataLog);
-                    $symbols[$symbol] = $datas;
-                } else {
-                    $datas = array();
-                    array_push($datas, $dataLog);
-                    $symbols[$symbol] = $datas;
-                }
-            } else {
-                $stocks[$brokerIdSrc] = array();
-                $datas = array();
-                array_push($datas, $dataLog);
-                $stocks[$brokerIdSrc][$symbol] = $datas;
-            }
-        }
-        return $stocks;
+
+        GROUP BY da.ID
+        ORDER BY da.DATE, da.SIDE_ID"
+        , [$this->USER_ID, $symbolName, $symbolName, $brokerId, $brokerId]);
+        return $dataLogs;
     }
-
-//    private function getNewChild(&$symbols, $symbol, $dataLog) {
-//        $datas = array();
-//        array_push($datas, $dataLog);
-//        $symbols[$symbol] = $datas;
-//    }
-
-//    private function getNewSide(&$sides, $side, $dataLog) {
-//        $datas = array();
-//        array_push($datas, $dataLog);
-//        $sides[$side] = $datas;
-//    }
-//
-//    private function checkSide(&$sides, $side, $dataLog) {
-//        if (array_key_exists($side, $sides)) {
-//            $datas = &$sides[$side];
-//            array_push($datas, $dataLog);
-//        } else {
-//            $this->getNewSide($sides, $side, $dataLog);
-//        }
-//    }
 
 }

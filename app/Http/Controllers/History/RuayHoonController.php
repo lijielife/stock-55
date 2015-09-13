@@ -72,6 +72,9 @@ class RuayHoonController extends HistoryController {
         
         $this->historyInsert($symbolBeans,  'ruayhoon');
 
+        $symbol = str_replace("*BK", "", $symbol);
+        $this->historyInsert($datas, $this->getTableName($symbol), 'ruayhoon');
+
         $respone->data = $symbolBeans;
         $respone->obj = $this;
         $respone->count = count($symbolBeans);

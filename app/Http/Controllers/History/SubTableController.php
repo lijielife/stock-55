@@ -3,13 +3,14 @@
 namespace App\Http\Controllers\History; //กำหนดที่อยู่ ของ Controller ที่เรียกใช้งาน
 
 use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
+//use App\Http\Controllers\Controller;
+use App\Http\Controllers\History\HistoryController;
 
-class SubTableController extends Controller {
+class SubTableController extends HistoryController {
 
     private $origins = array("ruayhoon", "investor");
 
-    private $is_online = false;
+    private $is_online = true;
     
     public function getIndex() {
         
@@ -34,10 +35,10 @@ class SubTableController extends Controller {
                     $tableName = $this->getTableName($masSymbol, $origin);
                     $historys = $this->getHistoryByName($masSymbol, $origin);
 
-                    $historiesInsert = array();
+//                    $historiesInsert = array();
                     foreach ($historys as $history) {
                         $time = $history->TIME;
-                        array_push($historiesInsert, get_object_vars($history));
+//                        array_push($historiesInsert, get_object_vars($history));
 
 
                         if (!in_array($time, $historiesInsertTimeAll)) {
@@ -82,8 +83,8 @@ class SubTableController extends Controller {
                 $this->updateIsNotUse($masSymbol);
             }
         }
-                
-        return view('admin.history.index', ['respone' => $respone]);
+        return view('admin.dashboard.index');
+//        return view('admin.history.index', ['respone' => $respone]);
     }
 
     protected function cleanData() {
@@ -95,23 +96,11 @@ class SubTableController extends Controller {
 
         DB::table('TABLE_NAME')->DELETE();
         DB::table('NO_DATA')->DELETE();
-        DB::update('update MAS_SYMBOL set is_USE = ?', ['1']);
+        DB::update('update MAS_SYMBOL set IS_USE = ?', ['1']);
     }
 
     protected function updateIsNotUse($masSymbol) {
         DB::table('MAS_SYMBOL')->where('SYMBOL', $masSymbol)->update(['IS_USE' => 0]);
-    }
-
-    protected function getTableName($masSymbol, $origin) {
-
-        $prefix = "";
-        if ($origin !== null) {
-            $prefix = ($origin == "ruayhoon" ? "RH" : "IN") . "_";
-        }
-
-        return $prefix .
-                str_replace("-", "", str_replace("&", "", str_replace("*", "", $masSymbol)))
-                . "_HISTORY";
     }
 
     protected function getSymbolIsUse() {
@@ -136,35 +125,36 @@ class SubTableController extends Controller {
 
             DB::statement('drop table IF EXISTS ' . $tableName);
 
+            parent::createTable($tableName, $masSymbol, $origin);
 
-            DB::statement('CREATE TABLE IF NOT EXISTS `' . $tableName . '` (
-                  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
-                  `SYMBOL` varchar(11) NOT NULL,
-                  `RESOLUTION` varchar(2) NOT NULL,
-                  `MILLISEC` bigint(20) NOT NULL,
-                  `TIME` varchar(15) NOT NULL,
-                  `OPEN` decimal(10,2) NOT NULL,
-                  `CLOSE` decimal(10,2) NOT NULL,
-                  `HIGH` decimal(10,2) NOT NULL,
-                  `LOW` decimal(10,2) NOT NULL,
-                  `VOLUME` bigint(20) NOT NULL,
-                  `ORIGIN` varchar(255) NOT NULL,
-                  `UPDATED_AT` date NOT NULL,
-                  `CREATED_AT` date NOT NULL,
-                  PRIMARY KEY (`ID`),
-                  KEY `NAME` (`SYMBOL`,`TIME`)
-                ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2474868 ;');
-
-
-            $is_check = DB::table('TABLE_NAME')->where(["table_name" => $tableName])->get();
-
-            if (!$is_check) {
-                DB::table('TABLE_NAME')->insert(["table_name" => $tableName
-                    , "symbol" => $masSymbol
-                    , "origin" => $origin]);
-            }
-
-
+//            DB::statement('CREATE TABLE IF NOT EXISTS `' . $tableName . '` (
+//                  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
+//                  `SYMBOL` varchar(11) NOT NULL,
+//                  `RESOLUTION` varchar(2) NOT NULL,
+//                  `MILLISEC` bigint(20) NOT NULL,
+//                  `TIME` varchar(15) NOT NULL,
+//                  `OPEN` decimal(10,2) NOT NULL,
+//                  `CLOSE` decimal(10,2) NOT NULL,
+//                  `HIGH` decimal(10,2) NOT NULL,
+//                  `LOW` decimal(10,2) NOT NULL,
+//                  `VOLUME` bigint(20) NOT NULL,
+//                  `ORIGIN` varchar(255) NOT NULL,
+//                  `UPDATED_AT` date NOT NULL,
+//                  `CREATED_AT` date NOT NULL,
+//                  PRIMARY KEY (`ID`),
+//                  KEY `NAME` (`SYMBOL`,`TIME`)
+//                ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2474868 ;');
+//
+//
+//            $is_check = DB::table('TABLE_NAME')->where(["table_name" => $tableName])->get();
+//
+//            if (!$is_check) {
+//                DB::table('TABLE_NAME')->insert(["table_name" => $tableName
+//                    , "symbol" => $masSymbol
+//                    , "origin" => $origin]);
+//            }
+//
+//
             return true;
         }
         return false;

@@ -30,10 +30,13 @@ class GetController extends HistoryController {
 
         $json = json_decode($homepage);
 
-        $respone->data = $this->convertJsonToArray($json);
-        $respone->obj = $this;
-        $respone->count = count($respone->data);
-
+        if ($json) {
+//            if (count($json) > 0) {
+            $respone->data = $this->convertJsonToArray($json);
+            $respone->obj = $this;
+            $respone->count = count($respone->data);
+//            }
+        }
         return $respone;
     }
 
@@ -61,11 +64,15 @@ class GetController extends HistoryController {
                 array_push($datas, $symbolBean);
             }
 
-            $this->historyInsert($datas, 'investor');
+            $this->historyInsert($datas, 'HISTORY', 'investor');
+
+            $symbol = str_replace("*BK", "", $symbol);
+
+            $this->historyInsert($datas, $this->getTableName($symbol), 'investor');
         }
         return $datas;
     }
-    
+
     public function getSymbol() {
         $symbol = parent::getSymbol();
         if (!isset($symbol) || trim($symbol) == "") {
@@ -75,5 +82,5 @@ class GetController extends HistoryController {
         }
         return $symbol;
     }
-    
+
 }

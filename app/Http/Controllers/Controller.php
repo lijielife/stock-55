@@ -6,6 +6,7 @@ use Illuminate\Foundation\Bus\DispatchesCommands;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Session;
+use App\Utils\SystemUtils;
 
 abstract class Controller extends BaseController {
 
@@ -21,5 +22,9 @@ abstract class Controller extends BaseController {
         }
         $this->middleware('admins');
     }
-
+    
+    protected function getTableName($masSymbol, $origin = null) {
+        return SystemUtils::getTableName($masSymbol, $origin);
+    }
+    
 }

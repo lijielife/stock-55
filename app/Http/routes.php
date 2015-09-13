@@ -104,6 +104,7 @@ Route::group(['prefix'=>'logs','middleware'=>'auth','namespace'=>'Logs'],functio
 
 
 Route::post('logs/active', 'Logs\LogsActiveController@getIndex');
+Route::post('logs/profile', 'Logs\LogsProfileController@getIndex');
 
 //service
 //Route::get('getAllSymbol',function(){
@@ -147,6 +148,23 @@ Route::group(['prefix'=>'service/mapdata','middleware'=>'auth','namespace'=>'Ser
 //    });
     
 });
+
+
+
+Route::group(['prefix'=>'service/cleardata','middleware'=>'auth','namespace'=>'Service'],function(){
+    
+    Route::get('{name}', function($name) {
+        $servicess = new App\Http\Controllers\Service\ClearDataService();
+        return $servicess->$name();
+    });
+    
+    
+//Route::get('service/cleardatadup', 'Service\ClearDataService@dataDupicate');
+
+
+});
+
+
 
 //Route::any('foo/bar', 'AuthController@login');
 
