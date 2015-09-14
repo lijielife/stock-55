@@ -97,10 +97,10 @@
 <script src="http://code.highcharts.com/stock/modules/exporting.js"></script>-->
 
 <!--<script src="http://code.highcharts.com/stock/highstock.js"></script>-->
-<script src="http://code.highcharts.com/stock/modules/exporting.js"></script>
 <!--<script src="https://rawgithub.com/laff/technical-indicators/master/technical-indicators.src.js"></script>-->
 
 <script src="{{asset('/assets/dist/js/highchart-custom.js')}}" type="text/javascript"></script>
+<script src="http://code.highcharts.com/stock/modules/exporting.js"></script>
 <script src="{{asset('/assets/dist/js/highcharts-fn.js')}}" type="text/javascript"></script>
 <script src="{{asset('/assets/dist/js/highchart-theme.js')}}" type="text/javascript"></script>
 <script src="{{asset('/assets/dist/js/highstock-plugin.js')}}" type="text/javascript"></script>

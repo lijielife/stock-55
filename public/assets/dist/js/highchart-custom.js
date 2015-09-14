@@ -3329,21 +3329,37 @@
                     for (c = 0; null === m && c < h; )
                         m = a[c],
                                 c++;
+                        
+                    var $xm = X(m);
+                    var $rm = R(m);
+                    if((!$xm && !$rm)){
+                        $xm  = false;
+                    }
+                    
                     if (X(m)) {
                         u = z(k.pointStart, 0);
                         k = z(k.pointInterval, 1);
                         for (c = 0; c < h; c++)
                             l[c] = u, J[c] = a[c], u += k;
                         e.xIncrement = u
-                    } else if (R(m))
+                    } else if (R(m)) {
                         if (q)
                             for (c = 0; c < h; c++)
                                 k = a[c], l[c] = k[0], J[c] = k.slice(1, q + 1);
                         else
                             for (c = 0; c < h; c++)
                                 k = a[c], l[c] = k[0], J[c] = k[1];
-                    else
-                        P(12)
+                    } else if(W(m)){
+                        if (q) {
+                            for (c = 0; c < h; c++)
+                                k = [a[c].x, a[c].y], l[c] = k[0], J[c] = k.slice(1, q + 1);
+                        } else {
+                            for (c = 0; c < h; c++)
+                                k = [a[c].x, a[c].y], l[c] = k[0], J[c] = k[1];
+                        }
+                    } else {
+                        P(12);
+                    }
                 } else
                     for (c = 0; c < h; c++)
                         a[c] !== H && (k = {series: e}, e.pointClass.prototype.applyOptions.apply(k, [a[c]]), e.updateParallelArrays(k, c), u && t(k.name) && (w.names[k.x] = k.name));
