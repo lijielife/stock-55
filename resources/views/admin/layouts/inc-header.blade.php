@@ -89,6 +89,15 @@
                         <i class="fa fa-list"></i> Profile
                     </a>
                 </li>
+                
+                <li>
+                    <a href="<?php echo URL::to('logs/dividend') ?>">
+                        <i class="fa fa-list"></i> Dividend
+                    </a>
+                </li>
+                
+                
+                
                 <!--                <li>
                                     <a href="<?php echo URL::to('admin/blank') ?>">Blank Page</a>
                                 </li>

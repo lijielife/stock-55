@@ -23,7 +23,7 @@ class LoadController extends GetController {
     public function loadData() {
         set_time_limit(0);
 
-//        $this->resetData();
+        $this->resetData();
 
 //        $respone = array();
 

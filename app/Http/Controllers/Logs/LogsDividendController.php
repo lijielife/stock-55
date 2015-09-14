@@ -15,15 +15,21 @@ class LogsDividendController extends Controller {
         
         $stocks = $this->getDataLogs();
         $brokerAll = json_decode(App::make('App\Http\Controllers\Service\SingleStockService')->getAllBroker());
-        return view('logs.profile', 
+        return view('logs.dividend', 
                     [
-                        'stocks' => $this->calData($stocks), 
+                        'stocks' => $this->calData($stocks),
                         'brokers' => $brokerAll,
                         'symbolName' => $symbolName, 
                         'brokerId' => $brokerId
                     ]
                 );
     }
+    
+    
+    private function getData(){
+        return json_encode($this->calData($this->getDataLogs()));
+    }
+    
     
     private function calData($stocks){
         $stocksRet = array();
@@ -38,76 +44,36 @@ class LogsDividendController extends Controller {
             $stock->PRICE = number_format($stock->PRICE, 2, '.', '');
             $stock->NET_AMOUNT = number_format($stock->NET_AMOUNT, 2, '.', '');
             
-            $sideCode = $stock->SIDE_CODE;
             $volume = (int)$stock->VOLUME;
             $price = (float)$stock->PRICE;
             $netAmount = (float)$stock->NET_AMOUNT;
             
             
-            if($sideCode == '001'){
-                $total += $volume;
-                
-                $totalNetAmount += $netAmount;
-                $totalVolume += $volume;
+            
+            $date = $stock->DATE;
+            $symbol = $stock->SYMBOL;
+            $tableName = $this->getTableName($symbol);
+            $priceInDay = DB::table($tableName)
+                    ->where('TIME', $date)
+                    ->lists('CLOSE')[0];
+            $resultPercent = $netAmount / ($priceInDay * $volume) * 100;
 
-            } else if($sideCode == '002'){
-                $total -= $volume;
-                
-                $totalNetAmount -= $netAmount;
-                $totalVolume -= $volume;
-            } else if($sideCode == '003'){
-                $totalNetAmount -= $netAmount;
-            }
-            
-            
-            
-            if($totalVolume > 0){
-                $avgPrice = $totalNetAmount / $totalVolume;
-            } else {
-                $avgPrice = 0;
-            }
-            
-            
-            $valueBeforeVat = $price * $total;
-            if($sideCode == '003'){
-                
-                $date = $stock->DATE;
-                $symbol = $stock->SYMBOL;
-                $tableName = $this->getTableName($symbol);
-                $priceInDay = DB::table($tableName)
-                        ->where('TIME', $date)
-                        ->lists('CLOSE')[0];
-                    
-                $valueBeforeVat = $priceInDay * $total;
-                $value = ($valueBeforeVat) - (($valueBeforeVat * 0.001578) + (($valueBeforeVat * 0.001578) * 7 / 100));
-                $result = (($valueBeforeVat) - ($valueBeforeVat * 0.001578) - (($valueBeforeVat * 0.001578) * 7 / 100)) - ($avgPrice * $totalVolume);
-            } else {
-                $value = ($valueBeforeVat) - (($valueBeforeVat * 0.001578) + (($valueBeforeVat * 0.001578) * 7 / 100));
-                $result = (($valueBeforeVat) - ($valueBeforeVat * 0.001578) - (($valueBeforeVat * 0.001578) * 7 / 100)) - ($avgPrice * $totalVolume);
-            }
-            
-            if($value > $max){
-                $max = $value;
-            }
-            $resultPercent = ($result / $max) * 100;
-            
-            $portIndex = ($valueBeforeVat * 100) / ($total * $avgPrice);
-            
-            
             //เหลือ
-            $stock->TOTAL = number_format($total, 0);
-            //มูลค่าหุ้น
-            $stock->VALUE = number_format($value, 2) ;
-            //ผล
-            $stock->RESULT = number_format($result, 2) ;
+            $stock->TOTAL = number_format($totalNetAmount += $netAmount, 2);
             //%
             $stock->RESULT_PERCENT = number_format($resultPercent, 2) ;
-            //ทุนคงเหลือ	หุ้นคงเหลือ
-            $stock->TOTAL_NET_AMOUNT = number_format($totalNetAmount, 2) ;
-            //ราคาเฉลี่ย
-            $stock->AVG_PRICE = number_format($avgPrice, 4) ;
-            
-            $stock->PORT_INDEX = number_format($portIndex, 2) ;
+//            //มูลค่าหุ้น
+//            $stock->VALUE = number_format($value, 2) ;
+//            //ผล
+//            $stock->RESULT = number_format($result, 2) ;
+//            //%
+//            $stock->RESULT_PERCENT = number_format($resultPercent, 2) ;
+//            //ทุนคงเหลือ	หุ้นคงเหลือ
+//            $stock->TOTAL_NET_AMOUNT = number_format($totalNetAmount, 2) ;
+//            //ราคาเฉลี่ย
+//            $stock->AVG_PRICE = number_format($avgPrice, 4) ;
+//            
+//            $stock->PORT_INDEX = number_format($portIndex, 2) ;
             
 //            if(AND(M4=0,B4="ขาย"), (O4 / MAX(N$4:N)) * 100,(O4 / MAX(N$4:N)) * 100))
                 
@@ -123,26 +89,23 @@ class LogsDividendController extends Controller {
         $brokerIdIn = Request::input('broker');
         
         $brokerId = ($brokerIdIn === ''? null : $brokerIdIn);
-        $symbolName = ($symbolNameIn === '' || $symbolNameIn === null ? '' : $symbolNameIn);
+        $symbolName = ($symbolNameIn === '' || $symbolNameIn === null ? null : $symbolNameIn);
 
         $dataLogs = DB::select(
         "SELECT DISTINCT
-            da.*
-            , msy.SYMBOL, msd.SIDE_CODE, msd.SIDE_NAME
-            , GROUP_CONCAT(ma.MAP_DESC SEPARATOR ',') as MATCHER
+             da.*, msy.SYMBOL, mbk.BROKER_NAME, msd.SIDE_NAME
         FROM super_stock_db.DATA_LOG da
         LEFT JOIN super_stock_db.LOG_MAP ma on (da.ID = ma.MAP_SRC)
         LEFT JOIN super_stock_db.DATA_LOG dad on (dad.ID = ma.MAP_DESC)
         LEFT JOIN super_stock_db.MAS_SIDE msd on (msd.id = da.SIDE_ID)
         LEFT JOIN super_stock_db.MAS_SYMBOL msy on (msy.id = da.SYMBOL_ID)
-        LEFT JOIN super_stock_db.MAS_SYMBOL msyd on (msyd.id = dad.SYMBOL_ID)
         LEFT JOIN super_stock_db.MAS_BROKER mbk ON (da.BROKER_ID = mbk.ID)
-        LEFT JOIN super_stock_db.MAS_BROKER mbkd ON (dad.BROKER_ID = mbkd.ID)
         WHERE da.USER_ID = ? 
 
             AND (? IS null OR msy.SYMBOL = ?)
             AND (? IS null OR mbk.ID = ?)
 
+            AND msd.SIDE_CODE = '003'
         GROUP BY da.ID
         ORDER BY da.DATE, da.SIDE_ID"
         , [$this->USER_ID, $symbolName, $symbolName, $brokerId, $brokerId]);

@@ -103,14 +103,14 @@ initHighCharts = function($id, $data) {
 //        }
 //        
         , {
-                name: '15-day SMA',
+                name: '12-day SMA',
                 linkedTo: 'primary',
                 showInLegend: true,
                 type: 'trendline',
                 algorithm: 'SMA',
                 periods: 12
             }, {
-                name: '40-day SMA',
+                name: '26-day SMA',
                 linkedTo: 'primary',
                 showInLegend: true,
                 type: 'trendline',
@@ -206,7 +206,7 @@ initHighCharts = function($id, $data) {
                     easing: 'swing'
                 }
             },
-            column: {
+            histogram: {
                 states: {
                     hover: {
                         enabled: false,

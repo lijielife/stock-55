@@ -97,7 +97,9 @@ Route::group(['prefix'=>'logs','middleware'=>'auth','namespace'=>'Logs'],functio
     Route::controller('active', 'LogsActiveController');
     Route::controller('import','LogsImportController');
     Route::controller('profile','LogsProfileController');
-    
+    Route::controller('dividend','LogsDividendController', [
+        'getData' => 'user.show',
+    ]);
 
 //    Route::controller('upload','LogsUploadController');
 });
@@ -105,6 +107,7 @@ Route::group(['prefix'=>'logs','middleware'=>'auth','namespace'=>'Logs'],functio
 
 Route::post('logs/active', 'Logs\LogsActiveController@getIndex');
 Route::post('logs/profile', 'Logs\LogsProfileController@getIndex');
+Route::post('logs/dividend', 'Logs\LogsDividendController@getIndex');
 
 //service
 //Route::get('getAllSymbol',function(){
