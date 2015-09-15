@@ -56,7 +56,7 @@
     
     <div class="row">
         
-        <table data-toggle="table" data-url="{{url('logs/dividen/getData')}}">
+        <table data-toggle="table" data-url="{{url('logs/dividend/getData')}}">
              <thead>
              <tr>
                  <th data-field="name">Name</th>

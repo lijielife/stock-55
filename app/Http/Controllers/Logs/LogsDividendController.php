@@ -26,7 +26,7 @@ class LogsDividendController extends Controller {
     }
     
     
-    private function getData(){
+    public function data_josn(){
         return json_encode($this->calData($this->getDataLogs()));
     }
     
