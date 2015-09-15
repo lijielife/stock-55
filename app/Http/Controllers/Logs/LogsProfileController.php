@@ -94,8 +94,9 @@ class LogsProfileController extends Controller {
                 $max = $value;
             }
             $resultPercent = ($result / $max) * 100;
-            
-            $portIndex = ($valueBeforeVat * 100) / ($total * $avgPrice);
+            if(($total * $avgPrice) > 0){
+                $portIndex = ($valueBeforeVat * 100) / ($total * $avgPrice);
+            }
             
             
             //เหลือ

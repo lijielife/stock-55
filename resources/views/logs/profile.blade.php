@@ -73,6 +73,8 @@
                 data-row-style="rowStyle" 
                 data-toolbar="#filter-bar"
                 data-query-params="queryParams"
+                data-single-select="true"
+                data-click-to-select="true"
                 >
             <thead>
              <tr>
