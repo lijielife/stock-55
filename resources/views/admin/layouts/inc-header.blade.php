@@ -92,7 +92,7 @@
                 
                 <li>
                     <a href="<?php echo URL::to('logs/dividend') ?>">
-                        <i class="fa fa-list"></i> Dividend
+                        <i class="fa fa-money"></i> Dividend
                     </a>
                 </li>
                 

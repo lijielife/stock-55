@@ -25,6 +25,10 @@ class LogsProfileController extends Controller {
                 );
     }
     
+    public function data_json(){
+        return json_encode($this->calData($this->getDataLogs()));
+    }
+    
     private function calData($stocks){
         $stocksRet = array();
         $total = 0;
@@ -95,19 +99,19 @@ class LogsProfileController extends Controller {
             
             
             //เหลือ
-            $stock->TOTAL = number_format($total, 0);
+            $stock->TOTAL = $total;
             //มูลค่าหุ้น
-            $stock->VALUE = number_format($value, 2) ;
+            $stock->VALUE = $value;
             //ผล
-            $stock->RESULT = number_format($result, 2) ;
+            $stock->RESULT = $result;
             //%
-            $stock->RESULT_PERCENT = number_format($resultPercent, 2) ;
+            $stock->RESULT_PERCENT = $resultPercent;
             //ทุนคงเหลือ	หุ้นคงเหลือ
-            $stock->TOTAL_NET_AMOUNT = number_format($totalNetAmount, 2) ;
+            $stock->TOTAL_NET_AMOUNT = $totalNetAmount;
             //ราคาเฉลี่ย
-            $stock->AVG_PRICE = number_format($avgPrice, 4) ;
+            $stock->AVG_PRICE = $avgPrice;
             
-            $stock->PORT_INDEX = number_format($portIndex, 2) ;
+            $stock->PORT_INDEX = $portIndex;
             
 //            if(AND(M4=0,B4="ขาย"), (O4 / MAX(N$4:N)) * 100,(O4 / MAX(N$4:N)) * 100))
                 
@@ -128,7 +132,7 @@ class LogsProfileController extends Controller {
         $dataLogs = DB::select(
         "SELECT DISTINCT
             da.*
-            , msy.SYMBOL, msd.SIDE_CODE, msd.SIDE_NAME
+            , msy.SYMBOL, msd.SIDE_CODE, msd.SIDE_NAME, mbk.BROKER_NAME
             , GROUP_CONCAT(ma.MAP_DESC SEPARATOR ',') as MATCHER
         FROM super_stock_db.DATA_LOG da
         LEFT JOIN super_stock_db.LOG_MAP ma on (da.ID = ma.MAP_SRC)

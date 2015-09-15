@@ -1426,6 +1426,10 @@
 
                 style = sprintf('style="%s"', csses.concat(that.header.styles[j]).join('; '));
 
+
+//                value = calculateObjectValue(column,
+//                    calculateObjectValue, [value, item, i], value);
+                    
                 value = calculateObjectValue(column,
                     that.header.formatters[j], [value, item, i], value);
 

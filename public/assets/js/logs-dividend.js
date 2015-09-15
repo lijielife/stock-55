@@ -1,64 +1,97 @@
+var $table;
+
 $(function () {
 
     $.get($getAllSymbol, function (data) {
         $("#symbol").typeahead({source: data});
     }, 'json');
 
+    $("#searchButton").click(function(){
+        $table.bootstrapTable('refresh');
+    });
+         
+    $("#clearButton").click(function(){
+        $("#symbol").val('');
+        $('#brokerMenu').val( $('#brokerMenu').prop('defaultSelected') );
+    });
+                    
+//    $('#hover, #striped, #condensed').click(function () {
+//        var classes = 'table';
+//
+//        if ($('#hover').prop('checked')) {
+//            classes += ' table-hover';
+//        }
+//        if ($('#condensed').prop('checked')) {
+//            classes += ' table-condensed';
+//        }
+//        $('#table-style').bootstrapTable('destroy')
+//                .bootstrapTable({
+//                    classes: classes,
+//                    striped: $('#striped').prop('checked')
+//                });
+//    });
 
-//    $('#wrapper').height($(window).height()).enscroll({
-//        showOnHover: false,
-//        verticalTrackClass: 'track3',
-//        verticalHandleClass: 'handle3',
-//        verticalScrolling: !0, 
-//        horizontalScrolling: !1, 
-//        verticalScrollerSide: "right",
-//        scrollIncrement: 40,
-//        minScrollbarLength: 40,
-//        pollChanges: !0, 
-//        drawCorner: !0,
-//        drawScrollButtons: !1,
-//        clickTrackToScroll: !0,
-//        easingDuration: 500, 
-//        propagateWheelEvent: !0,
-//        horizontalTrackClass: "horizontal-track",
-//        horizontalHandleClass: "horizontal-handle",
-//        scrollUpButtonClass: "scroll-up-btn",
-//        scrollDownButtonClass: "scroll-down-btn",
-//        scrollLeftButtonClass: "scroll-left-btn",
-//        scrollRightButtonClass: "scroll-right-btn",
-//        cornerClass: "scrollbar-corner", zIndex: 1,
-//        addPaddingToPane: !0,
-//        horizontalHandleHTML: '<div class="left"></div><div class="right"></div>',
-//        verticalHandleHTML: '<div class="top"></div><div class="bottom"></div>'
-//    }).width("90%").height($(window).height() - 100);
+//    $('#tbl').bootstrapTable();
+//    $('#filter-bar').bootstrapTableFilter({
+//        connectTo: '#tbl',
+////        onAll: function (name, args) {
+////            var d = new Date();
+////            $('#log').prepend(d.toLocaleString() + ': ' + name + "\n");
+////        },
+////        onSubmit: function (data) {
+////            var data = $('#filter-bar').bootstrapTableFilter('getData');
+////            var d = new Date();
+////            $('#log').prepend(d.toLocaleString() + ': ' + JSON.stringify(data) + "\n");
+////        },
+//        filters:[
+//            {field: 'SYMBOL', label: 'SYMBOL', 
+//                type: 'select',
+//                values: [
+//                    {id: 'BLAND', label: 'BLAND'}
+//                ],
+//            }
+//            ,{field: 'DATE', label: 'Date', type: 'range'}
+//            ,{field: 'DUE_DATE', label: 'Due Date', type: 'range'}
+//        ]
+//    });
 
-    $('#scrollbox3').enscroll({
-        showOnHover: false,
-        verticalTrackClass: 'track3',
-        verticalHandleClass: 'handle3',
-        verticalScrolling: !0, 
-        horizontalScrolling: !1, 
-        verticalScrollerSide: "right",
-        scrollIncrement: 40,
-        minScrollbarLength: 40,
-        pollChanges: !0, 
-        drawCorner: !0,
-        drawScrollButtons: !1,
-        clickTrackToScroll: !0,
-        easingDuration: 500, 
-        propagateWheelEvent: !0,
-        horizontalTrackClass: "horizontal-track",
-        horizontalHandleClass: "horizontal-handle",
-        scrollUpButtonClass: "scroll-up-btn",
-        scrollDownButtonClass: "scroll-down-btn",
-        scrollLeftButtonClass: "scroll-left-btn",
-        scrollRightButtonClass: "scroll-right-btn",
-        cornerClass: "scrollbar-corner", zIndex: 1,
-        addPaddingToPane: !0,
-        horizontalHandleHTML: '<div class="left"></div><div class="right"></div>',
-        verticalHandleHTML: '<div class="top"></div><div class="bottom"></div>'
-    }).width("90%");
-    
+    $table = $('#tbl').bootstrapTable();
+        
 });
 
+function rowStyle(row, index) {
+//    var classes = ['active', 'success', 'info', 'warning', 'danger'];
 
+    var date = new Date(row.DATE).getTime()
+            , dueDate = new Date(row.DUE_DATE).getTime()
+            , diffDate = parseInt((date - dueDate) / (24 * 3600 * 1000));
+
+    return {
+        classes: (diffDate !== 0 ? 'success' : 'active')
+    };
+}
+
+
+function rowAttributes(row, index) {
+//    var classes = ['active', 'success', 'info', 'warning', 'danger'];
+
+    var date = new Date(row.DATE).getTime()
+            , dueDate = new Date(row.DUE_DATE).getTime()
+            , diffDate = parseInt((date - dueDate) / (24 * 3600 * 1000));
+
+    return {
+        classes: (diffDate !== 0 ? 'success' : 'active')
+    };
+}
+
+
+function queryParams(row, index) {
+//    var classes = ['active', 'success', 'info', 'warning', 'danger'];
+    var symbol = $("#symbol").val()
+    , broker = $("#brokerMenu option:selected").val();
+    
+    return {
+        symbol : symbol
+        ,broker : broker
+    };
+}

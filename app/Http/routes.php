@@ -96,19 +96,22 @@ Route::group(['prefix'=>'logs','middleware'=>'auth','namespace'=>'Logs'],functio
     
     Route::controller('active', 'LogsActiveController');
     Route::controller('import','LogsImportController');
-    Route::controller('profile','LogsProfileController');
+//    Route::controller('profile','LogsProfileController');
 //    Route::controller('dividend','LogsDividendController');
 //    [
 //        'getData' => 'getData',
 //    ]);
     
+    Route::group(['prefix' => 'profile'], function()
+    {
+        Route::get('/', 'LogsProfileController@getIndex');
+        Route::get('getData', 'LogsProfileController@data_json');
+    });
+    
     Route::group(['prefix' => 'dividend'], function()
     {
-        Route::controller('/','LogsDividendController');
-//        
-    
-        Route::get('getData', 'LogsDividendController@data_josn');
-//        Route::get('single/stock', 'Charts\SingleStockController@getIndex');
+        Route::get('/', 'LogsDividendController@getIndex');
+        Route::get('getData', 'LogsDividendController@data_json');
     });
 
 //    Route::controller('upload','LogsUploadController');
@@ -116,7 +119,7 @@ Route::group(['prefix'=>'logs','middleware'=>'auth','namespace'=>'Logs'],functio
 
 
 Route::post('logs/active', 'Logs\LogsActiveController@getIndex');
-Route::post('logs/profile', 'Logs\LogsProfileController@getIndex');
+//Route::post('logs/profile', 'Logs\LogsProfileController@getIndex');
 //Route::post('logs/dividend', 'Logs\LogsDividendController@getIndex');
 
 //service
