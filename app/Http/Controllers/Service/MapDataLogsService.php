@@ -19,12 +19,14 @@ class MapDataLogsService extends Controller {
 
     private $buyCode = "001";
     private $sellCode = "002";
-
+    private $percentDiff = 3;
+    private $objIsUse = array();
+    private $idIsUse = array();
+    
     public function autoMap() {
         $mapDataLogsBean = new MapDataLogsGetAllDataBean($this->getAllData());
         $brokers = (array) $mapDataLogsBean->getBrokers();
-        $idIsUse = array();
-
+//        $idIsUse = array();
 
         foreach ($brokers as $broker => $symbols) {
 
@@ -33,30 +35,23 @@ class MapDataLogsService extends Controller {
                     $buySides = $sides["001"];
                     $sellSides = $sides["002"];
 
-
-                    $this->autoMapSell($idIsUse, $buySides, $sellSides, 1.00);
-                    $this->autoMapSell($idIsUse, $sellSides, $buySides, -1.00);
+                    $this->mapData($buySides, $sellSides, 1.00);
+                    $this->mapData($sellSides, $buySides, -1.00);
                 }
             }
         }
         return json_encode(["response" => "success"]);
     }
 
-    function autoMapSell(&$idIsUse, $firstSides, $secondSides, $conf) {
-
-//        foreach ($symbols as $symbol => $sides) {
-//            if (array_key_exists($this->buyCode, $sides) && array_key_exists($this->sellCode, $sides)) {
-//                $buySides = $sides["001"];
-//                $sellSides = $sides["002"];
-
+    function mapData($firstSides, $secondSides, $conf) {
 
         foreach ($firstSides as $firstSide) {
             $firstSide = new DataLogBean($firstSide);
             $firstPrice = (float) $firstSide->getPrice();
-            $firstVolume = (int) $firstSide->getVolume();
+            $firstVolume = (int) $this->getVolume($firstSide);
             $firstId = (int) $firstSide->getId();
 
-            if (in_array($firstId, $idIsUse)) {
+            if (in_array($firstId, $this->idIsUse)) {
                 continue;
             }
 
@@ -64,22 +59,24 @@ class MapDataLogsService extends Controller {
             $plans = array();
             $diffTemp = 0;
             foreach ($secondSides as $id => $secondSide) {
-                if (in_array($secondSide->getId(), $idIsUse)) {
+                if (in_array($secondSide->getId(), $this->idIsUse)) {
                     continue;
                 }
-                $secondVolume = (int) $secondSide->getVolume();
+                $secondVolume = (int) $this->getVolume($secondSide);
                 $secondPrice = (float) $secondSide->getPrice();
                 $diff = ((float) $secondPrice - $firstPrice) * $conf;
-                if ($firstVolume == $secondVolume && ($diff > $diffTemp)) {
+                if ($firstVolume == $secondVolume 
+                        && ($diff > $diffTemp)
+                         && $this->checkPercentDiff($secondPrice, $firstPrice)) 
+                {
                     $secondSideTemp = $secondSide;
                     $diffTemp = $diff;
 //                            break;
                 } else if ($secondVolume < $firstVolume) {
                     foreach ($plans as $key => $plan) {
                         $totalVolume = $plan->getTotalVolume();
-                        $secondTotalVolume = $secondSide->getVolume();
-
-                        if ($totalVolume + $secondTotalVolume <= $firstVolume) {
+//                        $secondTotalVolume = $secondSide->getVolume();
+                        if ($totalVolume + $secondVolume <= $firstVolume) {
                             $plan->addDataLogBeanArr($secondSide);
                         }
                     }
@@ -88,14 +85,14 @@ class MapDataLogsService extends Controller {
             }
 
             if ($secondSideTemp !== NULL) {
-                $this->saveDataToDB($idIsUse, $firstSide, array($secondSideTemp));
+                $this->saveDataToDB($firstSide, array($secondSideTemp));
             } else {
                 if (!empty($plans)) {
                     usort($plans, array($this, "plansCmp"));
 
                     $plan = $this->selectPlan($plans, $firstSide, $conf);
                     if ($plan !== null) {
-                        $this->saveDataToDB($idIsUse, $firstSide, $plan->getDataLogBeanArr());
+                        $this->saveDataToDB($firstSide, $plan->getDataLogBeanArr());
                     }
                 }
             }
@@ -104,66 +101,11 @@ class MapDataLogsService extends Controller {
 //        }
     }
 
-    function autoMapBuy(&$idIsUse, $buySides, $sellSides, $conf) {
-
-//        foreach ($symbols as $symbol => $sides) {
-//            if (array_key_exists($this->buyCode, $sides) && array_key_exists($this->sellCode, $sides)) {
-//                $buySides = $sides["001"];
-//                $sellSides = $sides["002"];
-
-        foreach ($buySides as $buySide) {
-            $buySide = new DataLogBean($buySide);
-            $buyPrice = (float) $buySide->getPrice();
-            $buyVolume = (int) $buySide->getVolume();
-            $buyId = (int) $buySide->getId();
-
-            if (in_array($buyId, $idIsUse)) {
-                continue;
-            }
-
-            $sellSideTemp = NULL;
-            $plans = array();
-            $diffTemp = 0;
-            foreach ($sellSides as $id => $sellSide) {
-                if (in_array($sellSide->getId(), $idIsUse)) {
-                    continue;
-                }
-                $sellVolume = (int) $sellSide->getVolume();
-                $sellPrice = (float) $sellSide->getPrice();
-                $diff = ((float) $sellPrice - $buyPrice) * $conf;
-                if ($buyVolume == $sellVolume && ($diff > $diffTemp)) {
-                    $sellSideTemp = $sellSide;
-                    $diffTemp = $diff;
-//                            break;
-                } else if ($sellVolume < $buyVolume) {
-                    foreach ($plans as $key => $plan) {
-                        $totalVolume = $plan->getTotalVolume();
-                        $sellTotalVolume = $sellSide->getVolume();
-
-                        if ($totalVolume + $sellTotalVolume <= $buyVolume) {
-                            $plan->addDataLogBeanArr($sellSide);
-                        }
-                    }
-                    $this->addPlan($plans, $sellSide);
-                }
-            }
-
-            if ($sellSideTemp !== NULL) {
-                $this->saveDataToDB($idIsUse, $buySide, array($sellSideTemp));
-            } else {
-                if (!empty($plans)) {
-                    usort($plans, array($this, "plansCmp"));
-                    $plan = $this->selectPlan($plans, $buySide, $conf);
-                    if ($plan !== null) {
-                        $this->saveDataToDB($idIsUse, $buySide, $plan->getDataLogBeanArr());
-                    }
-                }
-            }
-        }
-//            }
-//        }
+    function checkPercentDiff($firstPrice, $secondPrice){
+        $percent = abs(($firstPrice - $secondPrice) / ($firstPrice / 100));
+        return ($percent > $this->percentDiff);
     }
-
+    
     function getUniKey($diff, $sellVolume, $id) {
         $diffp = str_pad($diff, 15, "0", STR_PAD_LEFT);
         $sellVolumep = str_pad($sellVolume, 10, "0", STR_PAD_LEFT);
@@ -175,7 +117,7 @@ class MapDataLogsService extends Controller {
         return strcmp($b->getAvgPrice(), $a->getAvgPrice());
     }
 
-    private function selectPlan(&$plans, $buySide, $conf) {
+    private function selectPlan(&$plans, $firstSide, $conf) {
         $planSelect = NULL;
         $diffPriceTemp = 0;
         $diffVolTemp = 0;
@@ -185,21 +127,23 @@ class MapDataLogsService extends Controller {
             $planPrice = (float) $plan->getAvgPrice();
             $planVolume = (int) $plan->getTotalVolume();
 
-            $buyprice = (float) $buySide->getPrice();
-            $buyVolume = (int) $buySide->getVolume();
-            $diff = ((float) $planPrice - $buyprice) * $conf;
+            $firstprice = (float) $firstSide->getPrice();
+            $firstVolume = (int) $this->getVolume($firstSide);
+            $diff = ((float) $planPrice - $firstprice) * $conf;
 
-            if ($planVolume == $buyVolume) {
-                if ($diff > $diffPriceTemp) {
+            if ($planVolume == $firstVolume) {
+                if ($diff > $diffPriceTemp 
+                    && $this->checkPercentDiff($firstprice, $planPrice)) {
                     $diffPriceTemp = $diff;
                     $planSelect = $plan;
-                    $diffVolTemp = $buyVolume;
+                    $diffVolTemp = $firstVolume;
 //                    array_pull($plans, $key);
                     continue;
                 }
             }
 
-            if ($diff > 0) {
+            if ($diff > 0
+                    && $this->checkPercentDiff($firstprice, $planPrice)) {
                 $planCadedate[$this->getUniKey($diff, $planVolume, $plan->getId())] = $plan;
             } else {
                 $diff = 0;
@@ -211,8 +155,9 @@ class MapDataLogsService extends Controller {
             unset($plans[$key]);
             return $planSelect;
         } else {
-            krsort($planCadedate);
+            rsort($planCadedate);
             return array_pop($planCadedate);
+//            return null;
         }
     }
 
@@ -222,14 +167,14 @@ class MapDataLogsService extends Controller {
         array_push($plans, $mapDataLogsPlanBean);
     }
 
-    private function saveDataToDB(&$idIsUse, $dataLogSrcBean, $dataLogDescBeans) {
+    private function saveDataToDB($dataLogSrcBean, $dataLogDescBeans) {
         $srcVolume = 0;
         $srcAmount = 0.0000;
         $srcId = $dataLogSrcBean->getId();
         foreach ($dataLogDescBeans as $dataLogDescBean) {
             $descId = $dataLogDescBean->getId();
             $descAmount = (float) $dataLogDescBean->getAmount();
-            $descVolume = (int) $dataLogDescBean->getVolume();
+            $descVolume = (int) $this->getVolume($dataLogDescBean);
 
             $srcAmount += $descAmount;
             $srcVolume += $descVolume;
@@ -237,9 +182,7 @@ class MapDataLogsService extends Controller {
             $this->insertLogMap($srcId, $descId, $descVolume);
             $this->insertLogMap($descId, $srcId, $descVolume);
 
-            \array_push($idIsUse, $srcId, $descId);
-
-
+            \array_push($this->idIsUse, $descId);
             
             if ($descVolume > 0) {
                 $this->updateDataLog($descId, $descVolume, number_format((float)$descAmount / $descVolume, 4, '.', ''));
@@ -248,6 +191,10 @@ class MapDataLogsService extends Controller {
             }
         }
         if ($srcVolume > 0) {
+            $srcVolumeChk = $dataLogSrcBean->getVolume();
+            if($srcVolume == $srcVolumeChk){
+                \array_push($this->idIsUse, $srcId);
+            }
             $this->updateDataLog($srcId, $srcVolume, number_format((float)$srcAmount / $srcVolume, 4, '.', ''));
         }
     }
@@ -256,8 +203,19 @@ class MapDataLogsService extends Controller {
         DataLog::where("ID", $id)
                 ->update(['MAP_VOL' => $volume
                     , 'MAP_AVG' => $prices]);
+        $this->updateObjIsUse($id, $volume);
     }
 
+    private function getVolume($bean){
+        $id = $bean->getId();
+        $volume = $bean->getVolume();
+        $volumeMap = (array_key_exists($id, $this->objIsUse) ? $this->objIsUse[$id] : 0);
+        return (int) $volume - $volumeMap;
+    }
+    private function updateObjIsUse($id, $volume){
+        $this->objIsUse[$id] = $volume;
+    } 
+    
     private function insertLogMap($srcId, $descId, $descVolume) {
 
         $logMapBean = new LogMapBean();
@@ -270,12 +228,11 @@ class MapDataLogsService extends Controller {
 
     private function getAllData() {
 
-//        Requ
+//        Request
         $this->symbol = Request::input('symbol');
         $this->resolution = Request::input('broker');
 //        $this->from = Request::input('from');
 //        $this->to = Request::input('to');
-        
         
         $dataLogs = DB::select(
         "SELECT 
@@ -307,7 +264,15 @@ class MapDataLogsService extends Controller {
         WHERE da.USER_ID = ? 
             AND (ms.SIDE_CODE <> '003' AND ms.SIDE_CODE IS NOT NULL) 
             AND (msd.SIDE_CODE <> '003' OR msd.SIDE_CODE IS NULL)
-            AND ma.ID IS NULL
+            AND (
+                    ma.ID IS NULL OR da.ID IN (
+                        SELECT da.ID
+                        FROM data_log da
+                        JOIN log_map lm on (da.ID = lm.MAP_SRC)
+                        GROUP BY da.ID, da.VOLUME
+                        having da.VOLUME <> SUM(lm.MAP_VOL)
+                    )
+                ) 
         ORDER BY da.BROKER_ID, da.symbol_id, da.SIDE_ID, da.price DESC, da.VOLUME DESC
         ", [$this->USER_ID]);
 //        AND da.MAP_VOL = '' AND da.SYMBOL_ID = 76
@@ -405,65 +370,4 @@ class MapDataLogsService extends Controller {
         }
         return NULL;
     }
-
-//    function autoMapSell($symbols, &$idIsUse) {
-//
-//        foreach ($symbols as $symbol => $sides) {
-//            if (array_key_exists($this->buyCode, $sides) && array_key_exists($this->sellCode, $sides)) {
-//                $buySides = $sides["001"];
-//                $sellSides = $sides["002"];
-//
-//                foreach ($sellSides as $sellSide) {
-//                    $sellSide = new DataLogBean($sellSide);
-//                    $sellPrice = (float) $sellSide->getPrice();
-//                    $sellVolume = (int) $sellSide->getVolume();
-//                    $sellId = (int) $sellSide->getId();
-//
-//                    if (in_array($sellId, $idIsUse)) {
-//                        continue;
-//                    }
-//
-//                    $buySideTemp = NULL;
-//                    $plans = array();
-//                    $diffTemp = 0;
-//                    foreach ($buySides as $id => $buySide) {
-//                        if (in_array($buySide->getId(), $idIsUse)) {
-//                            continue;
-//                        }
-//                        $buyVolume = (int) $buySide->getVolume();
-//                        $buyPrice = (float) $buySide->getPrice();
-//                        $diff = (float) $buyPrice - $sellPrice;
-//                        if ($sellVolume == $buyVolume && ($diff > $diffTemp)) {
-//                            $buySideTemp = $buySide;
-//                            $diffTemp = $diff;
-////                            break;
-//                        } else if ($buyVolume < $sellVolume) {
-//                            foreach ($plans as $key => $plan) {
-//                                $totalVolume = $plan->getTotalVolume();
-//                                $buyTotalVolume = $buySide->getVolume();
-//
-//                                if ($totalVolume + $buyTotalVolume <= $sellVolume) {
-//                                    $plan->addDataLogBeanArr($buySide);
-//                                }
-//                            }
-//                            $this->addPlan($plans, $buySide);
-//                        }
-//                    }
-//
-//                    if ($buySideTemp !== NULL) {
-//                        $this->saveDataToDB($idIsUse, $sellSide, array($buySideTemp));
-//                    } else {
-//                        if (!empty($plans)) {
-//                            usort($plans, array($this, "plansCmp"));
-//
-//                            $plan = $this->selectPlan($plans, $sellSide);
-//                            if ($plan !== null) {
-//                                $this->saveDataToDB($idIsUse, $sellSide, $plan->getDataLogBeanArr());
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
 }

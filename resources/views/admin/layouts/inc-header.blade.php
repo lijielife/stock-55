@@ -170,17 +170,32 @@
                             </ul>
                         </li>
 
-                        <li class="divider"></li>
+<!--                        <li class="divider"></li>
                         <li>
                             <a href="<?php echo URL::to('backup') ?>">Backup</a>
                         </li>
 
                         <li>
                             <a href="<?php echo URL::to('sub-table') ?>">Create Sub Table</a>
-                        </li>
+                        </li>-->
                     </ul>
                 </li>
 
+                <li class="dropdown dropdown-submenu push-left">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="fa fa-database"></i> Service
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="<?php echo URL::to('service/mapdata/autoMap') ?>">Map Data</a>
+                        </li>
+                        
+                        <li>
+                            <a href="<?php echo URL::to('sub-table') ?>">Create Sub Table</a>
+                        </li>
+                    </ul>
+                </li>
+                
                 <li class="dropdown dropdown-submenu push-left">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <i class="fa fa-users"></i> Users

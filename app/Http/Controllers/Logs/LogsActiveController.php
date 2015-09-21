@@ -11,34 +11,79 @@ use Illuminate\Support\Facades\DB;
 
 class LogsActiveController extends Controller {
 
+    private $objArrKey = "objArr";
+    private $objAvgKey = "objAvg";
+    private $objVolKey = "objVol";
+    private $objVolBuyKey = "objVolBuy";
+    private $objVolSellKey = "objVolSell";
+
     public function getIndex() {
-        
+
         $symbolName = Request::input('symbol');
         $brokerId = Request::input('broker');
-        
-        $stocks = $this->getActiveDataLogs();
+
+        $stocks = $this->calDataStocks($this->getActiveDataLogs());
         $brokerAll = json_decode(App::make('App\Http\Controllers\Service\SingleStockService')->getAllBroker());
-        return view('logs.active', 
-                    [
-                        'stocks' => $stocks, 
-                        'brokers' => $brokerAll,
-                        'symbolName' => $symbolName, 
-                        'brokerId' => $brokerId
-                    ]
-                );
+
+        return view('logs.active', [
+            'stocks' => $stocks,
+            'brokers' => $brokerAll,
+            'symbolName' => $symbolName,
+            'brokerId' => $brokerId,
+            'objArrKey' => $this->objArrKey,
+            'objAvgKey' => $this->objAvgKey,
+            'objVolKey' => $this->objVolKey,
+            'objVolBuyKey' => $this->objVolBuyKey,
+            'objVolSellKey' => $this->objVolSellKey
+                ]
+        );
+    }
+
+    private function calDataStocks($stocks) {
+
+        foreach ($stocks as $broker => &$symbols) {
+            foreach ($symbols as $symbol => &$dataObjs) {
+                $datas = $dataObjs[$this->objArrKey];
+                $sumBuy = 0;
+                $sumSell = 0;
+                $objAvgBuy = 0;
+                $objAvgSell = 0;
+                foreach ($datas as $data) {
+                    $volBuy = $data->VOLUME_BUY;
+                    $volSell = $data->VOLUME_SELL;
+
+                    $sumBuy += (int) $data->VOLUME_BUY;
+                    $sumSell += (int) $data->VOLUME_SELL;
+                    $price = (float) $data->PRICE_SRC;
+
+                    $objAvgBuy += ($volBuy * $price);
+                    $objAvgSell += ($volSell * $price);
+                }
+
+                $objVol = abs($sumBuy - $sumSell);
+                $objAvgBuy /= ($sumBuy == 0 ? 1 : $sumBuy);
+                $objAvgSell /= ($sumSell == 0 ? 1 : $sumSell);
+                $objAvg = ($objAvgBuy - $objAvgSell) / ($objVol == 0 ? 1 : $objVol);
+
+                $dataObjs[$this->objAvgKey] = $objAvg;
+                $dataObjs[$this->objVolKey] = $objVol;
+                $dataObjs[$this->objVolBuyKey] = $sumBuy;
+                $dataObjs[$this->objVolSellKey] = $sumSell;
+            }
+        }
+        return $stocks;
     }
 
     private function getActiveDataLogs() {
         $symbolName = Request::input('symbol');
         $brokerIdIn = Request::input('broker');
-        
-        $brokerId = ($brokerIdIn === ''? null : $brokerIdIn);
+
+        $brokerId = ($brokerIdIn === '' ? null : $brokerIdIn);
 //        $symbol = Request::input('symbol');
 //        $symbol = Request::input('symbol');
-        
 //         AND da.BROKER_ID = 2 AND da.SYMBOL_ID = 76
         $dataLogs = DB::select(
-        "SELECT DISTINCT
+                        "SELECT DISTINCT
             da.`BROKER_ID` as BROKER_ID_SRC , mbk.`BROKER_NAME` as BROKER_NAME_SRC 
             , da.`SYMBOL_ID` as SYMBOL_ID_SRC, msy.`SYMBOL` as SYMBOL_SRC
             , da.`PRICE` as PRICE_SRC
@@ -76,8 +121,8 @@ class LogsActiveController extends Controller {
         GROUP BY da.BROKER_ID, mbk.BROKER_NAME, da.symbol_id, msy.SYMBOL, da.PRICE
         ORDER BY da.BROKER_ID, da.symbol_id, da.price DESC, da.VOLUME DESC
         ", [$this->USER_ID, $symbolName, $symbolName, $brokerId, $brokerId]);
-        
-        
+
+
 //        $dataLogs = DB::select('SELECT msy.symbol, ms.side_name as side, dl.volume, dl.price, dl.amount, dl.vat, dl.net_amount, dl.date, mbk.broker_name  as broker, us.name
 //            FROM DATA_LOG dl
 //            LEFT JOIN MAS_SYMBOL msy ON (dl.SYMBOL_ID = msy.ID)
@@ -90,29 +135,40 @@ class LogsActiveController extends Controller {
 //            AND dl.USER_ID = ?
 //            ORDER BY BROKER, SYMBOL, SIDE desc, dl.date', [$this->USER_ID]);
         $stocks = array();
-        
+
         foreach ($dataLogs as $dataLog) {
             $brokerIdSrc = $dataLog->BROKER_NAME_SRC;
             $symbol = $dataLog->SYMBOL_SRC;
-            if(array_key_exists($brokerIdSrc, $stocks)){
+            if (array_key_exists($brokerIdSrc, $stocks)) {
                 $symbols = &$stocks[$brokerIdSrc];
                 if (array_key_exists($symbol, $symbols)) {
-                    $datas = $symbols[$symbol];
-                    array_push($datas, $dataLog);
-                    $symbols[$symbol] = $datas;
+                    $dataObjs = $symbols[$symbol];
+                    $this->addDataLog($dataObjs, $dataLog);
+//                    array_push($datas, $dataLog);
+                    $symbols[$symbol] = $dataObjs;
                 } else {
-                    $datas = array();
-                    array_push($datas, $dataLog);
-                    $symbols[$symbol] = $datas;
+                    $dataObjs = array();
+                    $this->addDataLog($dataObjs, $dataLog);
+//                    array_push($datas, $dataLog);
+                    $symbols[$symbol] = $dataObjs;
                 }
             } else {
                 $stocks[$brokerIdSrc] = array();
-                $datas = array();
-                array_push($datas, $dataLog);
-                $stocks[$brokerIdSrc][$symbol] = $datas;
+                $dataObjs = array();
+//                array_push($datas, $dataLog);
+                $this->addDataLog($dataObjs, $dataLog);
+                $stocks[$brokerIdSrc][$symbol] = $dataObjs;
             }
         }
         return $stocks;
+    }
+
+    private function addDataLog(&$dataObjs, $dataLog) {
+        if (!array_key_exists($this->objArrKey, $dataObjs)) {
+            $dataObjs[$this->objArrKey] = array();
+        }
+        $datas = &$dataObjs[$this->objArrKey];
+        array_push($datas, $dataLog);
     }
 
 //    private function getNewChild(&$symbols, $symbol, $dataLog) {
@@ -120,7 +176,6 @@ class LogsActiveController extends Controller {
 //        array_push($datas, $dataLog);
 //        $symbols[$symbol] = $datas;
 //    }
-
 //    private function getNewSide(&$sides, $side, $dataLog) {
 //        $datas = array();
 //        array_push($datas, $dataLog);
@@ -135,5 +190,4 @@ class LogsActiveController extends Controller {
 //            $this->getNewSide($sides, $side, $dataLog);
 //        }
 //    }
-
 }

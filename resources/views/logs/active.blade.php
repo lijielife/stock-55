@@ -84,24 +84,24 @@
 
 
             @if($symbols)
-            @foreach($symbols as $symbol => $datas)
+            @foreach($symbols as $symbol => $dataObjs)
             <h3 class="accordion-sub-header ui-accordion-header ui-helper-reset ui-sub-state-default ui-accordion-sub-icons ui-corner-all ui-accordion-sub">
-                {{$symbol}}</h3>
+                {{$symbol}} {{$dataObjs[$objVolKey]}} ({{$dataObjs[$objAvgKey]}})
+            </h3>
             <div class="ui-accordion-content ui-helper-reset ui-sub-widget-content ui-corner-bottom ui-accordion-sub">
-
                 <div class="col-md-10 col-md-offset-1 col-md-left">
                     <div class="panel panel-primary panel-clear-radius">
                         <div class="table-responsive">
                             <table class="table table-striped table-bordered table-hover">
                                 <thead>
                                     <tr>
-                                        <th class="text-center info col-md-5">ซื้อ</th>
+                                        <th class="text-center info col-md-5">ซื้อ {{$dataObjs[$objVolBuyKey]}}</th>
                                         <th class="text-center price col-md-2">ราคา</th>
-                                        <th class="text-center danger col-md-5">ขาย</th>
+                                        <th class="text-center danger col-md-5">ขาย {{$dataObjs[$objVolSellKey]}}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($datas as $data)
+                                    @foreach($dataObjs[$objArrKey] as $data)
                                     <tr class="text-right">
                                         <td class="info">{{($data->VOLUME_BUY == 0 ? '' : $data->VOLUME_BUY)}}</td>
                                         <td class="text-center price">{{$data->PRICE_SRC}}</td>
