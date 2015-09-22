@@ -13,11 +13,11 @@ class LogsProfileController extends Controller {
         $symbolName = Request::input('symbol');
         $brokerId = Request::input('broker');
         
-        $stocks = $this->getDataLogs();
+//        $stocks = $this->getDataLogs();
         $brokerAll = json_decode(App::make('App\Http\Controllers\Service\SingleStockService')->getAllBroker());
         return view('logs.profile', 
                     [
-                        'stocks' => $this->calData($stocks), 
+//                        'stocks' => $this->calData($stocks), 
                         'brokers' => $brokerAll,
                         'symbolName' => $symbolName, 
                         'brokerId' => $brokerId

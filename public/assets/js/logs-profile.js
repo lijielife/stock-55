@@ -64,12 +64,50 @@ $(function () {
         
         $table.bootstrapTable("load", newRows);
         
+        $table.bootstrapTable("uncheckAll");
+        resultText();
     });
     
     
-    $table = $('#tbl').bootstrapTable();
-                
+    $table = $('#tbl').bootstrapTable()
+      .on('check.bs.table', function (e, row) {
+//        resultText('Event: check.bs.table, data: ' + JSON.stringify(row));
+        calSelection();
+    }).on('uncheck.bs.table', function (e, row) {
+//        resultText('Event: uncheck.bs.table, data: ' + JSON.stringify(row));
+        calSelection();
+    }).on('check-all.bs.table', function (e) {
+//        resultText('Event: check-all.bs.table');
+        calSelection();
+    }).on('uncheck-all.bs.table', function (e) {
+//        resultText('Event: uncheck-all.bs.table');
+        calSelection();
+    });
 });
+
+function calSelection(){
+    var $rows = $table.bootstrapTable('getSelections');
+    var $sumAmount = 0, $sumVol = 0,$avg = 0;
+    $.each($rows, function($index, $row){
+//        var $price = $row.PRICE;
+        var $vol = $row.VOLUME;
+        var $side = $row.SIDE_CODE;
+        var $amount = $row.NET_AMOUNT * ($side === '002' ? -1 : 1);
+        
+        $sumAmount += $amount;
+        $sumVol += $vol;
+    });
+    $avg = $sumAmount / $sumVol;
+    
+    $('#events-result').text($sumAmount + " / " + $sumVol + " = " + ($avg).formatMoney(4));
+    
+}
+
+function resultText(string){
+    $('#events-result').text((string ? string : 'Result'));
+}
+    
+    
 
 function cellStyle(value, row, index) {
     var $classSide = (
@@ -78,6 +116,16 @@ function cellStyle(value, row, index) {
                     row.SIDE_CODE == '002'? 'danger' : 'success'
                 )
         );
+    return {
+        classes: $classSide
+    };
+
+}
+
+
+function cellStyleMatcher(value, row, index) {
+    var $classSide = (row.MATCHER !== null ? 'active' : '');
+            
     return {
         classes: $classSide
     };

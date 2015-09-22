@@ -100,19 +100,19 @@
                             <table class="table table-striped table-bordered table-hover">
                                 <thead>
                                     <tr>
-                                        <th class="text-center info col-md-5"> 
+                                        <th class="text-center info col-md-4"> 
                                             <h5>ซื้อ
                                                 <small>({{$dataObjs[$objVolBuyKey]}})</small>
                                             </h5> 
                                         </th>
-                                        <th class="text-center price col-md-2">
+                                        <th class="text-center price col-md-4">
                                             <h5>ราคา
                                                 <small> 
-                                                    ({{number_format($dataObjs[$objAvgKey], 2, '.', '')}})
+                                                    
                                                 </small>
                                             </h5>
                                         </th>
-                                        <th class="text-center danger col-md-5">
+                                        <th class="text-center danger col-md-4">
                                             <h5>ขาย
                                                 <small>({{$dataObjs[$objVolSellKey]}})</small>
                                             </h5>
@@ -123,7 +123,13 @@
                                     @foreach($dataObjs[$objArrKey] as $data)
                                     <tr class="text-right">
                                         <td class="info">{{($data->VOLUME_BUY == 0 ? '' : $data->VOLUME_BUY)}}</td>
-                                        <td class="text-center price">{{$data->PRICE_SRC}}</td>
+                                        <td class="text-center price">
+                                            <h5>
+                                                <span class="small">({{$data->PRICE_SRC - (($data->PRICE_SRC / 100) * 3) }})</span>
+                                                    {{number_format($data->PRICE_SRC, 2, '.', '')}}
+                                                <span class="small">({{$data->PRICE_SRC + (($data->PRICE_SRC / 100) * 3) }})</span>
+                                            </h5>
+                                        </td>
                                         <td class="danger">{{($data->VOLUME_SELL == 0 ? '' : $data->VOLUME_SELL)}}</td>
                                     </tr>
                                     @endforeach

@@ -10,16 +10,16 @@ $(function () {
         showOnHover: false,
         verticalTrackClass: 'track3',
         verticalHandleClass: 'handle3',
-        verticalScrolling: !0, 
-        horizontalScrolling: !1, 
+        verticalScrolling: !0,
+        horizontalScrolling: !1,
         verticalScrollerSide: "right",
         scrollIncrement: 40,
         minScrollbarLength: 40,
-        pollChanges: !0, 
+        pollChanges: !0,
         drawCorner: !0,
         drawScrollButtons: !1,
         clickTrackToScroll: !0,
-        easingDuration: 500, 
+        easingDuration: 500,
         propagateWheelEvent: !0,
         horizontalTrackClass: "horizontal-track",
         horizontalHandleClass: "horizontal-handle",
@@ -32,28 +32,28 @@ $(function () {
         horizontalHandleHTML: '<div class="left"></div><div class="right"></div>',
         verticalHandleHTML: '<div class="top"></div><div class="bottom"></div>'
     }).width("90%");
-    
+
     var tigger = true, tempRows = null;
-    $("#searchButton").click(function(){
+    $("#searchButton").click(function () {
         $table.bootstrapTable('refresh');
         tigger = true;
         tempRows = null;
     });
-         
-    $("#clearButton").click(function(){
+
+    $("#clearButton").click(function () {
         $("#symbol").val('');
-        $('#brokerMenu').val( $('#brokerMenu').prop('defaultSelected') );
+        $('#brokerMenu').val($('#brokerMenu').prop('defaultSelected'));
     });
-    
-    $("#matcherButton").click(function(){
+
+    $("#matcherButton").click(function () {
         var rows = $table.bootstrapTable("getData")
-        , newRows = [];
-        if(tempRows === null){
-            tempRows = rows; 
+                , newRows = [];
+        if (tempRows === null) {
+            tempRows = rows;
         }
-        if(tigger){
-            $.each(tempRows, function(index, row){
-                if(row.MATCHER == null){
+        if (tigger) {
+            $.each(tempRows, function (index, row) {
+                if (row.MATCHER == null) {
                     newRows.push(row);
                 }
             });
@@ -61,23 +61,25 @@ $(function () {
             newRows = tempRows;
         }
         tigger = !tigger;
-        
+
         $table.bootstrapTable("load", newRows);
-        
+
     });
-    
-    
+
+
     $table = $('#tbl').bootstrapTable();
-                
+
+
+
 });
 
 function cellStyle(value, row, index) {
     var $classSide = (
-                row.SIDE_CODE == '001' ? 'info' : 
-                (
-                    row.SIDE_CODE == '002'? 'danger' : 'success'
-                )
-        );
+            row.SIDE_CODE == '001' ? 'info' :
+            (
+                    row.SIDE_CODE == '002' ? 'danger' : 'success'
+                    )
+            );
     return {
         classes: $classSide
     };
@@ -85,16 +87,16 @@ function cellStyle(value, row, index) {
 }
 
 function cellValueStyle(value, row, index) {
-    var $classText = (value > 0 ? 'text-success' :
-            (value = 0 ? 'text-warning' :'text-danger'));
+    var $classText = (row.RESULT > 0 ? 'text-success' :
+            (row.RESULT == 0 ? 'text-warning' : 'text-danger'));
     return {
         classes: $classText
     };
 }
 
 function cellValuePercentStyle(value, row, index) {
-    var $classText = (value > 100 ? 'text-success' :
-            (value == 100 ? 'text-warning' :'text-danger'));
+    var $classText = (row.RESULT > 100 ? 'text-success' :
+            (row.RESULT == 100 ? 'text-warning' : 'text-danger'));
     return {
         classes: $classText
     };
@@ -102,9 +104,9 @@ function cellValuePercentStyle(value, row, index) {
 
 function cellValueAvgStyle(value, row, index, rows) {
     var datas = $table.bootstrapTable("getData");
-    var beforeValue = (datas[index+1] ? datas[index+1] : row).AVG_PRICE;
+    var beforeValue = (datas[index + 1] ? datas[index + 1] : row).AVG_PRICE;
     var $classText = (value > beforeValue ? 'text-danger' :
-            (value == beforeValue ? 'text-warning' :'text-success'));
+            (value == beforeValue ? 'text-warning' : 'text-success'));
     return {
         classes: $classText
     };
@@ -112,20 +114,20 @@ function cellValueAvgStyle(value, row, index, rows) {
 
 function rowStyle(row, index) {
 //    var classes = ['active', 'success', 'info', 'warning', 'danger'];
- var $classMatcher = (
+    var $classMatcher = (
             row.MATCHER !== null ? (
-                row.SIDE_CODE == '001' ? 'active-info' : 
-                (
-                    row.SIDE_CODE == '002'? 'active-danger' : 'active-success'
-                )
-            ) :
+                    row.SIDE_CODE == '001' ? 'active-info' :
+                    (
+                            row.SIDE_CODE == '002' ? 'active-danger' : 'active-success'
+                            )
+                    ) :
             (
-                row.SIDE_CODE == '001' ? 'info' : 
-                (
-                    row.SIDE_CODE == '002'? 'danger' : 'success'
-                )
-            )
-        );
+                    row.SIDE_CODE == '001' ? 'info' :
+                    (
+                            row.SIDE_CODE == '002' ? 'danger' : 'success'
+                            )
+                    )
+            );
 
 //$classSide = (
 //                row.SIDE_CODE == '001' ? 'info' : 
@@ -136,7 +138,7 @@ function rowStyle(row, index) {
 //    var date = new Date(row.DATE).getTime()
 //            , dueDate = new Date(row.DUE_DATE).getTime()
 //            , diffDate = parseInt((date - dueDate) / (24 * 3600 * 1000));
-                                
+
     return {
         classes: $classMatcher
     };
@@ -148,12 +150,12 @@ function rowAttributes(row, index) {
     var $classMatcher = (
             row.MATCHER !== null ? 'gray' :
             (
-                row.SIDE_CODE == '001' ? 'info' : 
-                (
-                    row.SIDE_CODE == '002'? 'danger' : 'success'
-                )
-            )
-        );
+                    row.SIDE_CODE == '001' ? 'info' :
+                    (
+                            row.SIDE_CODE == '002' ? 'danger' : 'success'
+                            )
+                    )
+            );
 
 //$classSide = (
 //                row.SIDE_CODE == '001' ? 'info' : 
@@ -164,7 +166,7 @@ function rowAttributes(row, index) {
 //    var date = new Date(row.DATE).getTime()
 //            , dueDate = new Date(row.DUE_DATE).getTime()
 //            , diffDate = parseInt((date - dueDate) / (24 * 3600 * 1000));
-                                
+
     return {
         classes: $classMatcher
     };
@@ -174,11 +176,11 @@ function rowAttributes(row, index) {
 function queryParams(row, index) {
 //    var classes = ['active', 'success', 'info', 'warning', 'danger'];
     var symbol = $("#symbol").val()
-    , broker = $("#brokerMenu option:selected").val();
-    
+            , broker = $("#brokerMenu option:selected").val();
+
     return {
-        symbol : symbol
-        ,broker : broker
+        symbol: symbol
+        , broker: broker
     };
 }
 
@@ -196,24 +198,24 @@ function numFormatter4(value, row) {
 
 function priceFormatter(value) {
     // 16777215 == ffffff in decimal
-    var color = '#'+Math.floor(Math.random() * 6777215).toString(16);
+    var color = '#' + Math.floor(Math.random() * 6777215).toString(16);
     return '<div  style="color: ' + color + '">' +
             '<i class="glyphicon glyphicon-usd"></i>' +
             value.substring(1) +
             '</div>';
 }
 
-Number.prototype.formatMoney = function(c, d, t){
-var n = this, 
-    c = isNaN(c = Math.abs(c)) ? 2 : c, 
-    d = d == undefined ? "." : d, 
-    t = t == undefined ? "," : t, 
-    s = n < 0 ? "-" : "", 
-    i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "", 
-    j = (j = i.length) > 3 ? j % 3 : 0;
-   return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
- };
- 
+Number.prototype.formatMoney = function (c, d, t) {
+    var n = this,
+            c = isNaN(c = Math.abs(c)) ? 2 : c,
+            d = d == undefined ? "." : d,
+            t = t == undefined ? "," : t,
+            s = n < 0 ? "-" : "",
+            i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "",
+            j = (j = i.length) > 3 ? j % 3 : 0;
+    return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+};
+
 
 function runningFormatter(value, row, index) {
     return index;
@@ -229,7 +231,7 @@ function totalFormatter(data) {
 
 function sumFormatter(data) {
     field = this.field;
-    return data.reduce(function(sum, row) { 
+    return data.reduce(function (sum, row) {
         return sum + (+row[field]);
     }, 0);
 }
