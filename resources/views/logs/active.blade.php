@@ -86,7 +86,12 @@
             @if($symbols)
             @foreach($symbols as $symbol => $dataObjs)
             <h3 class="accordion-sub-header ui-accordion-header ui-helper-reset ui-sub-state-default ui-accordion-sub-icons ui-corner-all ui-accordion-sub">
-                {{$symbol}} {{$dataObjs[$objVolKey]}} ({{$dataObjs[$objAvgKey]}})
+                <span class="col-md-2 col-sm-3 col-xs-3">
+                    {{$symbol}} 
+                </span>
+                <small> 
+                    {{$dataObjs[$objVolKey]}}   
+                </small>
             </h3>
             <div class="ui-accordion-content ui-helper-reset ui-sub-widget-content ui-corner-bottom ui-accordion-sub">
                 <div class="col-md-10 col-md-offset-1 col-md-left">
@@ -95,9 +100,23 @@
                             <table class="table table-striped table-bordered table-hover">
                                 <thead>
                                     <tr>
-                                        <th class="text-center info col-md-5">ซื้อ {{$dataObjs[$objVolBuyKey]}}</th>
-                                        <th class="text-center price col-md-2">ราคา</th>
-                                        <th class="text-center danger col-md-5">ขาย {{$dataObjs[$objVolSellKey]}}</th>
+                                        <th class="text-center info col-md-5"> 
+                                            <h5>ซื้อ
+                                                <small>({{$dataObjs[$objVolBuyKey]}})</small>
+                                            </h5> 
+                                        </th>
+                                        <th class="text-center price col-md-2">
+                                            <h5>ราคา
+                                                <small> 
+                                                    ({{number_format($dataObjs[$objAvgKey], 2, '.', '')}})
+                                                </small>
+                                            </h5>
+                                        </th>
+                                        <th class="text-center danger col-md-5">
+                                            <h5>ขาย
+                                                <small>({{$dataObjs[$objVolSellKey]}})</small>
+                                            </h5>
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>

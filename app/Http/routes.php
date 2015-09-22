@@ -114,6 +114,11 @@ Route::group(['prefix'=>'logs','middleware'=>'auth','namespace'=>'Logs'],functio
         Route::get('getData', 'LogsDividendController@data_json');
     });
 
+    Route::group(['prefix' => 'total'], function()
+    {
+        Route::get('/', 'LogsTotalController@getIndex');
+        Route::get('getData', 'LogsTotalController@data_json');
+    });
 //    Route::controller('upload','LogsUploadController');
 });
 

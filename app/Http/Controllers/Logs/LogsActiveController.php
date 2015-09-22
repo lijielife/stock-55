@@ -61,9 +61,9 @@ class LogsActiveController extends Controller {
                 }
 
                 $objVol = abs($sumBuy - $sumSell);
+                $objAvg = ($objAvgBuy - $objAvgSell) / ($objVol == 0 ? 1 : $objVol);
                 $objAvgBuy /= ($sumBuy == 0 ? 1 : $sumBuy);
                 $objAvgSell /= ($sumSell == 0 ? 1 : $sumSell);
-                $objAvg = ($objAvgBuy - $objAvgSell) / ($objVol == 0 ? 1 : $objVol);
 
                 $dataObjs[$this->objAvgKey] = $objAvg;
                 $dataObjs[$this->objVolKey] = $objVol;

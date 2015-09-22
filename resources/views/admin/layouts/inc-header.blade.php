@@ -96,6 +96,11 @@
                     </a>
                 </li>
                 
+                <li>
+                    <a href="<?php echo URL::to('logs/total') ?>">
+                        <i class="fa fa-text-width"></i> Total
+                    </a>
+                </li>
                 
                 
                 <!--                <li>
