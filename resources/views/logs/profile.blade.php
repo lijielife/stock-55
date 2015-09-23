@@ -130,8 +130,7 @@
                     <th data-field="TOTAL" data-halign="center" data-align="center" 
                         data-sortable="false" data-formatter="numFormatter">เหลือ</th>
                     <th data-field="VALUE" data-halign="center" data-align="center" 
-                        data-sortable="false" data-cell-style="cellValueStyle" 
-                        data-formatter="numFormatter2">มูลค่า</th>
+                        data-sortable="false" data-formatter="numFormatter2">มูลค่า</th>
                     <th data-field="RESULT" data-halign="center" data-align="center" 
                         data-sortable="false" data-cell-style="cellValueStyle"
                         data-formatter="numFormatter2">ผล</th>

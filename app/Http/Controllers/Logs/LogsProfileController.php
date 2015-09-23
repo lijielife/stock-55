@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Request;
 use App\Http\Controllers\Controller;
 use App;
 use Illuminate\Support\Facades\DB;
+use App\Utils\StockUtils;
 
 class LogsProfileController extends Controller {
 
@@ -29,7 +30,12 @@ class LogsProfileController extends Controller {
         return json_encode($this->calData($this->getDataLogs()));
     }
     
-    private function calData($stocks){
+    
+    public static function calDataStatic($stocks){
+        return $this->calData($stocks);
+    }
+    
+    public function calData($stocks){
         $stocksRet = array();
         $total = 0;
         $totalNetAmount = 0;
@@ -37,6 +43,8 @@ class LogsProfileController extends Controller {
         $avgPrice = 0;
 //        $i = 0;
         $max = 0;
+        $CMVn = $CMVo = $BMVn = $BMVo = 0;
+        $stockPre = null;
         foreach ($stocks as $stock) {
             
             $stock->PRICE = number_format($stock->PRICE, 2, '.', '');
@@ -63,16 +71,10 @@ class LogsProfileController extends Controller {
                 $totalNetAmount -= $netAmount;
             }
             
-            
-            
             if($totalVolume > 0){
                 $avgPrice = $totalNetAmount / $totalVolume;
-            } else {
-                $avgPrice = 0;
-            }
+            } 
             
-            
-            $valueBeforeVat = $price * $total;
             if($sideCode == '003'){
                 
                 $date = $stock->DATE;
@@ -81,23 +83,49 @@ class LogsProfileController extends Controller {
                 $priceInDay = DB::table($tableName)
                         ->where('TIME', $date)
                         ->lists('CLOSE')[0];
-                    
                 $valueBeforeVat = $priceInDay * $total;
-                $value = ($valueBeforeVat) - (($valueBeforeVat * 0.001578) + (($valueBeforeVat * 0.001578) * 7 / 100));
-                $result = (($valueBeforeVat) - ($valueBeforeVat * 0.001578) - (($valueBeforeVat * 0.001578) * 7 / 100)) - ($avgPrice * $totalVolume);
             } else {
-                $value = ($valueBeforeVat) - (($valueBeforeVat * 0.001578) + (($valueBeforeVat * 0.001578) * 7 / 100));
-                $result = (($valueBeforeVat) - ($valueBeforeVat * 0.001578) - (($valueBeforeVat * 0.001578) * 7 / 100)) - ($avgPrice * $totalVolume);
+                $valueBeforeVat = $price * $total;
             }
             
+            if($valueBeforeVat > 0){
+                $result = (($valueBeforeVat) - ($valueBeforeVat * 0.001578) - (($valueBeforeVat * 0.001578) * 7 / 100)) - ($avgPrice * $totalVolume);
+                $value = ($valueBeforeVat) - (($valueBeforeVat * 0.001578) + (($valueBeforeVat * 0.001578) * 7 / 100));
+            } else {
+                $result = $netAmount - $value + $result;
+                $value = ($valueBeforeVat) - (($valueBeforeVat * 0.001578) + (($valueBeforeVat * 0.001578) * 7 / 100));
+            }
+            if(!$totalVolume > 0){
+                $avgPrice -= $result / $volume;
+            }
+
             if($value > $max){
                 $max = $value;
             }
             $resultPercent = ($result / $max) * 100;
-            if(($total * $avgPrice) > 0){
-                $portIndex = ($valueBeforeVat * 100) / ($total * $avgPrice);
+//            if(($total * $avgPrice) > 0){
+//                $portIndex = ($valueBeforeVat * 100) / ($total * $avgPrice);
+//            }
+            
+            
+            // PORT INDEX
+            if($stockPre === null){
+                $CMVo = $BMVo = $CMVn = $BMVn = $netAmount;
+            } else {
+                // $BMVo 
+                $BMVo = $BMVn;
+                
+                // $CMVo
+                $CMVo = ($stockPre->TOTAL == 0 ? $CMVn : $stockPre->TOTAL * $price);
+                
+                // $CMVn
+                $CMVn = ($sideCode == '001' ? $CMVo + $netAmount : $CMVo - $netAmount);
+                
+                // $BMVn
+                $BMVn = StockUtils::getMarketValueNew($CMVn, $CMVo, $BMVo);
             }
             
+            $portIndex = StockUtils::getIndex($CMVn, $BMVn);
             
             //เหลือ
             $stock->TOTAL = $total;
@@ -117,6 +145,8 @@ class LogsProfileController extends Controller {
 //            if(AND(M4=0,B4="ขาย"), (O4 / MAX(N$4:N)) * 100,(O4 / MAX(N$4:N)) * 100))
                 
             array_push($stocksRet, $stock);
+            
+            $stockPre = $stock;
 //            $stocksRet[count($stocks) - $i++] = $stock;
         }
         

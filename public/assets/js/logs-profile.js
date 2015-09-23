@@ -90,8 +90,8 @@ function calSelection(){
     var $sumAmount = 0, $sumVol = 0,$avg = 0;
     $.each($rows, function($index, $row){
 //        var $price = $row.PRICE;
-        var $vol = $row.VOLUME;
         var $side = $row.SIDE_CODE;
+        var $vol = $row.VOLUME * ($side === '002' ? -1 : 1);
         var $amount = $row.NET_AMOUNT * ($side === '002' ? -1 : 1);
         
         $sumAmount += $amount;

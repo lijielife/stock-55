@@ -94,9 +94,9 @@ function cellValueStyle(value, row, index) {
     };
 }
 
-function cellValuePercentStyle(value, row, index) {
-    var $classText = (row.RESULT > 100 ? 'text-success' :
-            (row.RESULT == 100 ? 'text-warning' : 'text-danger'));
+function cellPortIndexStyle(value, row, index) {
+    var $classText = (row.PORT_INDEX > 100 ? 'text-success' :
+            (row.PORT_INDEX == 100 ? 'text-warning' : 'text-danger'));
     return {
         classes: $classText
     };

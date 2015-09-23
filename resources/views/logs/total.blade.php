@@ -112,7 +112,7 @@
                      data-sortable="true" data-cell-style="cellValueStyle"
                      data-formatter="numFormatter2">%</th>
                  <th data-field="PORT_INDEX" data-halign="center" data-align="right" 
-                     data-sortable="true" data-cell-style="cellValuePercentStyle"
+                     data-sortable="true" data-cell-style="cellPortIndexStyle"
                      data-formatter="numFormatter2">port index</th>
                  <th data-field="AVG_PRICE" data-halign="center" data-align="right" 
                      data-sortable="true" data-cell-style="cellValueAvgStyle"

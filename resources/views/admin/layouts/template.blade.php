@@ -72,10 +72,10 @@
         <i class="glyphicon glyphicon-chevron-ups">asd</i>
     </button>-->
     
-    <button type="button" class="btn back-to-top" 
+<!--    <button type="button" class="btn back-to-top" 
              style="position: fixed; bottom: 50px; right: 15px">
             <i class="glyphicon glyphicon-chevron-up"></i>
-    </button>
+    </button>-->
     
     <footer class="footer">
       <div class="container">
