@@ -80,7 +80,7 @@
                 data-single-select="false"
                 data-click-to-select="true"
                 data-show-footer="true"
-                data-height="500"
+                data-height="600"
                 data-sort-name="SYMBOL" data-sort-order="asc"
                 >
             <thead>
@@ -93,6 +93,8 @@
                      data-sortable="true">วันที่</th>-->
                  <th data-field="SYMBOL" data-halign="center" data-align="left" 
                      data-sortable="true">ชื่อ</th>
+                <th data-field="PRICE_IN_DAY" data-halign="center" data-align="center" 
+                    data-sortable="false">ราคาปิด</th>
 <!--                 <th data-field="VOLUME" data-halign="center" data-align="center" 
                      data-sortable="true" data-cell-style="cellStyle">หน่วย</th>-->
 <!--                 <th data-field="PRICE" data-halign="center" data-align="center" 

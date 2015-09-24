@@ -3,186 +3,37 @@
 namespace App\Http\Controllers\Logs;
 
 use Illuminate\Support\Facades\Request;
-use App\Http\Controllers\Controller;
 use App;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Logs\LogsProfileController;
 
-class LogsTotalController extends Controller {
+class LogsTotalController extends LogsProfileController {
     
-//    private $STOCKS_KEY = "STOCKS";
-//    private $STOCKS_ARR_KEY = "STOCKS_ARR";
-//    private $TOTAL_KEY = "TOTAL";
-//    private $TOTAL_NET_AMOUNT_KEY = "TOTAL_NET_AMOUN";
-//    private $TOTAL_VOLUME_KEY = "TOTAL_VOLUME";
-//    private $AVG_PRICE_KEY = "AVG_PRICE";
-//    private $MAX_KEY = "MAX";
-        
-//    private function 
-    public function getIndex() {
-        $symbolName = Request::input('symbol');
-        $brokerId = Request::input('broker');
-        
-//        $stocks = $this->getDataLogs();
-        $brokerAll = json_decode(App::make('App\Http\Controllers\Service\SingleStockService')->getAllBroker());
-        return view('logs.total', 
-                    [
-//                        'stocks' => $this->calData($stocks), 
-                        'brokers' => $brokerAll,
-                        'symbolName' => $symbolName, 
-                        'brokerId' => $brokerId
-                    ]
-                );
-    }
-    
-    public function data_json(){
-        return json_encode($this->calData($this->getDataLogs()));
-    }
-    
-    
-    private function calData($stocks){
-        
+    protected $view = 'logs.total';
+
+    public function calData($stocks){
+        $stocksRet = array();
         $stockArr = array();
+        $stockSingleArr = array();
         foreach ($stocks as $stock) {
             $symbol = $stock->SYMBOL;
-            
             if(array_key_exists($symbol, $stockArr)){
                 $stockSingleArr = $stockArr[$symbol];
-                array_push($stockSingleArr, $stock);
-                
-                $stockArr[$symbol] = $stockSingleArr;
+            } else {
+                $stockSingleArr = array();
             }
-//            LogsProfileController::calDataStatic($stocks);
-            
-            $stockArr[$symbol] = $stock;
+            array_push($stockSingleArr, $stock);
+            $stockArr[$symbol] = $stockSingleArr;
         }
         
-        
-            LogsProfileController::calDataStatic($stocks);
-            
-            
-        $stocksRet = array();
-        foreach ($stockArr as $symbol => $stocksObj) {
-            array_push($stocksRet, $stocksObj);
+        foreach ($stockArr as $symbol => $stockSingleArr) {
+            $stocksRes = App::make('App\Http\Controllers\Logs\LogsProfileController')->calData($stockSingleArr);
+            array_push($stocksRet, current($stocksRes));
         }
-        
-        return array_reverse($stocksRet);
+        return $stocksRet;
     }
-    
-    
-//    
-//    private function calData($stocks){
-//        
-//        $stockArr = array();
-//        foreach ($stocks as $stock) {
-//            $symbol = $stock->SYMBOL;
-//            
-//            $stocksObj = array();
-//            $total = 0;
-//            $totalNetAmount = 0;
-//            $totalVolume = 0;
-//            $avgPrice = 0;
-//            $max = 0;
-//            if(array_key_exists($symbol, $stockArr)){
-//                $stockTemp = $stockArr[$symbol];
-//                $total = $stockTemp->TOTAL;
-//                $value = $stockTemp->VALUE;
-//                $result = $stockTemp->RESULT;
-//                $totalNetAmount = $stockTemp->TOTAL_NET_AMOUNT;
-//                $avgPrice = $stockTemp->AVG_PRICE;
-//                $portIndex = $stockTemp->PORT_INDEX;
-//                $totalVolume = $stockTemp->TOTAL_VOLUME;
-//                $max = $stockTemp->MAX_VALUE;
-//            }
-//                    
-//            $stock->PRICE = number_format($stock->PRICE, 2, '.', '');
-//            $stock->NET_AMOUNT = number_format($stock->NET_AMOUNT, 2, '.', '');
-//            
-//            $sideCode = $stock->SIDE_CODE;
-//            $volume = (int)$stock->VOLUME;
-//            $price = (float)$stock->PRICE;
-//            $netAmount = (float)$stock->NET_AMOUNT;
-//            
-//            
-//            if($sideCode == '001'){
-//                $total += $volume;
-//                
-//                $totalNetAmount += $netAmount;
-//                $totalVolume += $volume;
-//
-//            } else if($sideCode == '002'){
-//                $total -= $volume;
-//                
-//                $totalNetAmount -= $netAmount;
-//                $totalVolume -= $volume;
-//            } else if($sideCode == '003'){
-//                $totalNetAmount -= $netAmount;
-//            }
-//            
-//            if($totalVolume > 0){
-//                $avgPrice = $totalNetAmount / $totalVolume;
-//            } else {
-//                $avgPrice = 0;
-//            }
-//            
-//            if($sideCode == '003'){
-//                
-//                $date = $stock->DATE;
-//                $tableName = $this->getTableName($symbol);
-//                $priceInDay = DB::table($tableName)
-//                        ->where('TIME', $date)
-//                        ->lists('CLOSE')[0];
-//                    
-//                $valueBeforeVat = $priceInDay * $total;
-//            } else {
-//                $valueBeforeVat = $price * $total;
-//            }
-//            
-//            if($valueBeforeVat > 0){
-//                $value = ($valueBeforeVat) - (($valueBeforeVat * 0.001578) + (($valueBeforeVat * 0.001578) * 7 / 100));
-//                $result = (($valueBeforeVat) - ($valueBeforeVat * 0.001578) - (($valueBeforeVat * 0.001578) * 7 / 100)) - ($avgPrice * $totalVolume);
-//            } else {
-//                $result = $netAmount - $value + $result;
-//            }
-//
-//            if($value > $max){
-//                $max = $value;
-//            }
-//            $resultPercent = ($result / $max) * 100;
-//            if(($total * $avgPrice) > 0){
-//                $portIndex = ($valueBeforeVat * 100) / ($total * $avgPrice);
-//            }
-//            //เหลือ
-//            $stock->TOTAL = $total;
-//            //มูลค่าหุ้น
-//            $stock->VALUE = $value;
-//            //ผล
-//            $stock->RESULT = $result;
-//            //%
-//            $stock->RESULT_PERCENT = $resultPercent;
-//            //ทุนคงเหลือ	หุ้นคงเหลือ
-//            $stock->TOTAL_NET_AMOUNT = $totalNetAmount;
-//            //ราคาเฉลี่ย
-//            $stock->AVG_PRICE = $avgPrice;
-//            
-//            $stock->PORT_INDEX = $portIndex;
-//            
-//            $stock->TOTAL_VOLUME = $totalVolume;
-//            
-//            $stock->MAX_VALUE = $max;
-////            if(AND(M4=0,B4="ขาย"), (O4 / MAX(N$4:N)) * 100,(O4 / MAX(N$4:N)) * 100))
-//                
-//            $stockArr[$symbol] = $stock;
-//        }
-//        $stocksRet = array();
-//        foreach ($stockArr as $symbol => $stocksObj) {
-//            array_push($stocksRet, $stocksObj);
-//        }
-//        
-//        return array_reverse($stocksRet);
-//    }
 
-    private function getDataLogs() {
+    public function getDataLogs() {
         $symbolNameIn = Request::input('symbol');
         $brokerIdIn = Request::input('broker');
         

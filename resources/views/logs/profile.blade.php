@@ -117,10 +117,12 @@
                     <th data-field="SIDE_NAME" data-halign="center" data-align="center" 
                         data-sortable="false" data-cell-style="cellStyle" data-visible="false"
                         >คำสั่ง</th>
-   <!--                 <th data-field="SYMBOL" data-halign="center" data-align="center" 
-                        data-sortable="false">ชื่อ</th>-->
+                    <th data-field="SYMBOL" data-halign="center" data-align="center" 
+                        data-sortable="false" data-visible="false">ชื่อ</th>
                     <th data-field="VOLUME" data-halign="center" data-align="center" 
                         data-sortable="false" data-cell-style="cellStyle">หน่วย</th>
+                    <th data-field="PRICE_IN_DAY" data-halign="center" data-align="center" 
+                        data-sortable="false" data-visible="false">ราคาปิด</th>
                     <th data-field="PRICE" data-halign="center" data-align="center" 
                         data-sortable="false">ราคา</th>
                     <th data-field="NET_AMOUNT" data-halign="center" data-align="center" 

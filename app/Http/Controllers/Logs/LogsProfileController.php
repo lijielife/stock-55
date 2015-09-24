@@ -3,22 +3,20 @@
 namespace App\Http\Controllers\Logs;
 
 use Illuminate\Support\Facades\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Logs\LogsTableController;
 use App;
 use Illuminate\Support\Facades\DB;
 use App\Utils\StockUtils;
 
-class LogsProfileController extends Controller {
+class LogsProfileController extends LogsTableController {
 
+    protected $view = 'logs.profile';
     public function getIndex() {
         $symbolName = Request::input('symbol');
         $brokerId = Request::input('broker');
-        
-//        $stocks = $this->getDataLogs();
         $brokerAll = json_decode(App::make('App\Http\Controllers\Service\SingleStockService')->getAllBroker());
-        return view('logs.profile', 
+        return view($this->view, 
                     [
-//                        'stocks' => $this->calData($stocks), 
                         'brokers' => $brokerAll,
                         'symbolName' => $symbolName, 
                         'brokerId' => $brokerId
@@ -30,21 +28,25 @@ class LogsProfileController extends Controller {
         return json_encode($this->calData($this->getDataLogs()));
     }
     
-    
-    public static function calDataStatic($stocks){
-        return $this->calData($stocks);
-    }
-    
     public function calData($stocks){
-        $stocksRet = array();
-        $total = 0;
-        $totalNetAmount = 0;
-        $totalVolume = 0;
-        $avgPrice = 0;
-//        $i = 0;
-        $max = 0;
+    
+        if(empty($stocks)) {
+            return $stocks;
+        }
+        $stocksRet = array(); $avgPrice = 0; $max = 0;
+        $total = 0; $totalNetAmount = 0; $totalVolume = 0;
         $CMVn = $CMVo = $BMVn = $BMVo = 0;
         $stockPre = null;
+        
+        $stockFirst = current($stocks);
+        $stockEnd = end($stocks);
+        
+        $firstDate = $stockFirst->DATE;
+        $endDate = $stockEnd->DATE;
+        $symbol = $stockFirst->SYMBOL;
+        
+        $pricesInDB = $this->getPriceBetweenDate($symbol, $firstDate, $endDate);
+        $priceLast = null;
         foreach ($stocks as $stock) {
             
             $stock->PRICE = number_format($stock->PRICE, 2, '.', '');
@@ -54,47 +56,42 @@ class LogsProfileController extends Controller {
             $volume = (int)$stock->VOLUME;
             $price = (float)$stock->PRICE;
             $netAmount = (float)$stock->NET_AMOUNT;
+            $date = $stock->DATE;
+            if(array_key_exists($date, $pricesInDB)){
+                $priceInDay = $pricesInDB[$date];
+            } else {
+                $priceInDay = ($sideCode == '003' && isset($priceLast) ? $priceLast : $price);
+            }
+            $priceLast = $priceInDay;
             
-            
-            if($sideCode == '001'){
-                $total += $volume;
-                
-                $totalNetAmount += $netAmount;
-                $totalVolume += $volume;
-
-            } else if($sideCode == '002'){
-                $total -= $volume;
-                
-                $totalNetAmount -= $netAmount;
-                $totalVolume -= $volume;
-            } else if($sideCode == '003'){
-                $totalNetAmount -= $netAmount;
+            switch ($sideCode){
+                case '001':
+                    $total += $volume;
+                    $totalNetAmount += $netAmount;
+                    $totalVolume += $volume;
+                    break;
+                case '002':
+                    $total -= $volume;
+                    $totalVolume -= $volume;
+                case '003':
+                    $totalNetAmount -= $netAmount;
+                    break;
             }
             
             if($totalVolume > 0){
                 $avgPrice = $totalNetAmount / $totalVolume;
             } 
-            
-            if($sideCode == '003'){
-                
-                $date = $stock->DATE;
-                $symbol = $stock->SYMBOL;
-                $tableName = $this->getTableName($symbol);
-                $priceInDay = DB::table($tableName)
-                        ->where('TIME', $date)
-                        ->lists('CLOSE')[0];
-                $valueBeforeVat = $priceInDay * $total;
-            } else {
-                $valueBeforeVat = $price * $total;
-            }
+
+            $valueBeforeVat = ($sideCode == '003' ? $priceInDay : $price) * $total;
             
             if($valueBeforeVat > 0){
-                $result = (($valueBeforeVat) - ($valueBeforeVat * 0.001578) - (($valueBeforeVat * 0.001578) * 7 / 100)) - ($avgPrice * $totalVolume);
-                $value = ($valueBeforeVat) - (($valueBeforeVat * 0.001578) + (($valueBeforeVat * 0.001578) * 7 / 100));
+                $value = $this->calValue($valueBeforeVat);
+                $result = $value - ($avgPrice * $totalVolume);
             } else {
                 $result = $netAmount - $value + $result;
-                $value = ($valueBeforeVat) - (($valueBeforeVat * 0.001578) + (($valueBeforeVat * 0.001578) * 7 / 100));
+                $value = $this->calValue($valueBeforeVat);
             }
+            
             if(!$totalVolume > 0){
                 $avgPrice -= $result / $volume;
             }
@@ -103,10 +100,6 @@ class LogsProfileController extends Controller {
                 $max = $value;
             }
             $resultPercent = ($result / $max) * 100;
-//            if(($total * $avgPrice) > 0){
-//                $portIndex = ($valueBeforeVat * 100) / ($total * $avgPrice);
-//            }
-            
             
             // PORT INDEX
             if($stockPre === null){
@@ -116,15 +109,17 @@ class LogsProfileController extends Controller {
                 $BMVo = $BMVn;
                 
                 // $CMVo
-                $CMVo = ($stockPre->TOTAL == 0 ? $CMVn : $stockPre->TOTAL * $price);
-                
+                $CMVo = ($stockPre->TOTAL == 0 ? $CMVn : $stockPre->TOTAL * $priceInDay);
+
+                if($CMVo == 0){
+                    $CMVo = 0;
+                }
                 // $CMVn
-                $CMVn = ($sideCode == '001' ? $CMVo + $netAmount : $CMVo - $netAmount);
+                $CMVn = ($sideCode == '002' ? $CMVo - $netAmount : $CMVo + $netAmount);
                 
-                // $BMVn
-                $BMVn = StockUtils::getMarketValueNew($CMVn, $CMVo, $BMVo);
+                // $BMVn ปันผลไม่ต้องคำนวนวันฐานใหม่
+                $BMVn = ($sideCode == '003' ? $BMVo : StockUtils::getMarketValueNew($CMVn, $CMVo, $BMVo));
             }
-            
             $portIndex = StockUtils::getIndex($CMVn, $BMVn);
             
             //เหลือ
@@ -133,7 +128,7 @@ class LogsProfileController extends Controller {
             $stock->VALUE = $value;
             //ผล
             $stock->RESULT = $result;
-            //%
+            //%array_pop
             $stock->RESULT_PERCENT = $resultPercent;
             //ทุนคงเหลือ	หุ้นคงเหลือ
             $stock->TOTAL_NET_AMOUNT = $totalNetAmount;
@@ -141,19 +136,18 @@ class LogsProfileController extends Controller {
             $stock->AVG_PRICE = $avgPrice;
             
             $stock->PORT_INDEX = $portIndex;
+            //ราคาปิดตลาด
+            $stock->PRICE_IN_DAY = $priceInDay;
             
-//            if(AND(M4=0,B4="ขาย"), (O4 / MAX(N$4:N)) * 100,(O4 / MAX(N$4:N)) * 100))
-                
             array_push($stocksRet, $stock);
             
             $stockPre = $stock;
-//            $stocksRet[count($stocks) - $i++] = $stock;
         }
         
         return array_reverse($stocksRet);
     }
 
-    private function getDataLogs() {
+    public function getDataLogs() {
         $symbolNameIn = Request::input('symbol');
         $brokerIdIn = Request::input('broker');
         
