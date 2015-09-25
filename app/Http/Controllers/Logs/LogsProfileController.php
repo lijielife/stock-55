@@ -88,6 +88,9 @@ class LogsProfileController extends LogsTableController {
                 $value = $this->calValue($valueBeforeVat);
                 $result = $value - ($avgPrice * $totalVolume);
             } else {
+                if(!isset($value)){
+                    $value = 0;
+                }
                 $result = $netAmount - $value + $result;
                 $value = $this->calValue($valueBeforeVat);
             }

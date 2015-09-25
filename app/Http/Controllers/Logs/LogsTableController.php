@@ -20,6 +20,7 @@ abstract class LogsTableController extends Controller {
         $isTableExist = $this->checkTableIsExit($tableName);
                 
         return ($isTableExist ? DB::table($tableName)
+                ->where('symbol', $symbol)
                 ->whereBetween('TIME', [$firstDAte, $endDAte])
                 ->lists('CLOSE', 'TIME'): array());
     }

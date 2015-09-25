@@ -5,7 +5,6 @@ namespace App\Http\Controllers\History;
 //use Illuminate\Http\Request;
 //use Auth;
 use App\Http\Controllers\History\GetController;
-use App\Beans\SymbolBean;
 
 //use App\Models\History;
 class LoadController extends GetController {
@@ -15,7 +14,6 @@ class LoadController extends GetController {
     // สำหรับแสดงรายชื่อสมาชิก หรือ admin ที่มีอยู่ในปัจจุบัน
 
     public function getIndex() {
-
         return view('admin.history.load', ["urlLoad" => url('/history/loadData')
             , "urlGetStatus" => url('/history/getStatus')]);
     }
@@ -23,7 +21,8 @@ class LoadController extends GetController {
     public function loadData() {
         set_time_limit(0);
 
-        $this->resetData();
+//        $this->resetData();
+        $this->resetDataInPort();
 
 //        $respone = array();
 

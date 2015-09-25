@@ -99,27 +99,47 @@ class HistoryController extends Controller {
         $this->createTable($tableName, $symbol, $origin);
         
         $timeInUse = DB::table($tableName)
+                ->select('MILLISEC', DB::raw('md5(concat(TIME, OPEN, CLOSE, HIGH, LOW, VOLUME)) as MD'))
                 ->where('SYMBOL', $symbol)
                 ->where('ORIGIN', $origin)
                 ->whereIn('MILLISEC', $times)
-                ->lists('MILLISEC');
+                ->lists('MD', 'MILLISEC');
 
         $historiesInsert = array();
+        $historiesUpdate = array();
         foreach ($symbolBeans as $symbolBean) {
             $timeMillisec = $symbolBean->getMillisec();
 
-            if (!in_array($timeMillisec, $timeInUse)) {
+            if (!array_key_exists($timeMillisec, $timeInUse)) {
 
                 $symbolBean->setUpdated_at(date('Y-m-d H:i:s'));
                 $symbolBean->setCreated_at(date('Y-m-d H:i:s'));
 
                 array_push($historiesInsert, (array) $symbolBean);
                 array_push($timeInUse, $timeMillisec);
+            } else {
+                $md5DB = $timeInUse[$timeMillisec];
+                $time = $symbolBean->getTime();
+                $open = $symbolBean->getOpen();
+                $close = $symbolBean->getClose();
+                $high = $symbolBean->getHigh();
+                $low = $symbolBean->getLow();
+                $volume = $symbolBean->getVolume();
+                $md = md5($time.$open.$close.$high.$low.$volume);
+                if($md != $md5DB){
+                    array_push($historiesUpdate, (array) $symbolBean);
+                }
             }
         }
 
         foreach (array_chunk($historiesInsert, 1000) as $insertValue) {
             DB::table($tableName)->insert($insertValue);
+        }
+        
+        foreach (array_chunk($historiesUpdate, 1000) as $updateValue) {
+            DB::table($tableName)
+                    ->where('MILLISEC', $updateValue[0]["millisec"])
+                    ->update($updateValue[0]);
         }
     }
 
@@ -143,9 +163,9 @@ class HistoryController extends Controller {
                   `UPDATED_AT` date NOT NULL,
                   `CREATED_AT` date NOT NULL,
                   PRIMARY KEY (`ID`),
-                  KEY `NAME` (`SYMBOL`,`TIME`)
+                  KEY `TIME` (`TIME` DESC)
+                  
                 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2474868 ;');
-
 
                 $is_check = DB::table('TABLE_NAME')->where(["table_name" => $tableName])->get();
 
@@ -245,6 +265,11 @@ class HistoryController extends Controller {
 
     public function resetData() {
         DB::update('update MAS_SYMBOL SET IS_USE = ?', ['1']);
+    }
+    
+    public function resetDataInPort() {
+        DB::update('update MAS_SYMBOL SET IS_USE = ?'
+                . ' WHERE ID IN (SELECT distinct SYMBOL_ID FROM DATA_LOG )', ['1']);
     }
 
 //    function setUrl($url) {

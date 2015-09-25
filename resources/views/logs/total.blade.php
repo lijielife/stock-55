@@ -73,7 +73,7 @@
                 data-show-filter="true"
                 
                 data-url="{{url('logs/total/getData')}}"
-                data-show-columns="true" data-id-field="id" 
+                data-show-columns="true" data-id-field="ID" 
                 data-show-refresh="true" data-search="true"
                 data-toolbar="#filter-bar"
                 data-query-params="queryParams"
@@ -82,6 +82,7 @@
                 data-show-footer="true"
                 data-height="600"
                 data-sort-name="SYMBOL" data-sort-order="asc"
+                
                 >
             <thead>
              <tr>

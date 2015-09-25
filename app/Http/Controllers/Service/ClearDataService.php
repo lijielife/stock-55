@@ -38,4 +38,25 @@ class ClearDataService extends HistoryController {
             $this->createTable($tableName, $symbol);
         }
     }
+    
+    public function alterTable(){
+        $this->resetData();
+        $symbols = $this->getSymbolIsUse();
+        
+        foreach ($symbols as $symbol) {
+            $tableName = $this->getTableName($symbol);
+//            $this->createTable($tableName, $symbol);
+            try {
+                
+                DB::statement('ALTER TABLE `super_stock_db`.`'.$tableName.'` 
+                ADD INDEX `TIME` (`TIME` DESC) ;');
+
+            } catch (\Exception $exc) {
+                continue;
+//                echo $exc->getTraceAsString();
+            }
+
+        }
+        
+    }
 }

@@ -9,7 +9,8 @@ use App\Beans\SymbolBean;
 
 //use App\Models\History;
 class GetController extends HistoryController {
-
+    
+    protected $is_insert = true;
     // สำหรับแสดงรายชื่อสมาชิก หรือ admin ที่มีอยู่ในปัจจุบัน
     public function getIndex() {
 
