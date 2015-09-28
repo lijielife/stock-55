@@ -80,7 +80,6 @@
                 data-single-select="false"
                 data-click-to-select="true"
                 data-show-footer="true"
-                data-height="600"
                 data-sort-name="SYMBOL" data-sort-order="asc"
                 
                 >
@@ -93,9 +92,9 @@
 <!--                 <th data-field="DATE" data-halign="center" data-align="center" 
                      data-sortable="true">วันที่</th>-->
                  <th data-field="SYMBOL" data-halign="center" data-align="left" 
-                     data-sortable="true">ชื่อ</th>
-                <th data-field="PRICE_IN_DAY" data-halign="center" data-align="center" 
-                    data-sortable="false">ราคาปิด</th>
+                     data-sortable="true"data-footer-formatter="totalTextFormatter">ชื่อ</th>
+                <th data-field="PRICE_IN_DAY" data-halign="center" data-align="right" 
+                    data-sortable="false" data-formatter="numFormatter2">ราคาปิด</th>
 <!--                 <th data-field="VOLUME" data-halign="center" data-align="center" 
                      data-sortable="true" data-cell-style="cellStyle">หน่วย</th>-->
 <!--                 <th data-field="PRICE" data-halign="center" data-align="center" 
@@ -107,13 +106,16 @@
                  <th data-field="TOTAL" data-halign="center" data-align="right" 
                      data-sortable="true" data-formatter="numFormatter">เหลือ</th>
                  <th data-field="VALUE" data-halign="center" data-align="right" 
-                     data-sortable="true" data-formatter="numFormatter2">มูลค่า</th>
+                     data-sortable="true" data-formatter="numFormatter2"
+                     data-footer-formatter="sumFormatter">มูลค่า</th>
                  <th data-field="RESULT" data-halign="center" data-align="right" 
                      data-sortable="true" data-cell-style="cellValueStyle"
-                     data-formatter="numFormatter2">ผล</th>
+                     data-formatter="numFormatter2"
+                     data-footer-formatter="sumFormatter">ผล</th>
                  <th data-field="RESULT_PERCENT" data-halign="center" data-align="right" 
                      data-sortable="true" data-cell-style="cellValueStyle"
-                     data-formatter="numFormatter2">%</th>
+                     data-formatter="numFormatter2"
+                     data-footer-formatter="percentFormatter">%</th>
                  <th data-field="PORT_INDEX" data-halign="center" data-align="right" 
                      data-sortable="true" data-cell-style="cellPortIndexStyle"
                      data-formatter="numFormatter2">port index</th>
@@ -127,14 +129,6 @@
                  
              </tr>
              </thead>
-<!--             <tfoot>
-                 <tr>
-                     <td>
-                         tesat
-                     </td>
-                 </tr>
-                     
-             </tfoot>-->
          </table>
     </div>
     

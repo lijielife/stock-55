@@ -1,4 +1,4 @@
-var $table;
+var $table, $footerTr;
 
 $(function () {
 
@@ -66,10 +66,21 @@ $(function () {
 
     });
 
+    
+    $table = $('#tbl').bootstrapTable()
+    
+    .on('load-success.bs.table', function (e, data) {
+        
+        
+       $($footerTr).remove();
 
-    $table = $('#tbl').bootstrapTable();
+        $footerTr = $(".fixed-table-footer").find(".table tr").hide().clone(true).show();
 
-
+        $.each($footerTr.find("td"), function(){
+            $(this).replaceWith('<th style="'+$(this).attr("style")+'">'+$(this).html()+'</th>');
+        });
+        $(this).find("thead").append($footerTr);
+    });
 
 });
 
@@ -185,15 +196,15 @@ function queryParams(row, index) {
 }
 
 function numFormatter(value, row) {
-    return (value).formatMoney(0);
+    return (parseFloat(value)).formatMoney(0);
 }
 
 function numFormatter2(value, row) {
-    return (value).formatMoney(2);
+    return (parseFloat(value)).formatMoney(2);
 }
 
 function numFormatter4(value, row) {
-    return (value).formatMoney(4);
+    return (parseFloat(value)).formatMoney(4);
 }
 
 function priceFormatter(value) {
@@ -233,9 +244,24 @@ function sumFormatter(data) {
     field = this.field;
     return data.reduce(function (sum, row) {
         return sum + (+row[field]);
-    }, 0);
+    }, 0).formatMoney(2);;
 }
 
 function avgFormatter(data) {
     return sumFormatter.call(this, data) / data.length;
+}
+
+function percentFormatter(data) {
+    var $fieldResult = "RESULT",
+    $fieldValue = "VALUE",
+    $result = data.reduce(function (sum, row) {
+            return sum + (+row[$fieldResult]);
+        }, 0),
+    $value  = data.reduce(function (sum, row) {
+            return sum + (+row[$fieldValue]);
+        }, 0);
+        
+    return (($result / $value) * 100).formatMoney(2);
+    
+    
 }
