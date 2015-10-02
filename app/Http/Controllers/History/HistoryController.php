@@ -269,7 +269,7 @@ class HistoryController extends Controller {
     
     public function resetDataInPort() {
         DB::update('update MAS_SYMBOL SET IS_USE = ?'
-                . ' WHERE ID IN (SELECT distinct SYMBOL_ID FROM DATA_LOG )', ['1']);
+                . ' WHERE ID IN (SELECT distinct SYMBOL_ID FROM DATA_LOG) OR SYMBOL = ?', ['1', 'SET']);
     }
 
 //    function setUrl($url) {

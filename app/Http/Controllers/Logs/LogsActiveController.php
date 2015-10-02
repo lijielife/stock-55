@@ -34,7 +34,9 @@ class LogsActiveController extends Controller {
             'objAvgKey' => $this->objAvgKey,
             'objVolKey' => $this->objVolKey,
             'objVolBuyKey' => $this->objVolBuyKey,
-            'objVolSellKey' => $this->objVolSellKey
+            'objVolSellKey' => $this->objVolSellKey,
+            'percentMinDiff' => App\Http\Controllers\Service\MapDataLogsService::$percentMinDiff,
+            'percentMaxDiff' => App\Http\Controllers\Service\MapDataLogsService::$percentMaxDiff
                 ]
         );
     }

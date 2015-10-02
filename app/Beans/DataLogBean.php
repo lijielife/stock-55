@@ -121,86 +121,107 @@ class DataLogBean {
 
     public function setId($id) {
         $this->id = $id;
+        return $this;
     }
 
     public function setSideId($sideId) {
         $this->sideId = $sideId;
+        return $this;
     }
 
     public function setSideCode($sideCode) {
         $this->sideCode = $sideCode;
+        return $this;
     }
 
     public function setSideName($sideName) {
         $this->sideName = $sideName;
+        return $this;
     }
 
     public function setSymbolId($symbolId) {
         $this->symbolId = $symbolId;
+        return $this;
     }
 
     public function setVolume($volume) {
         $this->volume = $volume;
+        return $this;
     }
 
     public function setPrice($price) {
         $this->price = $price;
+        return $this;
     }
 
     public function setAmount($amount) {
         $this->amount = $amount;
+        return $this;
     }
 
     public function setVat($vat) {
         $this->vat = $vat;
+        return $this;
     }
 
     public function setNetAmount($netAmount) {
         $this->netAmount = $netAmount;
+        return $this;
     }
 
     public function setDate($date) {
         $this->date = $date;
+        return $this;
     }
 
     public function setBrokerId($brokerId) {
         $this->brokerId = $brokerId;
+        return $this;
     }
 
     public function setMapVol($mapVol) {
         $this->mapVol = $mapVol;
+        return $this;
     }
 
     public function setMapAvg($mapAvg) {
         $this->mapAvg = $mapAvg;
+        return $this;
     }
     
     public function setIsDw($isDw) {
         $this->isDw = $isDw;
+        return $this;
     }
 
     public function setCreatedAt($createdAt) {
         $this->createdAt = $createdAt;
+        return $this;
     }
 
     public function setCreatedBy($createdBy) {
         $this->createdBy = $createdBy;
+        return $this;
     }
 
     public function setUpdatedAt($updatedAt) {
         $this->updatedAt = $updatedAt;
+        return $this;
     }
 
     public function setUpdatedBy($updatedBy) {
         $this->updatedBy = $updatedBy;
+        return $this;
     }
 
     public function setUserId($userId) {
         $this->userId = $userId;
+        return $this;
     }
 
     public function setLogMap($logMap) {
         $this->logMap = $logMap;
+        return $this;
     }
 
     function popLogMap() {
@@ -209,6 +230,7 @@ class DataLogBean {
 
     function pushLogMap($logMap) {
         array_push($this->logMap, $logMap);
+        return $this;
     }
 
 //    function getDataToInsert() {

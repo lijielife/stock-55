@@ -119,6 +119,15 @@ Route::group(['prefix'=>'logs','middleware'=>'auth','namespace'=>'Logs'],functio
         Route::get('/', 'LogsTotalController@getIndex');
         Route::get('getData', 'LogsTotalController@data_json');
     });
+    
+    Route::group(['prefix' => 'snapshot'], function()
+    {
+        Route::get('/', 'SnapShotController@getIndex');
+        Route::get('getData', 'SnapShotController@data_json');
+    });
+    
+    
+    
 //    Route::controller('upload','LogsUploadController');
 });
 

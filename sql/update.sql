@@ -9,4 +9,4 @@ SET IS_USE = 1
 
 SET SQL_SAFE_UPDATES = 0;
 
-update data_log set MAP_VOL = 0 , MAP_AVG = 0
+update data_log set MAP_VOL = null , MAP_AVG = null

@@ -23,6 +23,7 @@
                         <span class="input-group-btn">
                             <div class="btn-group">
                                 <select class="selected form-control" id="brokerMenu" name="broker">
+                                    <option value="" selected>All</option>
                                     @if($brokers)
                                     @foreach($brokers as $broker)
                                     <option value="{{$broker->ID}}" 
@@ -30,7 +31,6 @@
                                         >{{$broker->BROKER_NAME}}</option>
                                     @endforeach
                                     @endif
-                                    <option value="">All</option>
                                 </select>
                             </div>
                             <button class="btn btn-success" type="button" id="searchButton">

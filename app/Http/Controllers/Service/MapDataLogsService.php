@@ -19,7 +19,8 @@ class MapDataLogsService extends Controller {
 
     private $buyCode = "001";
     private $sellCode = "002";
-    private $percentDiff = 3;
+    public static $percentMinDiff = 3;
+    public static $percentMaxDiff = 10;
     private $objIsUse = array();
     private $idIsUse = array();
     
@@ -102,8 +103,9 @@ class MapDataLogsService extends Controller {
     }
 
     function checkPercentDiff($firstPrice, $secondPrice){
-        $percent = abs(($firstPrice - $secondPrice) / ($firstPrice / 100));
-        return ($percent > $this->percentDiff);
+        $percent = number_format(abs(($firstPrice - $secondPrice) / ($firstPrice / 100)), 2, '.', '');
+        return ($percent > MapDataLogsService::$percentMinDiff 
+                && $percent < MapDataLogsService::$percentMaxDiff);
     }
     
     function getUniKey($diff, $sellVolume, $id) {

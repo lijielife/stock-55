@@ -72,7 +72,7 @@
                 data-toolbar="#filter-bar"
                 data-show-filter="true"
                 
-                data-url="{{url('logs/total/getData')}}"
+                data-url="{{url('logs/snapshot/getData')}}"
                 data-show-columns="true" data-id-field="ID" 
                 data-show-refresh="true" data-search="true"
                 data-toolbar="#filter-bar"
@@ -144,7 +144,7 @@
 <script src="{{asset('/assets/bootstrap-table-master/dist/bootstrap-table.js')}}"></script>
 <script src="{{asset('/assets/bootstrap-table-master/dist/extensions/filter/bootstrap-table-filter2.js')}}"></script>
 <script src="{{asset('/assets/bootstrap-table-master/dist/extensions/filter/bootstrap-table-filter.js')}}"></script>
-<script src="{{asset('/assets/js/logs-total.js')}}" type="text/javascript"></script>
+<script src="{{asset('/assets/js/logs-snapshot.js')}}" type="text/javascript"></script>
 <script type="text/javascript">
 
 var $getAllSymbol = "{{url('service/single/getAllSymbol')}}";

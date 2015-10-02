@@ -157,6 +157,9 @@ class LogsImportController extends Controller {
                                 $dataLog["broker_id"] = $brokerId;
                                 $dataLog["symbol_id"] = $symbolId;
                                 $dataLog["user_id"] = $userId;
+                                if($dataLog["due_date"] == null){
+                                    $dataLog["due_date"] = $dataLog["date"];
+                                }
 
                                 $dataLog["updated_at"] = date("Y-m-d H:i:s");
                                 $dataLog["updated_by"] = $userId;
@@ -176,6 +179,14 @@ class LogsImportController extends Controller {
 //            DataLog::insert($dataLog);
 //        }
         DataLog::insert($dataLogs);
+        
+        DB::statement('UPDATE `super_stock_db`.`data_log`
+            SET HASH_MD = 
+            MD5(concat(SIDE_ID, SYMBOL_ID, VOLUME, PRICE, 
+                AMOUNT, VAT, at_pay, NET_AMOUNT, DATE, 
+                DUE_DATE, BROKER_ID, MAP_VOL, MAP_AVG, 
+                IS_DW, USER_ID))
+            WHERE HASH_MD IS NULL');
     }
 
 }

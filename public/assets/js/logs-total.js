@@ -84,6 +84,11 @@ $(function () {
 
 });
 
+function symbolFormatter(value, row) {
+    var $symbol = row.SYMBOL;
+    return '<a href="'+$profileUrl+'?symbol='+$symbol+'" target="_blank">' + value + '</a> ' ;
+}
+    
 function cellStyle(value, row, index) {
     var $classSide = (
             row.SIDE_CODE == '001' ? 'info' :
@@ -167,16 +172,6 @@ function rowAttributes(row, index) {
                             )
                     )
             );
-
-//$classSide = (
-//                row.SIDE_CODE == '001' ? 'info' : 
-//                (
-//                    row.SIDE_CODE == '002'? 'danger' : 'success'
-//                )
-//        );
-//    var date = new Date(row.DATE).getTime()
-//            , dueDate = new Date(row.DUE_DATE).getTime()
-//            , diffDate = parseInt((date - dueDate) / (24 * 3600 * 1000));
 
     return {
         classes: $classMatcher

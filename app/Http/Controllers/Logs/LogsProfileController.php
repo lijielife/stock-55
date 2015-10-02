@@ -7,6 +7,7 @@ use App\Http\Controllers\Logs\LogsTableController;
 use App;
 use Illuminate\Support\Facades\DB;
 use App\Utils\StockUtils;
+//use App\Beans\DataLogBean;
 
 class LogsProfileController extends LogsTableController {
 
@@ -29,7 +30,7 @@ class LogsProfileController extends LogsTableController {
     }
     
     public function calData($stocks){
-    
+        
         if(empty($stocks)) {
             return $stocks;
         }
@@ -39,22 +40,34 @@ class LogsProfileController extends LogsTableController {
         $stockPre = null;
         
         $stockFirst = current($stocks);
-        $stockEnd = end($stocks);
+//        $stockEnd = end($stocks);
         
-        $firstDate = $stockFirst->DATE;
-        $endDate = $stockEnd->DATE;
-        $symbol = $stockFirst->SYMBOL;
-        
-        $pricesInDB = $this->getPriceBetweenDate($symbol, $firstDate, $endDate);
         $priceLast = null;
+        $thisDate = date("Y-m-d");
+        $firstDate = $stockFirst->DATE;
+        $endDate = $thisDate;//$stockEnd->DATE;
+        $symbol = $stockFirst->SYMBOL;
+        $pricesInDB = $this->getPriceBetweenDate($symbol, $firstDate, $endDate);
+        
+        $currentBean = new \stdClass();
+        $currentBean->SYMBOL = $symbol;
+        $currentBean->SIDE_CODE = '001';
+        $currentBean->VOLUME = null;
+        $currentBean->PRICE = end($pricesInDB);
+        $currentBean->NET_AMOUNT = null;
+        $currentBean->DATE = $thisDate;
+        
+        array_push($stocks, $currentBean);
         foreach ($stocks as $stock) {
             
-            $stock->PRICE = number_format($stock->PRICE, 2, '.', '');
-            $stock->NET_AMOUNT = number_format($stock->NET_AMOUNT, 2, '.', '');
+            $stock->PRICE = ($stock->NET_AMOUNT != NULL 
+                                ? number_format($stock->PRICE, 2, '.', '') : null);
+            $stock->NET_AMOUNT = ($stock->NET_AMOUNT != NULL
+                                ? number_format($stock->NET_AMOUNT, 2, '.', '') : null);
             
             $sideCode = $stock->SIDE_CODE;
             $volume = (int)$stock->VOLUME;
-            $price = (float)$stock->PRICE;
+            $price = (float)($stock->PRICE ? $stock->PRICE : $priceLast);
             $netAmount = (float)$stock->NET_AMOUNT;
             $date = $stock->DATE;
             if(array_key_exists($date, $pricesInDB)){
@@ -95,7 +108,7 @@ class LogsProfileController extends LogsTableController {
                 $value = $this->calValue($valueBeforeVat);
             }
             
-            if(!$totalVolume > 0){
+            if(!$totalVolume > 0 && $volume > 0){
                 $avgPrice -= $result / $volume;
             }
 
