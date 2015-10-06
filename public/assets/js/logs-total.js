@@ -66,7 +66,19 @@ $(function () {
 
     });
 
-    
+    $("#loadPrice").click(function(){
+        var $selections = $table.bootstrapTable('getSelections'),
+            $symbols = [];
+        $.each($selections, function(index, $obj){
+            var $symbol = $obj.SYMBOL;
+            $symbols.push($symbol);
+        });
+        $symbols = $symbols.join();
+        
+        $.get($loadUrl+"?symbols="+$symbols, function (data) {
+            window.location.reload(true); 
+        }, 'json');
+    });
     $table = $('#tbl').bootstrapTable()
     
     .on('load-success.bs.table', function (e, data) {
@@ -190,18 +202,6 @@ function queryParams(row, index) {
     };
 }
 
-function numFormatter(value, row) {
-    return (parseFloat(value)).formatMoney(0);
-}
-
-function numFormatter2(value, row) {
-    return (parseFloat(value)).formatMoney(2);
-}
-
-function numFormatter4(value, row) {
-    return (parseFloat(value)).formatMoney(4);
-}
-
 function priceFormatter(value) {
     // 16777215 == ffffff in decimal
     var color = '#' + Math.floor(Math.random() * 6777215).toString(16);
@@ -260,3 +260,18 @@ function percentFormatter(data) {
     
     
 }
+
+//function operateFormatter(value, row, index) {
+//    return [
+//        '<a class="like" href="javascript:void(0)" title="Like">',
+//            '<i class="glyphicon glyphicon-heart"></i>',
+//        '</a>',
+//        '<a class="edit ml10" href="javascript:void(0)" title="Edit">',
+//            '<i class="glyphicon glyphicon-edit"></i>',
+//        '</a>',
+//        '<a class="remove ml10" href="javascript:void(0)" title="Remove">',
+//            '<i class="glyphicon glyphicon-remove"></i>',
+//        '</a>'
+//    ].join('');
+//}
+    

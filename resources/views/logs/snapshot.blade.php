@@ -93,7 +93,7 @@
                      data-sortable="true">วันที่</th>-->
                  <th data-field="SYMBOL" data-halign="center" data-align="left" 
                      data-sortable="true"data-footer-formatter="totalTextFormatter"
-                     data-formatter="symbolFormatter">ชื่อ</th>
+                     >ชื่อ</th>
                 <th data-field="PRICE_IN_DAY" data-halign="center" data-align="right" 
                     data-sortable="true" data-formatter="numFormatter2">ราคาปิด</th>
 <!--                 <th data-field="VOLUME" data-halign="center" data-align="center" 

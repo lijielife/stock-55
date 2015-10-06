@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\History;
 
-//use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Request;
 //use Auth;
 use App\Http\Controllers\History\GetController;
 
@@ -21,8 +21,10 @@ class LoadController extends GetController {
     public function loadData() {
         set_time_limit(0);
 
+        $symbols = (Request::input('symbols') === null ? null : 
+                explode(",", Request::input('symbols')));
 //        $this->resetData();
-        $this->resetDataInPort();
+        $this->resetDataInPort($symbols);
 
 //        $respone = array();
 

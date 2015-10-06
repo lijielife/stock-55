@@ -111,9 +111,12 @@ class LogsImportController extends Controller {
                             use( &$masSides, &$masBrokers, &$masSymbols, &$dataLogs) {
 
                         $side = $row->side_id;
+                        if(!$side) {
+                            return;
+                        }
                         $symbol = $row->symbol_id;
                         $broker = $row->broker_id;
-                        $dw = ($row->is_dw ? true : false);
+//                        $dw = ($row->is_dw ? true : false);
 
                         $dataLog = (array) $row->toArray();
                         unset($dataLog["id"]);

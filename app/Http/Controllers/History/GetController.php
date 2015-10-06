@@ -11,7 +11,6 @@ use App\Beans\SymbolBean;
 class GetController extends HistoryController {
     
     protected $is_insert = true;
-    // สำหรับแสดงรายชื่อสมาชิก หรือ admin ที่มีอยู่ในปัจจุบัน
     public function getIndex() {
 
         $respone = $this->process(null);

@@ -14,23 +14,15 @@ class SnapShotController extends LogsProfileController {
     public function calData($stocks){
         
         $stocksRet = array();
-        $stockArr = array();
-        $stockSingleArr = array();
-        foreach ($stocks as $stock) {
-            $symbol = $stock->SYMBOL;
-            if(array_key_exists($symbol, $stockArr)){
-                $stockSingleArr = $stockArr[$symbol];
-            } else {
-                $stockSingleArr = array();
-            }
-            array_push($stockSingleArr, $stock);
-            $stockArr[$symbol] = $stockSingleArr;
-        }
+        $stockFromProfiles = App::make('App\Http\Controllers\Logs\LogsTotalController')->getDataFromProfile($stocks);
+
+//        foreach ($stockFromProfiles as $stockFromProfile) {
+//            array_push($stocksRet, current($stockFromProfile));
+//        }
         
-        foreach ($stockArr as $symbol => $stockSingleArr) {
-            $stocksRes = App::make('App\Http\Controllers\Logs\LogsTotalController')->getDataFromProfile($stockSingleArr);
-//            array_push($stocksRet, $stocksRes);
-            array_push($stocksRet, current($stocksRes));
+        $historySet = $this->getHistorySet();
+        
+        foreach ($historySet as $historySet => $value) {
             
         }
         return $stocksRet;
@@ -39,19 +31,12 @@ class SnapShotController extends LogsProfileController {
     
     public function getHistorySet() {
         
-        return DB::select(
-        "SELECT TIME, CLOSE 
-        FROM HISTORY_SET 
-        WHERE TIME BETWEEN 
-                (SELECT MIN(DATE)
-                FROM super_stock_db.DATA_LOG da
-                WHERE da.USER_ID = ? )
-                AND  
-            (SELECT MAX(DATE)
-                FROM super_stock_db.DATA_LOG da
-                WHERE da.USER_ID = ? )
-        ORDER BY TIME "
-        , [$this->USER_ID, $this->USER_ID]);
+        $min = DB::table('DATA_LOG')->where('USER_ID', $this->USER_ID)->min("DATE");
+        $max = DB::table('DATA_LOG')->where('USER_ID', $this->USER_ID)->max("DATE");
+
+        return DB::table('HISTORY_SET')
+                ->whereBetween('TIME', array($min, $max))
+                ->lists('CLOSE', 'TIME');
     }
     
         

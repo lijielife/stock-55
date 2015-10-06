@@ -267,9 +267,14 @@ class HistoryController extends Controller {
         DB::update('update MAS_SYMBOL SET IS_USE = ?', ['1']);
     }
     
-    public function resetDataInPort() {
-        DB::update('update MAS_SYMBOL SET IS_USE = ?'
+    public function resetDataInPort($symbols = null) {
+        
+        if($symbols){
+            \App\Models\MasSymbol::whereIn("SYMBOL", $symbols)->update(array("IS_USE" => 1));
+        } else {
+            DB::update('update MAS_SYMBOL SET IS_USE = ?'
                 . ' WHERE ID IN (SELECT distinct SYMBOL_ID FROM DATA_LOG) OR SYMBOL = ?', ['1', 'SET']);
+        }
     }
 
 //    function setUrl($url) {

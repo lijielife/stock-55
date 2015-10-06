@@ -64,18 +64,23 @@
                 <span data-zh="转换" data-es="Transformar">Matcher</span>
             </button>
         </div>-->
-        <div id="filter-bar"> </div>
-
+        <!--<div id="filter-bar"> </div>-->
+        <div id="filter-bar">
+            <div class="form-inline" role="form">
+                <button type="button" class="btn btn-default" id="loadPrice">
+                    <i class="fa fa-download"></i>
+                </button>
+            </div>
+        </div>
         
 <!--                data-row-attributes="rowAttributes" -->
         <table id="tbl" data-toggle="table" 
                 data-toolbar="#filter-bar"
-                data-show-filter="true"
+                data-show-filter="false"
                 
                 data-url="{{url('logs/total/getData')}}"
                 data-show-columns="true" data-id-field="ID" 
                 data-show-refresh="true" data-search="true"
-                data-toolbar="#filter-bar"
                 data-query-params="queryParams"
                 data-single-select="false"
                 data-click-to-select="true"
@@ -127,7 +132,8 @@
                      data-sortable="true" data-visible="false">โบรค</th>
                  <th data-field="MATCHER" data-halign="center" data-align="right" 
                      data-sortable="true" data-visible="false">Matcher</th>
-                 
+<!--                 <th data-field="operate" data-formatter="operateFormatter" 
+                     data-events="operateEvents">Item Operate</th>-->
              </tr>
              </thead>
          </table>
@@ -148,7 +154,7 @@
 <script type="text/javascript">
 
 var $getAllSymbol = "{{url('service/single/getAllSymbol')}}";
-
+var $loadUrl= "{{url('history/loadData')}}";
 var $profileUrl= "{{url('logs/profile')}}";
 //var $getAllBroker = "{{url('service/single/getAllBroker')}}";
 //    var $getSingleStock = "{{url('getSingleStock')}}";

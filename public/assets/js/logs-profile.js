@@ -68,6 +68,30 @@ $(function () {
         resultText();
     });
     
+    $("#addBuyButton").click(function(){
+        var $tr = getTrTmpl();
+        if($tr.hasClass("no-records-found")){
+            return ;
+        }
+        
+        $tr.find("td:eq(2)").removeClass("danger").addClass("info");
+        
+        $("tbody:first").prepend($tr);
+        
+    });
+    $("#addSellButton").click(function(){
+        var $tr = getTrTmpl();
+        if($tr.hasClass("no-records-found")){
+            return ;
+        }
+        
+        $tr.find("td:eq(2)").removeClass("info").addClass("danger");
+        
+        $("tbody:first").prepend($tr);
+        
+        
+    });
+    
     
     $table = $('#tbl').bootstrapTable()
       .on('check.bs.table', function (e, row) {
@@ -85,6 +109,43 @@ $(function () {
     });
 });
 
+function getTrTmpl(){
+//     <tr data-index="-1">
+//    <td class="bs-checkbox">
+//    <input data-index="0" name="btSelectItem" type="checkbox">
+//    </td>
+//    
+//    <td style="text-align: center; ">2015-10-06</td> 
+//    <td class="info" style="text-align: right; width: 100px; ">
+//    <input type="text" class="form-control volume" style="height: 20px;">
+//    </td>
+//    <td style="text-align: right; width: 100px; ">
+//        <input type="text" class="form-control price" style="height: 20px;">
+//    </td>
+//    <td style="text-align: right; ">-</td>
+//    <td style="text-align: right; ">4</td>
+//    <td style="text-align: right; ">678.85</td>
+//    <td class="text-danger" style="text-align: right; ">-250.58</td>
+//    <td class="text-danger" style="text-align: right; ">-1.09</td>
+//    <td class="text-success" style="text-align: right; ">130.55</td>
+//    <td class="text-warning" style="text-align: right; ">232.3575</td>
+//    </tr>
+    
+    var $tr = $("<tr data-index='-1'></tr>");
+    
+    
+    var $tr = $("tbody:first").find("tr:first").clone(true).attr("data-index", "-1");
+    
+    if($tr.hasClass("no-records-found")){
+        return null;
+    }
+
+        $inputTmpl = $('<input type="text" class="form-control"/>').height("20px");
+        
+        $tr.find("td:eq(2)").html($inputTmpl.clone(true).addClass("volume"));
+        $tr.find("td:eq(3)").html($inputTmpl.clone(true).addClass("price"));
+    return $tr;  
+}
 function calSelection(){
     var $rows = $table.bootstrapTable('getSelections');
     var $sumAmount = 0, $sumVol = 0,$avg = 0;
@@ -228,18 +289,6 @@ function queryParams(row, index) {
         symbol : symbol
         ,broker : broker
     };
-}
-
-function numFormatter(value, row) {
-    return (value).formatMoney(0);
-}
-
-function numFormatter2(value, row) {
-    return (value).formatMoney(2);
-}
-
-function numFormatter4(value, row) {
-    return (value).formatMoney(4);
 }
 
 function priceFormatter(value) {

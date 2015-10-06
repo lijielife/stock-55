@@ -60,10 +60,10 @@ class LogsProfileController extends LogsTableController {
         array_push($stocks, $currentBean);
         foreach ($stocks as $stock) {
             
-            $stock->PRICE = ($stock->NET_AMOUNT != NULL 
-                                ? number_format($stock->PRICE, 2, '.', '') : null);
+            $stock->PRICE = ($stock->PRICE != NULL 
+                                ? number_format((float)$stock->PRICE, 2, '.', '') : null);
             $stock->NET_AMOUNT = ($stock->NET_AMOUNT != NULL
-                                ? number_format($stock->NET_AMOUNT, 2, '.', '') : null);
+                                ? number_format((float)$stock->NET_AMOUNT, 2, '.', '') : null);
             
             $sideCode = $stock->SIDE_CODE;
             $volume = (int)$stock->VOLUME;

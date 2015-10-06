@@ -230,18 +230,6 @@ function queryParams(row, index) {
     };
 }
 
-function numFormatter(value, row) {
-    return (value).formatMoney(0);
-}
-
-function numFormatter2(value, row) {
-    return (value).formatMoney(2);
-}
-
-function numFormatter4(value, row) {
-    return (value).formatMoney(4);
-}
-
 function priceFormatter(value) {
     // 16777215 == ffffff in decimal
     var color = '#'+Math.floor(Math.random() * 6777215).toString(16);

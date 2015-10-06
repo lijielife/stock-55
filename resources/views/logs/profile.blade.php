@@ -69,12 +69,18 @@
 <!--                <button class="btn btn-default" type="button" name="refresh" title="Refresh">
                     <i class="glyphicon glyphicon-refresh icon-refresh"></i>
                 </button>-->
+                <button class="btn btn-default" id="addBuyButton">
+                    <i class="fa fa-plus-circle" style="color: blue;"></i>
+                </button>
+                <button class="btn btn-default" id="addSellButton">
+                    <i class="fa fa-plus-circle" style="color: red;"></i>
+                </button>
                 <button class="btn btn-default" id="matcherButton">
                     <i class="glyphicon glyphicon-transfer"></i> 
                     <span data-zh="转换" data-es="Transformar">Matcher</span>
                 </button>
                 
-                
+                <!--$("tbody:first").prepend($("tbody:first").find("tr:first").clone(true))-->
                 <!--<div class="alert-success btn-group" id="events-result"></div>-->
                 
                 <div class="keep-open btn-group" title="Columns">
@@ -119,30 +125,30 @@
                         >คำสั่ง</th>
                     <th data-field="SYMBOL" data-halign="center" data-align="center" 
                         data-sortable="false" data-visible="false">ชื่อ</th>
-                    <th data-field="VOLUME" data-halign="center" data-align="center" 
-                        data-sortable="false" data-cell-style="cellStyle">หน่วย</th>
-                    <th data-field="PRICE_IN_DAY" data-halign="center" data-align="center" 
-                        data-sortable="false" data-visible="false">ราคาปิด</th>
-                    <th data-field="PRICE" data-halign="center" data-align="center" 
-                        data-sortable="false">ราคา</th>
-                    <th data-field="NET_AMOUNT" data-halign="center" data-align="center" 
-                        data-sortable="false">ราคาสุทธิ</th>
+                    <th data-field="VOLUME" data-halign="center" data-align="right" 
+                        data-sortable="false" data-cell-style="cellStyle" data-width="100">หน่วย</th>
+                    <th data-field="PRICE_IN_DAY" data-halign="center" data-align="right" 
+                        data-sortable="false" data-visible="false" data-width="100">ราคาปิด</th>
+                    <th data-field="PRICE" data-halign="center" data-align="right" 
+                        data-sortable="false" data-width="100">ราคา</th>
+                    <th data-field="NET_AMOUNT" data-halign="center" data-align="right" 
+                        data-sortable="false" data-formatter="numFormatter2">ราคาสุทธิ</th>
    <!--                 <th data-field="DUE_DATE" data-halign="center" data-align="center" 
                         data-sortable="false">วันที่จ่าย</th>-->
-                    <th data-field="TOTAL" data-halign="center" data-align="center" 
+                    <th data-field="TOTAL" data-halign="center" data-align="right" 
                         data-sortable="false" data-formatter="numFormatter">เหลือ</th>
-                    <th data-field="VALUE" data-halign="center" data-align="center" 
+                    <th data-field="VALUE" data-halign="center" data-align="right" 
                         data-sortable="false" data-formatter="numFormatter2">มูลค่า</th>
-                    <th data-field="RESULT" data-halign="center" data-align="center" 
+                    <th data-field="RESULT" data-halign="center" data-align="right" 
                         data-sortable="false" data-cell-style="cellValueStyle"
                         data-formatter="numFormatter2">ผล</th>
-                    <th data-field="RESULT_PERCENT" data-halign="center" data-align="center" 
+                    <th data-field="RESULT_PERCENT" data-halign="center" data-align="right" 
                         data-sortable="false" data-cell-style="cellValueStyle"
                         data-formatter="numFormatter2">%</th>
-                    <th data-field="PORT_INDEX" data-halign="center" data-align="center" 
+                    <th data-field="PORT_INDEX" data-halign="center" data-align="right" 
                         data-sortable="false" data-cell-style="cellValuePercentStyle"
                         data-formatter="numFormatter2">port index</th>
-                    <th data-field="AVG_PRICE" data-halign="center" data-align="center" 
+                    <th data-field="AVG_PRICE" data-halign="center" data-align="right" 
                         data-sortable="false" data-cell-style="cellValueAvgStyle"
                         data-formatter="numFormatter4">ราคาเฉลี่ย</th>
                     <th data-field="BROKER_NAME" data-halign="center" data-align="center" 
