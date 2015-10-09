@@ -4,13 +4,14 @@ namespace App\Http\Controllers\Logs;
 
 //use App\Http\Controllers\AdminsController;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+//use Illuminate\Http\Request;
 //use App\Models\ImportFile;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\MasSide;
 use App\Models\MasBroker;
 use App\Models\MasSymbol;
 use App\Models\DataLog;
+use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\DB;
 class LogsImportController extends Controller {
 
@@ -64,42 +65,71 @@ class LogsImportController extends Controller {
     private function readSymbol($pathExcelFile) {
 
         Excel::selectSheets('import_data')
-                ->batch(array($pathExcelFile), function($rows, $files) {
+            ->batch(array($pathExcelFile), function($rows, $files) {
 
 //                    $rows->formatDates(true, 'Y-m-d');
-                    $rows->each(function($row) {
+            $rows->each(function($row) {
 
-                        $symbol = $row->symbol;
-                        $market = $row->market;
+                $symbol = $row->symbol;
+                $market = $row->market;
 
-                        $symbolVo = MasSymbol::firstOrCreate(["SYMBOL" => $symbol]);
-                        unset($symbolVo->ID);
-                        $symbolVo->MARKET = strtoupper($market);
-                        $symbolVo->IS_SET = (strtoupper($market) == "SET" ? true : false);
-                        $symbolVo->IS_DW = false;
-                        $symbolVo->save();
-                    });
-                });
+                $symbolVo = MasSymbol::firstOrCreate(["SYMBOL" => $symbol]);
+                unset($symbolVo->ID);
+                $symbolVo->MARKET = strtoupper($market);
+                $symbolVo->IS_SET = (strtoupper($market) == "SET" ? true : false);
+                $symbolVo->IS_DW = false;
+                $symbolVo->save();
+            });
+        });
     }
 
-    private function readExcel($pathExcelFile) {
-
-
+    public function getMasSide() {
         $masSides = array();
         foreach (MasSide::get() as $masSide) {
             $masSides[$masSide->SIDE_NAME] = $masSide->ID;
         }
-
+        return $masSides;
+    }
+    
+    public function getMasSideCode() {
+        $masSides = array();
+        foreach (MasSide::get() as $masSide) {
+            $masSides[$masSide->SIDE_CODE] = $masSide->SIDE_NAME;
+        }
+        return $masSides;
+    }
+    
+    public function getMasBrokers() {
         $masBrokers = array();
         foreach (MasBroker::get() as $masBroker) {
             $masBrokers[$masBroker->BROKER_NAME] = $masBroker->ID;
         }
-
+        return $masBrokers;
+    }
+    
+    public function getMasBrokersCode() {
+        $masBrokers = array();
+        foreach (MasBroker::get() as $masBroker) {
+            $masBrokers[$masBroker->BROKER_CODE] = $masBroker->ID;
+        }
+        return $masBrokers;
+    }
+    
+    public function getMasSymbols() {
         $masSymbols = array();
         foreach (MasSymbol::get() as $masSymbol) {
             $masSymbols[$masSymbol->SYMBOL] = $masSymbol->ID;
         }
+        return $masSymbols;
+    }
+    
+    private function readExcel($pathExcelFile) {
 
+        $masSides = $this->getMasSide();
+
+        $masBrokers = $this->getMasBrokers();
+
+        $masSymbols = $this->getMasSymbols();
 
         $dataLogs = array();
         Excel::selectSheets('import_data')
@@ -109,78 +139,22 @@ class LogsImportController extends Controller {
                     $rows->formatDates(true, 'Y-m-d');
                     $rows->each(function($row)
                             use( &$masSides, &$masBrokers, &$masSymbols, &$dataLogs) {
-
-                        $side = $row->side_id;
-                        if(!$side) {
-                            return;
-                        }
-                        $symbol = $row->symbol_id;
-                        $broker = $row->broker_id;
-//                        $dw = ($row->is_dw ? true : false);
-
-                        $dataLog = (array) $row->toArray();
-                        unset($dataLog["id"]);
-                        unset($dataLog["is_dw"]);
-
-                        if (isset($side) && $side != "" && isset($symbol) && $symbol != "" && isset($broker) && $broker != "") {
-
-                            if (!array_key_exists($symbol, $masSymbols)) {
-                                $symbolVo = MasSymbol::firstOrCreate(array("SYMBOL" => $symbol));
-                                $masSymbols[$symbolVo->SYMBOL] = $symbolVo->id;
-
-                                // ถ้ามี "-" แปลว่าเป็น W
-                                if (strpos($symbol, '-')) {
-                                    // หาชื่อตัวแม่
-                                    $parentSymbolName = substr($symbol, 0, strpos($symbol, "-"));
-                                    $parentSymbolVo = MasSymbol::firstOrCreate(array("SYMBOL" => $parentSymbolName));
-                                    
-                                    // copy ParentValue To $symbolVo
-                                    $symbolVo->MARKET = $parentSymbolVo->MARKET;
-                                    $symbolVo->IS_SET = $parentSymbolVo->IS_SET;
-                                    $symbolVo->IS_USE = true;
-                                    $symbolVo->IS_W = true;
-                                    $symbolVo->IS_DW = false;
-                                    $symbolVo->save();
-                                } else if(strlen($symbol) > 8){
-                                    $symbolVo->IS_USE = true;
-                                    $symbolVo->IS_W = false;
-                                    $symbolVo->IS_DW = true;
-                                    $symbolVo->save();
-                                }
-                            }
-
-                            if (array_key_exists($side, $masSides) && array_key_exists($broker, $masBrokers) && array_key_exists($symbol, $masSymbols)) {
-                                $sideId = $masSides[$side];
-                                $brokerId = $masBrokers[$broker];
-                                $symbolId = $masSymbols[$symbol];
-//                                $dataLog["is_dw"] = $dw;
-
-                                $userId = $this->USER_ID;
-                                $dataLog["side_id"] = $sideId;
-                                $dataLog["broker_id"] = $brokerId;
-                                $dataLog["symbol_id"] = $symbolId;
-                                $dataLog["user_id"] = $userId;
-                                if($dataLog["due_date"] == null){
-                                    $dataLog["due_date"] = $dataLog["date"];
-                                }
-
-                                $dataLog["updated_at"] = date("Y-m-d H:i:s");
-                                $dataLog["updated_by"] = $userId;
-                                $dataLog["created_at"] = date("Y-m-d H:i:s");
-                                $dataLog["created_by"] = $userId;
-
-                                array_push($dataLogs, $dataLog);
-                            } else {
-                                return;
-                            }
-                        }
+                        LogsImportController::genDataLogs($row, $dataLogs, $this->USER_ID, $masSymbols, $masSides, $masBrokers);
                     });
                 });
+        $this->insertDataLogs($dataLogs);
+    }
+    
+    public static function setAuditable(&$bean, $userId) {
+        
+        $bean["updated_at"] = date("Y-m-d H:i:s");
+        $bean["updated_by"] = $userId;
+        $bean["created_at"] = date("Y-m-d H:i:s");
+        $bean["created_by"] = $userId;
+    }
 
-//        foreach ($dataLogs as $dataLog) {
-            
-//            DataLog::insert($dataLog);
-//        }
+    private function insertDataLogs($dataLogs){
+        
         DataLog::insert($dataLogs);
         
         DB::statement('UPDATE `super_stock_db`.`data_log`
@@ -191,5 +165,112 @@ class LogsImportController extends Controller {
                 IS_DW, USER_ID))
             WHERE HASH_MD IS NULL');
     }
+    
+    public function deleteTest(){
+        
+        $symbol = Request::input('symbol');
+        $symbolDB = MasSymbol::where('SYMBOL', $symbol)->select("ID")->first();
+        $brokerDB = MasBroker::where('BROKER_CODE', '004')->select("ID")->first();
+        $symbolId = $symbolDB->ID;   
+        $brokerId = $brokerDB->ID;
+        DataLog::where('broker_id', $brokerId)->where('symbol_id', $symbolId)->delete();
+    }
+    
+    
+    public function saveDataLogs(){
+        $tts = Request::input('tt');
+        
+        $masSides = $this->getMasSide();
+        $masSidesCode = $this->getMasSideCode();
+        $masBrokers = $this->getMasBrokers();
+        $masSymbols = $this->getMasSymbols();
+        $dataLogs = array();
+        foreach ($tts as $tt) {
+            $row = new \stdClass();
+//            $row = (object) $tt;
+            $sideCode = $tt["SIDE_CODE"];            
+            if(!array_key_exists($sideCode, $masSidesCode) ){
+                continue;
+            } 
+            $row->side_id = $masSidesCode[$sideCode];
+            $row->symbol_id = $tt["SYMBOL"];
+            $row->broker_id = "TEST";
+            $price = $tt["PRICE"];
+            $volume = $tt["VOLUME"];
+            $row->price = $price;
+            $row->volume = $volume;
+            $row->amount = LogsProfileController::getPriceTotal($volume, $price);
+            $row->vat = LogsTotalController::getVat($row->amount);
+            $row->net_amount = $tt["NET_AMOUNT"];
+            $row->due_date = $row->date = $tt["DATE"];
+            LogsImportController::genDataLogs($row, $dataLogs, $this->USER_ID, $masSymbols, $masSides, $masBrokers);
+        }
+                        
+        $this->insertDataLogs($dataLogs);
+//        return true;
+    }
+    
+    private static function genDataLogs($row, &$dataLogs, $userId, $masSymbols, $masSides, $masBrokers){
+        $side = $row->side_id;
+        if(!$side) {
+            return;
+        }
+        $symbol = $row->symbol_id;
+        $broker = $row->broker_id;
+//                        $dw = ($row->is_dw ? true : false);
 
+        $dataLog = (array) $row;
+        unset($dataLog["id"]);
+        unset($dataLog["is_dw"]);
+
+        if (isset($side) && $side != "" && isset($symbol) && $symbol != "" && isset($broker) && $broker != "") {
+
+            if (!array_key_exists($symbol, $masSymbols)) {
+                $symbolVo = MasSymbol::firstOrCreate(array("SYMBOL" => $symbol));
+                $masSymbols[$symbolVo->SYMBOL] = $symbolVo->id;
+
+                // ถ้ามี "-" แปลว่าเป็น W
+                if (strpos($symbol, '-')) {
+                    // หาชื่อตัวแม่
+                    $parentSymbolName = substr($symbol, 0, strpos($symbol, "-"));
+                    $parentSymbolVo = MasSymbol::firstOrCreate(array("SYMBOL" => $parentSymbolName));
+
+                    // copy ParentValue To $symbolVo
+                    $symbolVo->MARKET = $parentSymbolVo->MARKET;
+                    $symbolVo->IS_SET = $parentSymbolVo->IS_SET;
+                    $symbolVo->IS_USE = true;
+                    $symbolVo->IS_W = true;
+                    $symbolVo->IS_DW = false;
+                    $symbolVo->save();
+                } else if(strlen($symbol) > 8){
+                    $symbolVo->IS_USE = true;
+                    $symbolVo->IS_W = false;
+                    $symbolVo->IS_DW = true;
+                    $symbolVo->save();
+                }
+            }
+
+            if (array_key_exists($side, $masSides) 
+                    && array_key_exists($broker, $masBrokers) 
+                    && array_key_exists($symbol, $masSymbols)) {
+                $sideId = $masSides[$side];
+                $brokerId = $masBrokers[$broker];
+                $symbolId = $masSymbols[$symbol];
+                
+                $dataLog["side_id"] = $sideId;
+                $dataLog["broker_id"] = $brokerId;
+                $dataLog["symbol_id"] = $symbolId;
+                $dataLog["user_id"] = $userId;
+                
+                if(!isset($dataLog["due_date"]) || $dataLog["due_date"] == null){
+                    $dataLog["due_date"] = $dataLog["date"];
+                }
+                LogsImportController::setAuditable($dataLog, $userId);
+
+                array_push($dataLogs, $dataLog);
+            } else {
+                return;
+            }
+        }
+    }
 }

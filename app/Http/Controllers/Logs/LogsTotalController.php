@@ -12,37 +12,6 @@ class LogsTotalController extends LogsProfileController {
     protected $view = 'logs.total';
 
     public function calData($stocks){
-//        $stocksRet = array();
-//        $stockArr = array();
-//        $stockSingleArr = array();
-//        foreach ($stocks as $stock) {
-//            $symbol = $stock->SYMBOL;
-//            if(array_key_exists($symbol, $stockArr)){
-//                $stockSingleArr = $stockArr[$symbol];
-//            } else {
-//                $stockSingleArr = array();
-//            }
-//            array_push($stockSingleArr, $stock);
-//            $stockArr[$symbol] = $stockSingleArr;
-//        }
-//        
-//        foreach ($stockArr as $symbol => $stockSingleArr) {
-//            $stocksRes = App::make('App\Http\Controllers\Logs\LogsProfileController')->calData($stockSingleArr);
-//            array_push($stocksRet, current($stocksRes));
-//        }
-//        return $stocksRet;
-        
-        $stocksRet = array();
-        $stockFromProfiles = $this->getDataFromProfile($stocks);
-        
-        foreach ($stockFromProfiles as $stockFromProfile) {
-            array_push($stocksRet, current($stockFromProfile));
-        }
-        return $stocksRet;
-        
-    }
-    
-    public function getDataFromProfile($stocks){
         $stocksRet = array();
         $stockArr = array();
         $stockSingleArr = array();
@@ -58,12 +27,15 @@ class LogsTotalController extends LogsProfileController {
         }
         
         foreach ($stockArr as $symbol => $stockSingleArr) {
+            
+            array_push($stockSingleArr, $this->getLastBean($symbol));
+        
             $stocksRes = App::make('App\Http\Controllers\Logs\LogsProfileController')->calData($stockSingleArr);
-            array_push($stocksRet, $stocksRes);
+            array_push($stocksRet,current($stocksRes) );
         }
-        return $stocksRet;
+        return $stocksRet;        
     }
-
+    
     public function getDataLogs() {
         $symbolNameIn = Request::input('symbol');
         $brokerIdIn = Request::input('broker');

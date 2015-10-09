@@ -38,7 +38,13 @@ abstract class LogsTableController extends Controller {
 
     abstract public function getDataLogs();
     
-    public function calValue($valueBeforeVat){
+//    public function calValue($valueBeforeVat){
+//        return ;
+//    }
+    public static function getVat($valueBeforeVat){
         return ($valueBeforeVat) - (($valueBeforeVat * 0.001578) + (($valueBeforeVat * 0.001578) * 7 / 100));
     }
+//    public function calValueDiv($valueBeforeVat){
+//        return ($valueBeforeVat) - (($valueBeforeVat * 0.001578) + (($valueBeforeVat * 0.001578) * 7 / 100));
+//    }
 }

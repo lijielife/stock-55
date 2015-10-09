@@ -36,8 +36,8 @@
                             <button class="btn btn-success" type="button" id="searchButton">
                                 <i class="fa fa-search"></i>
                             </button>
-                            <button type="button" class="btn btn-danger"  id="clearButton">
-                                <i class="glyphicon glyphicon-trash"></i>
+                            <button type="button" class="btn btn-danger"  id="cleanButton">
+                                <i class="fa fa-times"></i>
                             </button>
                         </span>
                     </div>
@@ -62,38 +62,43 @@
         <!--<div id="filter-bar"> </div>-->
 
         <div id="transform-buttons" >
-            
-
-
-            <div class="columns columns-left btn-group pull-left">
-<!--                <button class="btn btn-default" type="button" name="refresh" title="Refresh">
-                    <i class="glyphicon glyphicon-refresh icon-refresh"></i>
-                </button>-->
-                <button class="btn btn-default" id="addBuyButton">
-                    <i class="fa fa-plus-circle" style="color: blue;"></i>
-                </button>
-                <button class="btn btn-default" id="addSellButton">
-                    <i class="fa fa-plus-circle" style="color: red;"></i>
-                </button>
-                <button class="btn btn-default" id="matcherButton">
-                    <i class="glyphicon glyphicon-transfer"></i> 
-                    <span data-zh="转换" data-es="Transformar">Matcher</span>
-                </button>
+            <div class="columns-left btn-group pull-left form-group">
                 
-                <!--$("tbody:first").prepend($("tbody:first").find("tr:first").clone(true))-->
-                <!--<div class="alert-success btn-group" id="events-result"></div>-->
-                
-                <div class="keep-open btn-group" title="Columns">
-                    <button type="button" class="btn btn-default dropdown-toggle"  id="events-result">
-                        Result
-                        <!--<i class="glyphicon glyphicon-th icon-th"></i>--> 
-                        <!--<span class="caret"></span>-->
-                    </button>
-<!--                    <ul class="dropdown-menu" role="menu">
-                        <li><label><input type="checkbox" data-field="ID" value="1"> ID</label></li>
-                        <li><label><input type="checkbox" data-field="DATE" value="2" checked="checked"> วันที่</label>
-                        </li><li><label><input type="checkbox" data-field="SIDE_NAME" value="3"> คำสั่ง</label></li>
-                    </ul>-->
+                <div class="input-group">
+                    <input type="text" class="form-control" id="volume" placeholder="Volume" style="width:80px;"/>
+                    <input type="text" class="form-control" id="price" placeholder="Price" style="width:80px;"/>
+                    <span class="input-group-btn" style="width: 0px;">
+                        <button class="btn btn-default btn-group" id="addBuyButton">
+                            <i class="fa fa-plus-circle" style="color: blue;"></i>
+                        </button>
+                        <button class="btn btn-default btn-group" id="addSellButton">
+                            <i class="fa fa-plus-circle" style="color: red;"></i>
+                        </button>
+                        <button class="btn btn-default btn-group" id="addDivButton">
+                            <i class="fa fa-plus-circle" style="color: yellowgreen;"></i>
+                        </button>
+                        <button class="btn btn-default btn-group" id="removeButton">
+                            <i class="fa fa-minus-circle"></i>
+                        </button>
+                        <button class="btn btn-default btn-group" id="saveButton">
+                            <i class="fa fa-save" style="color: green;"></i>
+                        </button>
+                        <button class="btn btn-default btn-group" id="deleteTestButton">
+                            <i class="fa fa-trash-o" style="color: red;"></i>
+                        </button>
+                        <button class="btn btn-default btn-group" id="loadPriceButton">
+                            <i class="fa fa-download"></i>
+                        </button>
+                        <button class="btn btn-default btn-group" id="matcherButton">
+                            <i class="glyphicon glyphicon-transfer"></i> 
+                            <span data-zh="转换" data-es="Transformar">Matcher</span>
+                        </button>
+                        <div class="keep-open btn-group" title="Columns">
+                            <button type="button" class="btn btn-default dropdown-toggle"  id="events-result" disabled="true">
+                                Result
+                            </button>
+                        </div>
+                    </span>
                 </div>
             </div>
 
@@ -110,12 +115,12 @@
                data-toolbar="#filter-bar"
                data-query-params="queryParams"
                data-single-select="false"
-               data-click-to-select="true"
+               data-click-to-select="false"
                data-show-filter="false"
                >
             <thead>
                 <tr>
-                    <th data-field="state" data-checkbox="true">#</th>
+                    <th data-field="state" data-checkbox="true"></th>
                     <th data-field="ID" data-halign="center" data-align="right" 
                         data-sortable="false" data-visible="false">ID</th>
                     <th data-field="DATE" data-halign="center" data-align="center" 
@@ -124,13 +129,16 @@
                         data-sortable="false" data-cell-style="cellStyle" data-visible="false"
                         >คำสั่ง</th>
                     <th data-field="SYMBOL" data-halign="center" data-align="center" 
-                        data-sortable="false" data-visible="false">ชื่อ</th>
+                        data-sortable="false" data-cell-style="cellStyle" data-visible="false"
+                        >ชื่อ</th>
                     <th data-field="VOLUME" data-halign="center" data-align="right" 
                         data-sortable="false" data-cell-style="cellStyle" data-width="100">หน่วย</th>
                     <th data-field="PRICE_IN_DAY" data-halign="center" data-align="right" 
-                        data-sortable="false" data-visible="false" data-width="100">ราคาปิด</th>
+                        data-sortable="false" data-visible="false" data-width="100"
+                        data-formatter="numFormatter2">ราคาปิด</th>
                     <th data-field="PRICE" data-halign="center" data-align="right" 
-                        data-sortable="false" data-width="100">ราคา</th>
+                        data-sortable="false" data-width="100"
+                        data-formatter="numFormatter2" >ราคา</th>
                     <th data-field="NET_AMOUNT" data-halign="center" data-align="right" 
                         data-sortable="false" data-formatter="numFormatter2">ราคาสุทธิ</th>
    <!--                 <th data-field="DUE_DATE" data-halign="center" data-align="center" 
@@ -178,6 +186,9 @@
 <script type="text/javascript">
 
 var $getAllSymbol = "{{url('service/single/getAllSymbol')}}";
+var $loadUrl= "{{url('history/loadData')}}";
+var $saveDataUrl = "{{url('logs/profile/save')}}";
+var $deleteTestUrl = "{{url('logs/profile/deleteTest')}}";
 //var $getAllBroker = "{{url('service/single/getAllBroker')}}";
 //    var $getSingleStock = "{{url('getSingleStock')}}";
 

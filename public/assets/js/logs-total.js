@@ -74,10 +74,16 @@ $(function () {
             $symbols.push($symbol);
         });
         $symbols = $symbols.join();
-        
-        $.get($loadUrl+"?symbols="+$symbols, function (data) {
-            window.location.reload(true); 
-        }, 'json');
+        $("#loadPrice").find("i").css({color: "orange"});
+        $.get($loadUrl, {symbols: $symbols} )
+        .done(function () {
+//            window.location.reload(true); 
+            $table.bootstrapTable('refresh'); 
+            $("#loadPrice").find("i").css({color: "greenyellow"});
+        }).fail(function(){
+            $table.bootstrapTable('refresh'); 
+            $("#loadPrice").find("i").css({color: "red"});
+        });
     });
     $table = $('#tbl').bootstrapTable()
     

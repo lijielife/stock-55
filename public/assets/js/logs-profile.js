@@ -1,7 +1,9 @@
-var $table;
-
+var $table, $symbolLocal;
 $(function () {
-
+    
+    $.data(document.body, "tt", []);
+    $.data(document.body, "LID", 0);
+    
     $.get($getAllSymbol, function (data) {
         $("#symbol").typeahead({source: data});
     }, 'json');
@@ -35,12 +37,21 @@ $(function () {
     
     var tigger = true, tempRows = null;
     $("#searchButton").click(function(){
+        
+        $.data(document.body, "tt", []);
         $table.bootstrapTable('refresh');
         tigger = true;
         tempRows = null;
     });
-         
-    $("#clearButton").click(function(){
+    
+    $('#symbol').keypress(function (e) {
+        if (e.which === 13) {
+            $("#searchButton").click();
+            return false;    //<---- Add this line
+        }
+    });
+
+    $("#cleanButton").click(function(){
         $("#symbol").val('');
         $('#brokerMenu').val( $('#brokerMenu').prop('defaultSelected') );
     });
@@ -53,7 +64,7 @@ $(function () {
         }
         if(tigger){
             $.each(tempRows, function(index, row){
-                if(row.MATCHER == null){
+                if(row.MATCHER === null){
                     newRows.push(row);
                 }
             });
@@ -69,30 +80,103 @@ $(function () {
     });
     
     $("#addBuyButton").click(function(){
-        var $tr = getTrTmpl();
-        if($tr.hasClass("no-records-found")){
-            return ;
-        }
-        
-        $tr.find("td:eq(2)").removeClass("danger").addClass("info");
-        
-        $("tbody:first").prepend($tr);
-        
+        loadDataTT("001");
     });
     $("#addSellButton").click(function(){
-        var $tr = getTrTmpl();
-        if($tr.hasClass("no-records-found")){
-            return ;
-        }
+        loadDataTT("002");
+    });
+    $("#addDivButton").click(function(){
+        loadDataTT("003");
+    });
+    $('#removeButton').click(function () {
+        var selects = $table.bootstrapTable('getSelections'),
+        idToDel = $.map(selects, function (row) {
+            return ($.isNumeric(row.LID) ? row.LID : null);
+        }),
+        reqArr = $.data(document.body, "tt");
+        $.data(document.body, "tt", reqArr.filter(function(obj) {
+                return $.inArray( obj.LID+"" , idToDel ) === -1;
+            })
+        );
+        $table.bootstrapTable('refresh');
+    });
+    $("#saveButton").click(function(){
+        var selects = $table.bootstrapTable('getSelections'),
+        $rowToSave = $.map(selects, function (row) {
+            return ($.isNumeric(row.LID) ? row : null);
+        });
+        $.get($saveDataUrl, {tt : $rowToSave})
+        .done(function(data){
+            $("#symbol").typeahead({source: data});
+        });
+    });
+    $("#deleteTestButton").click(function(){
+        $.get($deleteTestUrl, {symbol : $symbolLocal})
+        .done(function(){
+            $table.bootstrapTable('refresh');  
+        });
+    });
+    
+    $("#loadPriceButton").click(function(){
+//        var $selections = $table.bootstrapTable('getSelections'),
+//            $symbols = [];
+//        $.each($selections, function(index, $obj){
+//            var $symbol = $obj.SYMBOL;
+//            $symbols.push($symbol);
+//        });
+//        $symbols = $symbols.join();
         
-        $tr.find("td:eq(2)").removeClass("info").addClass("danger");
+//        $.get($loadUrl+"?symbols="+$symbolLocal, function (data) {
+//            $table.bootstrapTable('refresh'); 
+////            window.location.reload(true); 
+//        }, 'json');
         
-        $("tbody:first").prepend($tr);
+        $("#loadPriceButton").find("i").css({color: "orange"});
+        $.get($loadUrl, {symbols: $symbolLocal} )
+        .done(function () {
+//            window.location.reload(true); 
+            $table.bootstrapTable('refresh'); 
+            $("#loadPriceButton").find("i").css({color: "greenyellow"});
+        }).fail(function(){
+            $table.bootstrapTable('refresh'); 
+            $("#loadPriceButton").find("i").css({color: "red"});
+        });
         
         
     });
     
+    initTableEvent();
+});
+
+function loadDataTT($sideCode){
+    var $row = getRowObj($sideCode);
+    if($row !== null){
+        var reqArr = $.data(document.body, "tt");
+        reqArr.push($row);
+        $table.bootstrapTable('refresh');
+    }
+}
+
+function getRowObj($sideCode){
     
+    var $volume = $("#volume").val(),
+        $price = $("#price").val();
+    if($.isNumeric($volume) && $.isNumeric($price)){
+        var $lid = $.data(document.body, "LID");
+        return {
+            SYMBOL : null,
+            SIDE_CODE : $sideCode,
+            VOLUME : $volume,
+            PRICE : $price,
+            NET_AMOUNT : null,
+            DATE : null,
+            LID : $.data(document.body, "LID", ++$lid)
+        };
+    }
+    return null;
+}
+
+function initTableEvent(){
     $table = $('#tbl').bootstrapTable()
       .on('check.bs.table', function (e, row) {
 //        resultText('Event: check.bs.table, data: ' + JSON.stringify(row));
@@ -106,45 +190,12 @@ $(function () {
     }).on('uncheck-all.bs.table', function (e) {
 //        resultText('Event: uncheck-all.bs.table');
         calSelection();
+    }).on('load-success.bs.table', function(e, row) {
+        var datas = $table.bootstrapTable('getData');
+        $.each(datas, function(index, value){
+            
+        });
     });
-});
-
-function getTrTmpl(){
-//     <tr data-index="-1">
-//    <td class="bs-checkbox">
-//    <input data-index="0" name="btSelectItem" type="checkbox">
-//    </td>
-//    
-//    <td style="text-align: center; ">2015-10-06</td> 
-//    <td class="info" style="text-align: right; width: 100px; ">
-//    <input type="text" class="form-control volume" style="height: 20px;">
-//    </td>
-//    <td style="text-align: right; width: 100px; ">
-//        <input type="text" class="form-control price" style="height: 20px;">
-//    </td>
-//    <td style="text-align: right; ">-</td>
-//    <td style="text-align: right; ">4</td>
-//    <td style="text-align: right; ">678.85</td>
-//    <td class="text-danger" style="text-align: right; ">-250.58</td>
-//    <td class="text-danger" style="text-align: right; ">-1.09</td>
-//    <td class="text-success" style="text-align: right; ">130.55</td>
-//    <td class="text-warning" style="text-align: right; ">232.3575</td>
-//    </tr>
-    
-    var $tr = $("<tr data-index='-1'></tr>");
-    
-    
-    var $tr = $("tbody:first").find("tr:first").clone(true).attr("data-index", "-1");
-    
-    if($tr.hasClass("no-records-found")){
-        return null;
-    }
-
-        $inputTmpl = $('<input type="text" class="form-control"/>').height("20px");
-        
-        $tr.find("td:eq(2)").html($inputTmpl.clone(true).addClass("volume"));
-        $tr.find("td:eq(3)").html($inputTmpl.clone(true).addClass("price"));
-    return $tr;  
 }
 function calSelection(){
     var $rows = $table.bootstrapTable('getSelections');
@@ -194,8 +245,8 @@ function cellStyleMatcher(value, row, index) {
 }
 
 function cellValueStyle(value, row, index) {
-    var $classText = (value > 0 ? 'text-success' :
-            (value = 0 ? 'text-warning' :'text-danger'));
+    var $classText = (row.RESULT > 0 ? 'text-success' :
+            (row.RESULT = 0 ? 'text-warning' :'text-danger'));
     return {
         classes: $classText
     };
@@ -283,11 +334,13 @@ function rowAttributes(row, index) {
 function queryParams(row, index) {
 //    var classes = ['active', 'success', 'info', 'warning', 'danger'];
     var symbol = $("#symbol").val()
-    , broker = $("#brokerMenu option:selected").val();
-    
+    , broker = $("#brokerMenu option:selected").val()
+    , tt = $.data(document.body, "tt");
+    $symbolLocal = symbol;
     return {
         symbol : symbol
         ,broker : broker
+        ,tt : tt
     };
 }
 
@@ -300,15 +353,4 @@ function priceFormatter(value) {
             '</div>';
 }
 
-Number.prototype.formatMoney = function(c, d, t){
-var n = this, 
-    c = isNaN(c = Math.abs(c)) ? 2 : c, 
-    d = d == undefined ? "." : d, 
-    t = t == undefined ? "," : t, 
-    s = n < 0 ? "-" : "", 
-    i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "", 
-    j = (j = i.length) > 3 ? j % 3 : 0;
-   return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
- };
- 
 

@@ -43,39 +43,39 @@ class LogsProfileController extends LogsTableController {
 //        $stockEnd = end($stocks);
         
         $priceLast = null;
-        $thisDate = date("Y-m-d");
         $firstDate = $stockFirst->DATE;
-        $endDate = $thisDate;//$stockEnd->DATE;
+        $endDate = date("Y-m-d");
         $symbol = $stockFirst->SYMBOL;
         $pricesInDB = $this->getPriceBetweenDate($symbol, $firstDate, $endDate);
-        
-        $currentBean = new \stdClass();
-        $currentBean->SYMBOL = $symbol;
-        $currentBean->SIDE_CODE = '001';
-        $currentBean->VOLUME = null;
-        $currentBean->PRICE = end($pricesInDB);
-        $currentBean->NET_AMOUNT = null;
-        $currentBean->DATE = $thisDate;
-        
-        array_push($stocks, $currentBean);
+        $countGen = 1;
+        $result = 0;
         foreach ($stocks as $stock) {
-            
-            $stock->PRICE = ($stock->PRICE != NULL 
-                                ? number_format((float)$stock->PRICE, 2, '.', '') : null);
-            $stock->NET_AMOUNT = ($stock->NET_AMOUNT != NULL
-                                ? number_format((float)$stock->NET_AMOUNT, 2, '.', '') : null);
+           
+            if(!isset($stock->ID)){
+                $stock->ID = "G" . $countGen++;
+            } else {
+                $stock->ID = "B" . $countGen++;
+            }
             
             $sideCode = $stock->SIDE_CODE;
             $volume = (int)$stock->VOLUME;
-            $price = (float)($stock->PRICE ? $stock->PRICE : $priceLast);
-            $netAmount = (float)$stock->NET_AMOUNT;
             $date = $stock->DATE;
+            
+            $stock->PRICE = ($stock->PRICE != NULL 
+                                ? number_format((float)$stock->PRICE, 2, '.', '') : null);
+            
             if(array_key_exists($date, $pricesInDB)){
                 $priceInDay = $pricesInDB[$date];
             } else {
-                $priceInDay = ($sideCode == '003' && isset($priceLast) ? $priceLast : $price);
+                $priceInDay = ($sideCode == '003' || isset($priceLast) ? $priceLast : $stock->PRICE);
             }
             $priceLast = $priceInDay;
+            
+            $price = (float)($stock->PRICE ? $stock->PRICE : $priceLast);
+            
+            $netAmount = (float)$stock->NET_AMOUNT = ($stock->NET_AMOUNT != NULL
+                                ? number_format((float)$stock->NET_AMOUNT, 2, '.', '') 
+                                : $this->calNetAmount($price, $volume, $sideCode));
             
             switch ($sideCode){
                 case '001':
@@ -93,22 +93,25 @@ class LogsProfileController extends LogsTableController {
             
             if($totalVolume > 0){
                 $avgPrice = $totalNetAmount / $totalVolume;
-            } 
-
+            }
+            
             $valueBeforeVat = ($sideCode == '003' ? $priceInDay : $price) * $total;
             
             if($valueBeforeVat > 0){
-                $value = $this->calValue($valueBeforeVat);
+                $value = LogsTableController::getVat($valueBeforeVat);
                 $result = $value - ($avgPrice * $totalVolume);
             } else {
                 if(!isset($value)){
                     $value = 0;
                 }
                 $result = $netAmount - $value + $result;
-                $value = $this->calValue($valueBeforeVat);
+                $value = LogsTableController::getVat($valueBeforeVat);
             }
             
-            if(!$totalVolume > 0 && $volume > 0){
+            if($totalVolume <= 0 && $volume > 0){
+//                 if($total <= 0){
+//                    $avgPrice = 0;
+//                }
                 $avgPrice -= $result / $volume;
             }
 
@@ -162,7 +165,28 @@ class LogsProfileController extends LogsTableController {
         
         return array_reverse($stocksRet);
     }
+    
+    public static function getPriceTotal($volume, $price){
+        return $volume * $price;
+    }
 
+    public function calNetAmount($price, $volume, $sideCode){
+//        $type = ($sideCode == '002' ? 1, )
+        $priceTotal = LogsProfileController::getPriceTotal($volume, $price);
+        $vat = ($priceTotal * 0.001578) + ($priceTotal * 0.001578 * (7 / 100));
+        
+        switch ($sideCode){
+            case '003':
+                $vat = ($priceTotal * (10 / 100));
+            case '001':
+                $type = 1;
+                break;
+            case '002':
+                $type = -1;
+                break;
+        }
+        return $priceTotal + ( $vat * $type );
+    }
     public function getDataLogs() {
         $symbolNameIn = Request::input('symbol');
         $brokerIdIn = Request::input('broker');
@@ -191,7 +215,49 @@ class LogsProfileController extends LogsTableController {
         GROUP BY da.ID
         ORDER BY da.DATE, da.SIDE_ID"
         , [$this->USER_ID, $symbolName, $symbolName, $brokerId, $brokerId]);
-        return $dataLogs;
+        
+        if(!empty($dataLogs)){
+            array_push($dataLogs, $this->getLastBean($symbolName));
+        }
+        $ttBean = $this->getBeanFromArr($symbolName, $this->getTestTransaction());
+        
+        return array_merge($dataLogs, $ttBean);
     }
 
+    
+    public function getTestTransaction() {
+        $tt = Request::input('tt');
+        return ($tt == null ? array() : $tt);
+    }
+    
+    public function getBeanFromArr($symbolName, $testTransaction) {
+        $arr = array();
+        foreach ($testTransaction as $row) {
+            $row = (object)$row;
+            $row->SYMBOL = $symbolName;
+//            SIDE_CODE : $sideCode,
+//            VOLUME : $volume,
+//            PRICE : $price,
+//            NET_AMOUNT : null,
+            $row->DATE = date("Y-m-d");
+            
+            array_push($arr, $row);
+        }
+        if(!empty($arr)){
+            array_push($arr, $this->getLastBean($symbolName));
+        }
+        return $arr;
+    }
+    
+    
+    public function getLastBean($symbolName) {
+        $currentBean = new \stdClass();
+        $currentBean->SYMBOL = $symbolName;
+        $currentBean->SIDE_CODE = '001';
+        $currentBean->VOLUME = null;
+        $currentBean->PRICE = null;
+        $currentBean->NET_AMOUNT = null;
+        $currentBean->DATE = date("Y-m-d");
+        return $currentBean;
+    }
 }

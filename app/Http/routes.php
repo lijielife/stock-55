@@ -102,10 +102,23 @@ Route::group(['prefix'=>'logs','middleware'=>'auth','namespace'=>'Logs'],functio
 //        'getData' => 'getData',
 //    ]);
     
+    
+//    Route::group(['prefix' => 'save'], function()
+//    {
+//        Route::get('/', 'LogsImportController@saveDataLogs');
+//    });
+//    
+//    Route::group(['prefix' => 'save'], function()
+//    {
+//        Route::get('/', 'LogsImportController@saveDataLogs');
+//    });
+    
     Route::group(['prefix' => 'profile'], function()
     {
         Route::get('/', 'LogsProfileController@getIndex');
         Route::get('getData', 'LogsProfileController@data_json');
+        Route::get('save', 'LogsImportController@saveDataLogs');
+        Route::get('deleteTest', 'LogsImportController@deleteTest');
     });
     
     Route::group(['prefix' => 'dividend'], function()
