@@ -119,6 +119,7 @@ Route::group(['prefix'=>'logs','middleware'=>'auth','namespace'=>'Logs'],functio
         Route::get('getData', 'LogsProfileController@data_json');
         Route::get('save', 'LogsImportController@saveDataLogs');
         Route::get('deleteTest', 'LogsImportController@deleteTest');
+        Route::get('deleteTestAll', 'LogsImportController@deleteTestAll');
     });
     
     Route::group(['prefix' => 'dividend'], function()
@@ -133,6 +134,12 @@ Route::group(['prefix'=>'logs','middleware'=>'auth','namespace'=>'Logs'],functio
         Route::get('getData', 'LogsTotalController@data_json');
     });
     
+    Route::group(['prefix' => 'inday'], function()
+    {
+        Route::get('/', 'LogsInDayController@getIndex');
+        Route::get('getData', 'LogsInDayController@data_json');
+    });
+    
     Route::group(['prefix' => 'snapshot'], function()
     {
         Route::get('/', 'SnapShotController@getIndex');
@@ -145,7 +152,7 @@ Route::group(['prefix'=>'logs','middleware'=>'auth','namespace'=>'Logs'],functio
 });
 
 
-Route::post('logs/active', 'Logs\LogsActiveController@getIndex');
+//Route::post('logs/active', 'Logs\LogsActiveController@getIndex');
 //Route::post('logs/profile', 'Logs\LogsProfileController@getIndex');
 //Route::post('logs/dividend', 'Logs\LogsDividendController@getIndex');
 

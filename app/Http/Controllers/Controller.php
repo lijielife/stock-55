@@ -6,6 +6,7 @@ use Illuminate\Foundation\Bus\DispatchesCommands;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Session;
+use Illuminate\Support\Facades\Request;
 use App\Utils\SystemUtils;
 
 abstract class Controller extends BaseController {
@@ -27,4 +28,7 @@ abstract class Controller extends BaseController {
         return SystemUtils::getTableName($masSymbol, $origin);
     }
     
+    protected function getRequestParam($param) {
+        return Request::input($param);
+    }
 }

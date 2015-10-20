@@ -102,6 +102,17 @@
                     </a>
                 </li>
                 
+                <li>
+                    <a href="<?php echo URL::to('logs/inday') ?>">
+                        <i class="fa fa-check-square-o"></i> In Day
+                    </a>
+                </li>
+                
+                <li>
+                    <a href="<?php echo URL::to('logs/snapshot') ?>">
+                        <i class="fa  fa-film"></i> Snapshot
+                    </a>
+                </li>
                 
                 <!--                <li>
                                     <a href="<?php echo URL::to('admin/blank') ?>">Blank Page</a>

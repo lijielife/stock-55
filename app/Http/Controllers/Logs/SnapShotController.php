@@ -5,30 +5,80 @@ namespace App\Http\Controllers\Logs;
 use Illuminate\Support\Facades\Request;
 use App;
 use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Logs\LogsProfileController;
+use App\Http\Controllers\Logs\LogsTotalController;
 
-class SnapShotController extends LogsProfileController {
+class SnapShotController extends LogsTotalController {
 
     protected $view = 'logs.snapshot';
 
     public function calData($stocks){
         
-        $stocksRet = array();
-        $stockFromProfiles = App::make('App\Http\Controllers\Logs\LogsTotalController')->getDataFromProfile($stocks);
+//        $stockFromProfiles = App::make('App\Http\Controllers\Logs\LogsTotalController')->getDataFromProfile($stocks);
 
 //        foreach ($stockFromProfiles as $stockFromProfile) {
 //            array_push($stocksRet, current($stockFromProfile));
 //        }
         
-        $historySet = $this->getHistorySet();
+        $snapShotDateIndex = $this->getSnapShotDateIndex();
         
-        foreach ($historySet as $historySet => $value) {
+        $stocksDateIndex = $this->getStocksDateIndex($stocks);
+
+        
+        
+        
+//        $stocksRet = array();
+//        foreach ($stockArr as $symbol => $stockSingleArr) {
+//            
+//            $stocksRes = $this->getDataFromProfile($symbol, $stockSingleArr);
+//            
+//            foreach ($stocksRes as $stock) {
+//                $symbol = $stock->SYMBOL;
+//                $date = $stock->DATE;
+//                
+//                $snapShotArr[$date][$symbol] = $stock;
+//            }
+//        }
+        
+        foreach ($snapShotDateIndex as $date => $snapShot) {
             
+            $stocksInDate = $stocksDateIndex[$date];
+            foreach ($stocksInDate as $stockArr) {
+                $stock = current($stockArr);
+                $symbol = $stock->SYMBOL;
+                $snapShotDateIndex[$date][$symbol] = $stock;
+            }
+            
+//            $snapShotDateIndex
         }
         return $stocksRet;
     }
 
     
+    public function getStocksDateIndex($stocks){
+        
+        $stocksRes = $this->getDataFromProfiles($stocks);
+        
+        $stocksDateIndex = array();
+        foreach ($stocksRes as $stocks) {
+            foreach (array_reverse($stocks) as $stock) {
+                $symbol = $stock->SYMBOL;
+                $date = $stock->DATE;
+                if(!isset($stock->LAST_BEAN) || !$stock->LAST_BEAN){
+                    $stocksDateIndex[$date][$symbol] = $stock; 
+                }
+            }
+        }
+        return $stocksDateIndex;
+    } 
+    
+    public function getSnapShotDateIndex(){
+        $historySet = $this->getHistorySet();
+        $snapShotArr = array();
+        foreach ($historySet as $key => $value) {
+            $snapShotArr[$key]["index"] = $value;
+        }
+        return $snapShotArr;
+    } 
     public function getHistorySet() {
         
         $min = DB::table('DATA_LOG')->where('USER_ID', $this->USER_ID)->min("DATE");

@@ -4,14 +4,16 @@ namespace App\Http\Controllers\Logs;
 
 //use App\Http\Controllers\AdminsController;
 use App\Http\Controllers\Controller;
-//use Illuminate\Http\Request;
+use Illuminate\Http\Request;
+//use Illuminate\Contracts\Logging\Log;
+use Log;
 //use App\Models\ImportFile;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\MasSide;
 use App\Models\MasBroker;
 use App\Models\MasSymbol;
 use App\Models\DataLog;
-use Illuminate\Support\Facades\Request;
+//use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\DB;
 class LogsImportController extends Controller {
 
@@ -131,17 +133,21 @@ class LogsImportController extends Controller {
 
         $masSymbols = $this->getMasSymbols();
 
+//        $this->deleteTestAll();
+        
         $dataLogs = array();
         Excel::selectSheets('import_data')
-                ->batch(array($pathExcelFile), function($rows, $files)
-                        use( &$masSides, &$masBrokers, &$masSymbols, &$dataLogs) {
+            ->batch(array($pathExcelFile), function($rows, $files)
+                    use( &$masSides, &$masBrokers, &$masSymbols, &$dataLogs) {
 
-                    $rows->formatDates(true, 'Y-m-d');
-                    $rows->each(function($row)
-                            use( &$masSides, &$masBrokers, &$masSymbols, &$dataLogs) {
-                        LogsImportController::genDataLogs($row, $dataLogs, $this->USER_ID, $masSymbols, $masSides, $masBrokers);
-                    });
+                $rows->formatDates(true, 'Y-m-d');
+                $rows->each(function($row)
+                        use( &$masSides, &$masBrokers, &$masSymbols, &$dataLogs) {
+                    
+                    LogsImportController::genDataLogs($row->toArray(), $dataLogs, $this->USER_ID, $masSymbols, $masSides, $masBrokers);
+                    
                 });
+            });
         $this->insertDataLogs($dataLogs);
     }
     
@@ -168,55 +174,74 @@ class LogsImportController extends Controller {
     
     public function deleteTest(){
         
-        $symbol = Request::input('symbol');
-        $symbolDB = MasSymbol::where('SYMBOL', $symbol)->select("ID")->first();
-        $brokerDB = MasBroker::where('BROKER_CODE', '004')->select("ID")->first();
-        $symbolId = $symbolDB->ID;   
-        $brokerId = $brokerDB->ID;
-        DataLog::where('broker_id', $brokerId)->where('symbol_id', $symbolId)->delete();
+        $symbol = $this->getRequestParam('symbol');
+        if($symbol){
+            $symbolDB = MasSymbol::where('SYMBOL', $symbol)->select("ID")->first();
+            $brokerDB = MasBroker::where('BROKER_CODE', '004')->select("ID")->first();
+            $symbolId = $symbolDB->ID;   
+            $brokerId = $brokerDB->ID;
+            DataLog::where('broker_id', $brokerId)
+                    ->where('symbol_id', $symbolId)
+                    ->where('USER_ID', $this->USER_ID)
+                    ->delete();
+        }
+    }
+    
+    
+    public function deleteTestAll(){
+            $brokerDB = MasBroker::where('BROKER_CODE', '004')->select("ID")->first();
+            $brokerId = $brokerDB->ID;
+            DataLog::where('broker_id', $brokerId)
+                    ->where('USER_ID', $this->USER_ID)
+                    ->delete();
     }
     
     
     public function saveDataLogs(){
-        $tts = Request::input('tt');
-        
-        $masSides = $this->getMasSide();
-        $masSidesCode = $this->getMasSideCode();
-        $masBrokers = $this->getMasBrokers();
-        $masSymbols = $this->getMasSymbols();
-        $dataLogs = array();
-        foreach ($tts as $tt) {
-            $row = new \stdClass();
-//            $row = (object) $tt;
-            $sideCode = $tt["SIDE_CODE"];            
-            if(!array_key_exists($sideCode, $masSidesCode) ){
-                continue;
-            } 
-            $row->side_id = $masSidesCode[$sideCode];
-            $row->symbol_id = $tt["SYMBOL"];
-            $row->broker_id = "TEST";
-            $price = $tt["PRICE"];
-            $volume = $tt["VOLUME"];
-            $row->price = $price;
-            $row->volume = $volume;
-            $row->amount = LogsProfileController::getPriceTotal($volume, $price);
-            $row->vat = LogsTotalController::getVat($row->amount);
-            $row->net_amount = $tt["NET_AMOUNT"];
-            $row->due_date = $row->date = $tt["DATE"];
-            LogsImportController::genDataLogs($row, $dataLogs, $this->USER_ID, $masSymbols, $masSides, $masBrokers);
+        $tts = $this->getRequestParam('tt');
+        if(is_array($tts)){
+            $masSides = $this->getMasSide();
+            $masSidesCode = $this->getMasSideCode();
+            $masBrokers = $this->getMasBrokers();
+            $masSymbols = $this->getMasSymbols();
+            $dataLogs = array();
+
+            foreach ($tts as $tt) {
+                $row = array();
+//                $row = new \stdClass();
+    //            $row = (object) $tt;
+                $sideCode = $tt["SIDE_CODE"];            
+                if(!array_key_exists($sideCode, $masSidesCode) ){
+                    continue;
+                } 
+                $row["side_id"] = $masSidesCode[$sideCode];
+                $row["symbol_id"] = $tt["SYMBOL"];
+                $row["broker_id"] = "TEST";
+                $price = $tt["PRICE"];
+                $volume = $tt["VOLUME"];
+                $row["price"] = $price;
+                $row["volume"] = $volume;
+                $row["amount"] = LogsProfileController::getPriceTotal($volume, $price);
+                $row["vat"] = LogsTotalController::getVat($row["amount"]);
+                $row["net_amount"] = $tt["NET_AMOUNT"];
+                $row["due_date"] = $row["date"] = $tt["DATE"];
+                LogsImportController::genDataLogs($row, $dataLogs, $this->USER_ID, $masSymbols, $masSides, $masBrokers);
+            }
+
+            $this->insertDataLogs($dataLogs);
+            
+            return "success";
         }
-                        
-        $this->insertDataLogs($dataLogs);
-//        return true;
+        return "error";
     }
     
     private static function genDataLogs($row, &$dataLogs, $userId, $masSymbols, $masSides, $masBrokers){
-        $side = $row->side_id;
+        $side = $row["side_id"];
         if(!$side) {
             return;
         }
-        $symbol = $row->symbol_id;
-        $broker = $row->broker_id;
+        $symbol = $row["symbol_id"];
+        $broker = $row["broker_id"];
 //                        $dw = ($row->is_dw ? true : false);
 
         $dataLog = (array) $row;
@@ -256,6 +281,9 @@ class LogsImportController extends Controller {
                 $sideId = $masSides[$side];
                 $brokerId = $masBrokers[$broker];
                 $symbolId = $masSymbols[$symbol];
+                if(!array_key_exists($symbol, $masSymbols)){
+                    Log::info('$symbol = ' . $symbol);
+                }
                 
                 $dataLog["side_id"] = $sideId;
                 $dataLog["broker_id"] = $brokerId;

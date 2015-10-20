@@ -107,7 +107,18 @@ $(function () {
         });
         $.get($saveDataUrl, {tt : $rowToSave})
         .done(function(data){
-            $("#symbol").typeahead({source: data});
+            if(data === "success"){
+                var idToDel = $.map(selects, function (row) {
+                    return ($.isNumeric(row.LID) ? row.LID : null);
+                }),
+                reqArr = $.data(document.body, "tt");
+                $.data(document.body, "tt", reqArr.filter(function(obj) {
+                        return $.inArray( obj.LID+"" , idToDel ) === -1;
+                    })
+                );
+
+                $table.bootstrapTable('refresh'); 
+            } 
         });
     });
     $("#deleteTestButton").click(function(){
@@ -118,31 +129,27 @@ $(function () {
     });
     
     $("#loadPriceButton").click(function(){
-//        var $selections = $table.bootstrapTable('getSelections'),
-//            $symbols = [];
-//        $.each($selections, function(index, $obj){
-//            var $symbol = $obj.SYMBOL;
-//            $symbols.push($symbol);
-//        });
-//        $symbols = $symbols.join();
-        
-//        $.get($loadUrl+"?symbols="+$symbolLocal, function (data) {
-//            $table.bootstrapTable('refresh'); 
-////            window.location.reload(true); 
-//        }, 'json');
-        
         $("#loadPriceButton").find("i").css({color: "orange"});
         $.get($loadUrl, {symbols: $symbolLocal} )
         .done(function () {
-//            window.location.reload(true); 
-            $table.bootstrapTable('refresh'); 
             $("#loadPriceButton").find("i").css({color: "greenyellow"});
-        }).fail(function(){
-            $table.bootstrapTable('refresh'); 
+        })
+        .fail(function(){
             $("#loadPriceButton").find("i").css({color: "red"});
-        });
+        })
+        .always(function(){
+            $table.bootstrapTable('refresh');
+        }); 
+    });
+    $("#volume, #price").change(function(){
+        var $volume = parseFloat($("#volume").val()),
+        $price = parseFloat($("#price").val()),
+        $total = $volume * $price,
+        $buyVat = ($total) + (($total * 0.001578) + (($total * 0.001578) * 7 / 100)),
+        $sellVat = ($total) - (($total * 0.001578) + (($total * 0.001578) * 7 / 100));
         
-        
+        $('#events-result').text(($total).formatMoney(2) + " (" + ($sellVat).formatMoney(2) + " ~ "+($buyVat).formatMoney(2)+")");
+
     });
     
     initTableEvent();

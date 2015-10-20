@@ -13,8 +13,24 @@ class LogsTotalController extends LogsProfileController {
 
     public function calData($stocks){
         $stocksRet = array();
+        $stockArr = $this->getDataFromProfiles($stocks);
+
+        foreach ($stockArr as $stockSingleArr) {
+            
+//            array_push($stockSingleArr, $this->getLastBean($symbol));
+        
+//            $stocksRes = $this->getDataFromProfile($symbol, $stockSingleArr);
+                
+            array_push($stocksRet, current($stockSingleArr));
+        }
+        return $stocksRet;        
+    }
+    
+    public function getStockArr($stocks) {
+        
         $stockArr = array();
         $stockSingleArr = array();
+        
         foreach ($stocks as $stock) {
             $symbol = $stock->SYMBOL;
             if(array_key_exists($symbol, $stockArr)){
@@ -25,15 +41,28 @@ class LogsTotalController extends LogsProfileController {
             array_push($stockSingleArr, $stock);
             $stockArr[$symbol] = $stockSingleArr;
         }
-        
+        return $stockArr;
+    }
+    public function getDataFromProfiles($stocks){
+        $stocksRet = array();
+        $stockArr = $this->getStockArr($stocks);
+
         foreach ($stockArr as $symbol => $stockSingleArr) {
             
-            array_push($stockSingleArr, $this->getLastBean($symbol));
+//            array_push($stockSingleArr, $this->getLastBean($symbol));
         
-            $stocksRes = App::make('App\Http\Controllers\Logs\LogsProfileController')->calData($stockSingleArr);
-            array_push($stocksRet,current($stocksRes) );
+            $stocksRes = $this->getDataFromProfile($symbol, $stockSingleArr);
+                
+            array_push($stocksRet, $stocksRes);
         }
         return $stocksRet;        
+    }
+    
+    public function getDataFromProfile($symbol, $stockSingleArr){
+        
+        array_push($stockSingleArr, $this->getLastBean($symbol));
+            
+        return App::make('App\Http\Controllers\Logs\LogsProfileController')->calData($stockSingleArr);
     }
     
     public function getDataLogs() {

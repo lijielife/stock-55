@@ -12,18 +12,26 @@ use App\Utils\StockUtils;
 class LogsProfileController extends LogsTableController {
 
     protected $view = 'logs.profile';
+    protected $dataExtends = array();
     public function getIndex() {
         $symbolName = Request::input('symbol');
         $brokerId = Request::input('broker');
+        $date = Request::input('date');
         $brokerAll = json_decode(App::make('App\Http\Controllers\Service\SingleStockService')->getAllBroker());
+        $this->setDataExtends();
         return view($this->view, 
-                    [
+                    array_merge([
                         'brokers' => $brokerAll,
                         'symbolName' => $symbolName, 
+                        'date' => $date,
                         'brokerId' => $brokerId
-                    ]
+                        ],
+                        $this->dataExtends
+                    )
                 );
     }
+    
+    protected function setDataExtends(){}
     
     public function data_json(){
         return json_encode($this->calData($this->getDataLogs()));
@@ -71,7 +79,7 @@ class LogsProfileController extends LogsTableController {
             }
             $priceLast = $priceInDay;
             
-            $price = (float)($stock->PRICE ? $stock->PRICE : $priceLast);
+            $price = $stock->PRICE = (float)($stock->PRICE ? $stock->PRICE : $priceLast);
             
             $netAmount = (float)$stock->NET_AMOUNT = ($stock->NET_AMOUNT != NULL
                                 ? number_format((float)$stock->NET_AMOUNT, 2, '.', '') 
@@ -258,6 +266,7 @@ class LogsProfileController extends LogsTableController {
         $currentBean->PRICE = null;
         $currentBean->NET_AMOUNT = null;
         $currentBean->DATE = date("Y-m-d");
+        $currentBean->LAST_BEAN = TRUE;
         return $currentBean;
     }
 }

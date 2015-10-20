@@ -70,6 +70,10 @@
                 <button type="button" class="btn btn-default" id="loadPrice">
                     <i class="fa fa-download"></i>
                 </button>
+                
+                <button class="btn btn-default btn-group" id="deleteTestAllButton">
+                    <i class="fa fa-trash-o" style="color: red;"></i>
+                </button>
             </div>
         </div>
         
@@ -92,15 +96,13 @@
              <tr>
                  
                 <th data-field="state" data-checkbox="true">#</th>
-                 <th data-field="ID" data-halign="center" data-align="right" 
+                <th data-field="ID" data-halign="center" data-align="right" 
                      data-sortable="true" data-visible="false">ID</th>
 <!--                 <th data-field="DATE" data-halign="center" data-align="center" 
                      data-sortable="true">วันที่</th>-->
-                 <th data-field="SYMBOL" data-halign="center" data-align="left" 
+                <th data-field="SYMBOL" data-halign="center" data-align="left" 
                      data-sortable="true"data-footer-formatter="totalTextFormatter"
                      data-formatter="symbolFormatter">ชื่อ</th>
-                <th data-field="PRICE_IN_DAY" data-halign="center" data-align="right" 
-                    data-sortable="true" data-formatter="numFormatter2">ราคาปิด</th>
 <!--                 <th data-field="VOLUME" data-halign="center" data-align="center" 
                      data-sortable="true" data-cell-style="cellStyle">หน่วย</th>-->
 <!--                 <th data-field="PRICE" data-halign="center" data-align="center" 
@@ -109,31 +111,33 @@
                      data-sortable="true">ราคาสุทธิ</th>-->
 <!--                 <th data-field="DUE_DATE" data-halign="center" data-align="center" 
                      data-sortable="true">วันที่จ่าย</th>-->
-                 <th data-field="TOTAL" data-halign="center" data-align="right" 
-                     data-sortable="true" data-formatter="numFormatter">เหลือ</th>
-                 <th data-field="VALUE" data-halign="center" data-align="right" 
-                     data-sortable="true" data-formatter="numFormatter2"
-                     data-footer-formatter="sumFormatter">มูลค่า</th>
-                 <th data-field="RESULT" data-halign="center" data-align="right" 
-                     data-sortable="true" data-cell-style="cellValueStyle"
-                     data-formatter="numFormatter2"
-                     data-footer-formatter="sumFormatter">ผล</th>
-                 <th data-field="RESULT_PERCENT" data-halign="center" data-align="right" 
-                     data-sortable="true" data-cell-style="cellValueStyle"
-                     data-formatter="numFormatter2"
-                     data-footer-formatter="percentFormatter">%</th>
-                 <th data-field="PORT_INDEX" data-halign="center" data-align="right" 
-                     data-sortable="true" data-cell-style="cellPortIndexStyle"
-                     data-formatter="numFormatter2">port index</th>
-                 <th data-field="AVG_PRICE" data-halign="center" data-align="right" 
-                     data-sortable="true" data-cell-style="cellValueAvgStyle"
-                     data-formatter="numFormatter4">ราคาเฉลี่ย</th>
-                 <th data-field="BROKER_NAME" data-halign="center" data-align="right" 
-                     data-sortable="true" data-visible="false">โบรค</th>
-                 <th data-field="MATCHER" data-halign="center" data-align="right" 
-                     data-sortable="true" data-visible="false">Matcher</th>
+                <th data-field="TOTAL" data-halign="center" data-align="right" 
+                    data-sortable="true" data-formatter="numFormatter">เหลือ</th>
+                <th data-field="VALUE" data-halign="center" data-align="right" 
+                    data-sortable="true" data-formatter="numFormatter2"
+                    data-footer-formatter="sumFormatter">มูลค่า</th>
+                <th data-field="PRICE_IN_DAY" data-halign="center" data-align="right" 
+                    data-sortable="true" data-formatter="numFormatter2">ราคาปิด</th>
+                <th data-field="AVG_PRICE" data-halign="center" data-align="right" 
+                    data-sortable="true" data-cell-style="cellValueAvgStyle"
+                    data-formatter="numFormatter4">ราคาเฉลี่ย</th>
+                <th data-field="RESULT" data-halign="center" data-align="right" 
+                    data-sortable="true" data-cell-style="cellValueStyle"
+                    data-formatter="numFormatter2"
+                    data-footer-formatter="sumFormatter">ผล</th>
+                <th data-field="RESULT_PERCENT" data-halign="center" data-align="right" 
+                    data-sortable="true" data-cell-style="cellValueStyle"
+                    data-formatter="numFormatter2"
+                    data-footer-formatter="percentFormatter">%</th>
+                <th data-field="PORT_INDEX" data-halign="center" data-align="right" 
+                    data-sortable="true" data-cell-style="cellPortIndexStyle"
+                    data-formatter="numFormatter2">port index</th>
+                <th data-field="BROKER_NAME" data-halign="center" data-align="right" 
+                    data-sortable="true" data-visible="false">โบรค</th>
+                <th data-field="MATCHER" data-halign="center" data-align="right" 
+                    data-sortable="true" data-visible="false">Matcher</th>
 <!--                 <th data-field="operate" data-formatter="operateFormatter" 
-                     data-events="operateEvents">Item Operate</th>-->
+                    data-events="operateEvents">Item Operate</th>-->
              </tr>
              </thead>
          </table>
@@ -156,6 +160,7 @@
 var $getAllSymbol = "{{url('service/single/getAllSymbol')}}";
 var $loadUrl= "{{url('history/loadData')}}";
 var $profileUrl= "{{url('logs/profile')}}";
+var $deleteTestAllUrl = "{{url('logs/profile/deleteTestAll')}}";
 //var $getAllBroker = "{{url('service/single/getAllBroker')}}";
 //    var $getSingleStock = "{{url('getSingleStock')}}";
 

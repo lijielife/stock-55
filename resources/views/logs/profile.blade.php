@@ -115,7 +115,7 @@
                data-toolbar="#filter-bar"
                data-query-params="queryParams"
                data-single-select="false"
-               data-click-to-select="false"
+               data-click-to-select="true"
                data-show-filter="false"
                >
             <thead>
@@ -132,7 +132,8 @@
                         data-sortable="false" data-cell-style="cellStyle" data-visible="false"
                         >ชื่อ</th>
                     <th data-field="VOLUME" data-halign="center" data-align="right" 
-                        data-sortable="false" data-cell-style="cellStyle" data-width="100">หน่วย</th>
+                        data-sortable="false" data-cell-style="cellStyle" data-width="100"
+                        data-formatter="numFormatter">หน่วย</th>
                     <th data-field="PRICE_IN_DAY" data-halign="center" data-align="right" 
                         data-sortable="false" data-visible="false" data-width="100"
                         data-formatter="numFormatter2">ราคาปิด</th>

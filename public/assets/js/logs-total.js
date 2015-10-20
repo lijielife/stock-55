@@ -77,13 +77,14 @@ $(function () {
         $("#loadPrice").find("i").css({color: "orange"});
         $.get($loadUrl, {symbols: $symbols} )
         .done(function () {
-//            window.location.reload(true); 
-            $table.bootstrapTable('refresh'); 
             $("#loadPrice").find("i").css({color: "greenyellow"});
-        }).fail(function(){
-            $table.bootstrapTable('refresh'); 
+        })
+        .fail(function(){
             $("#loadPrice").find("i").css({color: "red"});
-        });
+        })
+        .always(function(){
+            $table.bootstrapTable('refresh');
+        }); 
     });
     $table = $('#tbl').bootstrapTable()
     
@@ -100,11 +101,28 @@ $(function () {
         $(this).find("thead").append($footerTr);
     });
 
+    $("#deleteTestAllButton").click(function(){
+        
+        $("#deleteTestAllButton").find("i").css({color: "orange"});
+        $.get($deleteTestAllUrl, {})
+        .done(function(){
+            $("#deleteTestAllButton").find("i").css({color: "greenyellow"});
+        })
+        .fail(function(){
+            $("#deleteTestAllButton").find("i").css({color: "red"});
+        })
+        .always(function(){
+            $table.bootstrapTable('refresh');
+        }); 
+            
+            
+    });
 });
 
 function symbolFormatter(value, row) {
-    var $symbol = row.SYMBOL;
-    return '<a href="'+$profileUrl+'?symbol='+$symbol+'" target="_blank">' + value + '</a> ' ;
+    var $symbol = row.SYMBOL,
+    $brokerId = $("#brokerMenu :selected").val();
+    return '<a href="'+$profileUrl+'?symbol='+$symbol+'&broker='+$brokerId+'" target="_blank">' + value + '</a> ' ;
 }
     
 function cellStyle(value, row, index) {
@@ -136,11 +154,12 @@ function cellPortIndexStyle(value, row, index) {
     };
 }
 
-function cellValueAvgStyle(value, row, index, rows) {
-    var datas = $table.bootstrapTable("getData");
-    var beforeValue = (datas[index + 1] ? datas[index + 1] : row).AVG_PRICE;
-    var $classText = (value > beforeValue ? 'text-danger' :
-            (value == beforeValue ? 'text-warning' : 'text-success'));
+function cellValueAvgStyle(avgPrice, row, index, rows) {
+//    var datas = $table.bootstrapTable("getData");
+//    var beforeValue = (datas[index + 1] ? datas[index + 1] : row).AVG_PRICE;
+
+    var $classText = (avgPrice > row.PRICE_IN_DAY ? 'text-danger' :
+            (avgPrice === row.PRICE_IN_DAY ? 'text-warning' : 'text-success'));
     return {
         classes: $classText
     };

@@ -23,4 +23,4 @@
 <script src="{{asset('assets/dist/js/enscroll-0.6.0.min.js')}}" type="text/javascript" ></script>
 <script src="{{asset('assets/js/number_utils.js')}}" type="text/javascript" ></script>
 
-
+<script src="{{asset('assets/bootstrap-datepicker-master/dist/js/bootstrap-datepicker.js')}}" type="text/javascript"></script>
