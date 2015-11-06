@@ -37,7 +37,7 @@ class LogsImportController extends Controller {
                     SELECT MAX(CREATED_AT) FROM DATA_LOG WHERE UPDATED_AT IS NOT NULL
             ) 
             AND dl.USER_ID = ?
-            ORDER BY SYMBOL, BROKER, VOLUME', [$this->USER_ID]);
+            ORDER BY date, SYMBOL, BROKER, VOLUME', [$this->USER_ID]);
          
 //         var_dump($dataLogs);
          

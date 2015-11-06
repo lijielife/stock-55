@@ -13,43 +13,33 @@ class SnapShotController extends LogsTotalController {
 
     public function calData($stocks){
         
-//        $stockFromProfiles = App::make('App\Http\Controllers\Logs\LogsTotalController')->getDataFromProfile($stocks);
-
-//        foreach ($stockFromProfiles as $stockFromProfile) {
-//            array_push($stocksRet, current($stockFromProfile));
-//        }
-        
         $snapShotDateIndex = $this->getSnapShotDateIndex();
-        
         $stocksDateIndex = $this->getStocksDateIndex($stocks);
 
-        
-        
-        
-//        $stocksRet = array();
-//        foreach ($stockArr as $symbol => $stockSingleArr) {
-//            
-//            $stocksRes = $this->getDataFromProfile($symbol, $stockSingleArr);
-//            
-//            foreach ($stocksRes as $stock) {
-//                $symbol = $stock->SYMBOL;
-//                $date = $stock->DATE;
-//                
-//                $snapShotArr[$date][$symbol] = $stock;
-//            }
-//        }
-        
         foreach ($snapShotDateIndex as $date => $snapShot) {
-            
             $stocksInDate = $stocksDateIndex[$date];
-            foreach ($stocksInDate as $stockArr) {
-                $stock = current($stockArr);
+            foreach ($stocksInDate as $stock) {
+//                $stock = current($stockArr);
                 $symbol = $stock->SYMBOL;
                 $snapShotDateIndex[$date][$symbol] = $stock;
             }
-            
-//            $snapShotDateIndex
         }
+        
+        foreach ($snapShotDateIndex as $date => $symbols) {
+            foreach ($symbols as $symbolName => $stock){
+                
+                
+            }
+//            $stocksInDate = $stocksDateIndex[$date];
+//            foreach ($stocksInDate as $stock) {
+////                $stock = current($stockArr);
+//                $symbol = $stock->SYMBOL;
+//                $snapShotDateIndex[$date][$symbol] = $stock;
+//            }
+        }
+        
+        
+        
         return $stocksRet;
     }
 

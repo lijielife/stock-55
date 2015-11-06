@@ -9,7 +9,7 @@
     <meta name="author" content="">
 	<meta name="robot" content="noindex, nofollow" />
 
-    <title>Super Charts</title>
+    <title>@if(isset($title)){{$title}} Profile @else Super Charts @endif</title>
 
     
     <!-- Bootstrap Core CSS -->

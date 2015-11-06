@@ -22,7 +22,8 @@ class LogsProfileController extends LogsTableController {
         return view($this->view, 
                     array_merge([
                         'brokers' => $brokerAll,
-                        'symbolName' => $symbolName, 
+                        'symbolName' => $symbolName,
+                        'title' => $symbolName,
                         'date' => $date,
                         'brokerId' => $brokerId
                         ],
@@ -63,6 +64,7 @@ class LogsProfileController extends LogsTableController {
                 $stock->ID = "G" . $countGen++;
             } else {
                 $stock->ID = "B" . $countGen++;
+                $stock->ID_DB = $stock->ID;
             }
             
             $sideCode = $stock->SIDE_CODE;
@@ -125,6 +127,9 @@ class LogsProfileController extends LogsTableController {
 
             if($value > $max){
                 $max = $value;
+            }
+            if($max == 0){
+                $max = 1;
             }
             $resultPercent = ($result / $max) * 100;
             
