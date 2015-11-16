@@ -240,7 +240,7 @@ class LogsImportController extends Controller {
         if(!$side) {
             return;
         }
-        $symbol = $row["symbol_id"];
+        $symbol = (string)$row["symbol_id"];
         $broker = $row["broker_id"];
 //                        $dw = ($row->is_dw ? true : false);
 
