@@ -10,20 +10,36 @@ use App\Http\Controllers\Logs\LogsProfileController;
 class LogsTotalController extends LogsProfileController {
     
     protected $view = 'logs.total';
+    protected $showActive = ".show.active";
 
     public function calData($stocks){
         $stocksRet = array();
+        $showActive = filter_var($this->getConfigByName($this->view.$this->showActive), FILTER_VALIDATE_BOOLEAN);
         $stockArr = $this->getDataFromProfiles($stocks);
 
         foreach ($stockArr as $stockSingleArr) {
-            
-//            array_push($stockSingleArr, $this->getLastBean($symbol));
-        
-//            $stocksRes = $this->getDataFromProfile($symbol, $stockSingleArr);
-                
+            $stockCurrent = current($stockSingleArr);
+            if($showActive && $stockCurrent->TOTAL === 0){
+                continue;
+            }
             array_push($stocksRet, current($stockSingleArr));
         }
         return $stocksRet;        
+    }
+    
+    
+    protected function setDataExtends(){
+        $this->dataExtends['showActive'] = filter_var($this->getConfigByName($this->view.$this->showActive), FILTER_VALIDATE_BOOLEAN);
+    }
+    
+    public function changeShowActive(){
+        $showActive = filter_var($this->getRequestParam('showActive'), FILTER_VALIDATE_BOOLEAN);
+        DB::table('user_config')
+            ->where('USER_ID', $this->USER_ID)
+            ->where('CONFIG_ID', 
+                    DB::raw("(SELECT CONFIG_ID FROM CONFIG WHERE CONFIG_NAME = '$this->view$this->showActive')"))
+            ->update(array('CONFIG_VALUE' => $showActive));
+//        $showActive = (boolean)$this->getConfigByName($this->view.$this->showActive);
     }
     
     public function getStockArr($stocks) {

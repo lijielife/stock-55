@@ -86,6 +86,25 @@ $(function () {
             $table.bootstrapTable('refresh');
         }); 
     });
+    
+    $("#showActive").click(function(){
+        var $showActive = $("#showActive").hasClass("btn-primary");
+        
+        $.get($showActiveUrl, {showActive: !$showActive} )
+        .done(function () {
+            if($showActive){
+                $("#showActive").removeClass().addClass("btn btn-default");
+            } else {
+                $("#showActive").removeClass().addClass("btn btn-primary");
+            }
+            $table.bootstrapTable('refresh');
+        })
+        .fail(function(){
+            $("#showActive").removeClass().addClass("btn btn-danger");
+        });
+    });
+    
+    
     $table = $('#tbl').bootstrapTable()
     
     .on('load-success.bs.table', function (e, data) {

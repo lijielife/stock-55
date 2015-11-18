@@ -8,6 +8,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Session;
 use Illuminate\Support\Facades\Request;
 use App\Utils\SystemUtils;
+use Illuminate\Support\Facades\DB;
 
 abstract class Controller extends BaseController {
 
@@ -31,4 +32,21 @@ abstract class Controller extends BaseController {
     protected function getRequestParam($param) {
         return Request::input($param);
     }
+    
+    
+    protected function getConfigByName($configName) {
+        $dataLogs = DB::select(
+        "SELECT uc.CONFIG_VALUE 
+        FROM USER_CONFIG uc 
+        JOIN CONFIG c ON(c.CONFIG_ID = uc.CONFIG_ID)
+        WHERE uc.USER_ID = ? 
+            AND c.CONFIG_NAME = ?"
+        , [$this->USER_ID, $configName]);
+        
+        foreach ($dataLogs as $dataLog) {
+            return $dataLog->CONFIG_VALUE;
+        }
+        return null;
+    }
+    
 }

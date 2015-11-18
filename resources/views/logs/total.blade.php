@@ -74,6 +74,15 @@
                 <button class="btn btn-default btn-group" id="deleteTestAllButton">
                     <i class="fa fa-trash-o" style="color: red;"></i>
                 </button>
+                @if($showActive)
+                    <button type="button" class="btn btn-primary" id="showActive">
+                        Show Active
+                    </button>
+                @else
+                    <button type="button" class="btn btn-default" id="showActive">
+                        Show Active
+                    </button>
+                @endif
             </div>
         </div>
         
@@ -160,6 +169,7 @@
 var $getAllSymbol = "{{url('service/single/getAllSymbol')}}";
 var $loadUrl= "{{url('history/loadData')}}";
 var $profileUrl= "{{url('logs/profile')}}";
+var $showActiveUrl= "{{url('logs/total/showActive')}}";
 var $deleteTestAllUrl = "{{url('logs/profile/deleteTestAll')}}";
 //var $getAllBroker = "{{url('service/single/getAllBroker')}}";
 //    var $getSingleStock = "{{url('getSingleStock')}}";
