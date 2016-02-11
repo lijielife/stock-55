@@ -4,19 +4,22 @@ namespace App\Http\Controllers\Logs;
 
 use Illuminate\Support\Facades\Request;
 use App;
+//use Log;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Logs\LogsProfileController;
+use App\Utils\SystemUtils;
 
 class LogsTotalController extends LogsProfileController {
     
     protected $view = 'logs.total';
     protected $showActive = ".show.active";
-
+    
     public function calData($stocks){
+        
         $stocksRet = array();
-        $showActive = filter_var($this->getConfigByName($this->view.$this->showActive), FILTER_VALIDATE_BOOLEAN);
+        
+        $showActive = filter_var($this->stockModel->getConfigByName($this->USER_ID, $this->view.$this->showActive), FILTER_VALIDATE_BOOLEAN);
         $stockArr = $this->getDataFromProfiles($stocks);
-
         foreach ($stockArr as $stockSingleArr) {
             $stockCurrent = current($stockSingleArr);
             if($showActive && $stockCurrent->TOTAL === 0){
@@ -29,7 +32,7 @@ class LogsTotalController extends LogsProfileController {
     
     
     protected function setDataExtends(){
-        $this->dataExtends['showActive'] = filter_var($this->getConfigByName($this->view.$this->showActive), FILTER_VALIDATE_BOOLEAN);
+        $this->dataExtends['showActive'] = filter_var($this->stockModel->getConfigByName($this->USER_ID, $this->view.$this->showActive), FILTER_VALIDATE_BOOLEAN);
     }
     
     public function changeShowActive(){
@@ -57,12 +60,35 @@ class LogsTotalController extends LogsProfileController {
             array_push($stockSingleArr, $stock);
             $stockArr[$symbol] = $stockSingleArr;
         }
-        return $stockArr;
+        
+        $stockArrRet = array();
+        foreach ($stockArr as $symbol => $stocks) {
+            $volumeCount = 0;
+            foreach ($stocks as $stock) {
+                if($stock->SIDE_CODE == '001'){
+                    $volumeCount += $stock->VOLUME;
+                } else if($stock->SIDE_CODE == '002'){
+                    $volumeCount -= $stock->VOLUME;
+                }
+//                $stock->VOLUME;
+            }
+            if($volumeCount > 0){
+                $stockArrRet[$symbol] = $stocks;
+            }
+        }
+        
+        
+        return $stockArrRet;
     }
     public function getDataFromProfiles($stocks){
         $stocksRet = array();
+        
+        
+        $startA = SystemUtils::getMillisec();
         $stockArr = $this->getStockArr($stocks);
-
+        $stopA = SystemUtils::getMillisec();
+        
+        $startB = SystemUtils::getMillisec();
         foreach ($stockArr as $symbol => $stockSingleArr) {
             
 //            array_push($stockSingleArr, $this->getLastBean($symbol));
@@ -71,6 +97,11 @@ class LogsTotalController extends LogsProfileController {
                 
             array_push($stocksRet, $stocksRes);
         }
+        $stopB = SystemUtils::getMillisec();
+        
+        $this->log->info("Call getStockArr : " . ($stopA - $startA));
+        $this->log->info("Call foreach : " . ($stopB - $startB));
+        
         return $stocksRet;        
     }
     

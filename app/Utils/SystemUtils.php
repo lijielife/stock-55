@@ -13,4 +13,7 @@ class SystemUtils{
                 str_replace("-", "", str_replace("&", "", str_replace("*", "", $masSymbol)));
     }
     
+    public static function getMillisec() {
+        return round(microtime(true) * 1000);
+    }
 }

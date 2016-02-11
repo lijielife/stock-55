@@ -34,15 +34,20 @@ class LogsProfileController extends LogsTableController {
     
     protected function setDataExtends(){}
     
-    public function data_json(){
-        return json_encode($this->calData($this->getDataLogs()));
-    }
+//    public function data_json(){
+//        return json_encode($this->calData($this->getDataLogs()));
+//    }
+//    
+//    public function data_json(){
+//        return json_encode($this->calData($this->getDataLogs()));
+//    }
     
     public function calData($stocks){
         
         if(empty($stocks)) {
             return $stocks;
         }
+        
         $stocksRet = array(); $avgPrice = 0; $max = 0;
         $total = 0; $totalNetAmount = 0; $totalVolume = 0;
         $CMVn = $CMVo = $BMVn = $BMVo = 0;
@@ -50,7 +55,6 @@ class LogsProfileController extends LogsTableController {
         
         $stockFirst = current($stocks);
 //        $stockEnd = end($stocks);
-        
         $priceLast = null;
         $firstDate = $stockFirst->DATE;
         $endDate = date("Y-m-d");
@@ -58,6 +62,9 @@ class LogsProfileController extends LogsTableController {
         $pricesInDB = $this->getPriceBetweenDate($symbol, $firstDate, $endDate);
         $countGen = 1;
         $result = 0;
+        
+        
+        
         foreach ($stocks as $stock) {
            
             if(!isset($stock->ID)){
@@ -175,7 +182,6 @@ class LogsProfileController extends LogsTableController {
             
             $stockPre = $stock;
         }
-        
         return array_reverse($stocksRet);
     }
     
