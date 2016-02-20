@@ -253,7 +253,7 @@ function cellStyleMatcher(value, row, index) {
 
 function cellValueStyle(value, row, index) {
     var $classText = (row.RESULT > 0 ? 'text-success' :
-            (row.RESULT = 0 ? 'text-warning' :'text-danger'));
+            (row.RESULT == 0 ? 'text-warning' :'text-danger'));
     return {
         classes: $classText
     };
