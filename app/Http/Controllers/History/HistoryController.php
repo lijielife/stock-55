@@ -16,7 +16,7 @@ class HistoryController extends Controller {
     private $resolution;
     private $from;
     private $to;
-    private $url = 'http://chart.investor.co.th/achart/history/query.ashx?';
+    private $url = 'http://chart.investorz.com/achart/history/query.ashx?';
     private $criteria = 'symbol={symbol}&resolution={resolution}&from={from}&to={to}';
     protected $is_insert = false;
 
@@ -232,7 +232,7 @@ class HistoryController extends Controller {
         $url = str_replace("{from}", $from, $url);
         $url = str_replace("{to}", $to, $url);
 
-        return $url;
+        return str_replace("&amp;", "&", $url);
     }
 
     public function getCriteria() {

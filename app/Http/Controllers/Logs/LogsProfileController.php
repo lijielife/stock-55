@@ -69,6 +69,9 @@ class LogsProfileController extends LogsTableController {
            
             if(!isset($stock->ID)){
                 $stock->ID = "G" . $countGen++;
+                if(!empty($pricesInDB)){
+                    $priceLast = end($pricesInDB);
+                }
             } else {
                 $stock->ID = "B" . $countGen++;
                 $stock->ID_DB = $stock->ID;
@@ -85,6 +88,7 @@ class LogsProfileController extends LogsTableController {
                 $priceInDay = $pricesInDB[$date];
             } else {
                 $priceInDay = ($sideCode == '003' || isset($priceLast) ? $priceLast : $stock->PRICE);
+//                $priceInDay = ($sideCode == '003' || isset($priceLast) ? $priceLast : end($pricesInDB));
             }
             $priceLast = $priceInDay;
             

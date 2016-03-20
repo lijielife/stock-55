@@ -40,6 +40,7 @@ class LoadController extends GetController {
 //                array_push($respone, array("symbolName" => $masSymbol
 //                    , "count" => $data->count));
             } catch (Exception $e) {
+                $this->log->info(" Error LoadData Symbol : " . $masSymbol );
                 continue;
             } finally {
                 $this->updateIsNotUse($masSymbol);
