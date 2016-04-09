@@ -36,7 +36,16 @@ class HistoryController extends Controller {
 
         return $masSymbols;
     }
+    
+    protected function getLoadStatusError() {
 
+        $masSymbols = DB::table('LOAD_STATUS')
+                ->whereNotNull('ERROR_DESC')
+                ->lists('SYMBOL');
+
+        return $masSymbols;
+    }
+    
     protected function updateIsNotUse($masSymbol) {
 
         DB::table('MAS_SYMBOL')->where('SYMBOL', $masSymbol)->update(['IS_USE' => 0]);
@@ -263,15 +272,18 @@ class HistoryController extends Controller {
         $this->criteria = $criteria;
     }
 
-    public function resetData() {
-        DB::update('update MAS_SYMBOL SET IS_USE = ?', ['1']);
+    public function resetData($default = '1') {
+        DB::update('update MAS_SYMBOL SET IS_USE = ?', [$default]);
     }
     
     public function resetDataInPort($symbols = null) {
         
         if($symbols){
+            $this->resetData(0);
             \App\Models\MasSymbol::whereIn("SYMBOL", $symbols)->update(array("IS_USE" => 1));
         } else {
+            
+            $this->resetData(0);
             DB::update('update MAS_SYMBOL SET IS_USE = ?'
                 . ' WHERE ID IN (SELECT distinct SYMBOL_ID FROM DATA_LOG) OR SYMBOL = ?', ['1', 'SET']);
         }
@@ -284,30 +296,52 @@ class HistoryController extends Controller {
 //        $this->criteria = $criteria;
 //    }
 
-    public function getStatus($origin) {
-        $commit = DB::table('HISTORY')
-                ->where('origin', $origin)
-                ->distinct()
-                ->count('symbol');
+    public function getStatus($sessionId) {
+//        $commit = DB::table('HISTORY')
+//                ->where('origin', $origin)
+//                ->distinct()
+//                ->count('symbol');
 
-        $total = DB::table('MAS_SYMBOL')->count('SYMBOL');
+        
+        $commit = DB::table('LOAD_STATUS')
+                ->where('SESSION_ID', $sessionId)
+                ->where('STATUS_DESC', 'success')
+                ->distinct()
+                ->count('SYMBOL');
+        
+        $total = DB::table('LOAD_STATUS')
+                ->where('SESSION_ID', $sessionId)
+                ->distinct()
+                ->count('SYMBOL');
 
         return array("commit" => $commit, "total" => $total, "percent" => (int) floor(($commit / $total) * 100));
 //        SELECT count(distinct symbol) FROM super_stock_db.history;
     }
 
-    public function getCount($origin) {
+    public function getCount($sessionId) {
 
         $ret = array();
-        $values = DB::table('HISTORY')
-                ->select(DB::raw('count(*) as cnt, symbol'))
-                ->where('origin', $origin)
-                ->groupBy('symbol')
-                ->get();
+//        $values = DB::table('HISTORY')
+//                ->select(DB::raw('count(*) as cnt, symbol'))
+//                ->where('origin', $origin)
+//                ->groupBy('symbol')
+//                ->get();
 
+        
+//        $values = DB::table('LOAD_STATUS')
+//                ->where('SESSION_ID', $sessionId)
+//                ->lists('SYMBOL', 'status_desc');
+        
+        $values = DB::table('LOAD_STATUS')
+                ->select(DB::raw('count(*) as CNT, SYMBOL'))
+//                ->where('origin', $origin)
+                ->where('SESSION_ID', $sessionId)
+                ->groupBy('SYMBOL')
+                ->get();
+        
         foreach ($values as $value) {
-            array_push($ret, array("symbolName" => $value->symbol
-                , "count" => $value->cnt));
+            array_push($ret, array("symbolName" => $value->SYMBOL
+                , "count" => $value->CNT));
         }
         return $ret;
     }

@@ -26,6 +26,9 @@ class GetController extends HistoryController {
         }
         $url = $this->getUrlCri();
 
+        
+        $this->log->info(" url : $url ");
+                
         $homepage = file_get_contents($url);
 
         $json = json_decode($homepage);

@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Beans; // การกำหนดที่อยู่ของ Model
-
 class SymbolBean {
     
     public $symbol;

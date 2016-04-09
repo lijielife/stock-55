@@ -7,7 +7,6 @@ use App;
 //use Log;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Logs\LogsProfileController;
-use App\Utils\SystemUtils;
 
 class LogsTotalController extends LogsProfileController {
     
