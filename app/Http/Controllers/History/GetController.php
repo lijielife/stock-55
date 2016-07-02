@@ -79,10 +79,11 @@ class GetController extends HistoryController {
     public function getSymbol() {
         $symbol = parent::getSymbol();
         if (!isset($symbol) || trim($symbol) == "") {
-            $symbol = "ADVANC*BK";
-        } else if (!strrpos($symbol, '*')) {
-            $symbol = $symbol . "*BK";
-        }
+            $symbol = "ADVANC";
+        } 
+//        else if (!strrpos($symbol, '*')) {
+//            $symbol = $symbol;
+//        }
         return $symbol;
     }
 

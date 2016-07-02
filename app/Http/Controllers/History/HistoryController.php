@@ -16,7 +16,9 @@ class HistoryController extends Controller {
     private $resolution;
     private $from;
     private $to;
-    private $url = 'http://chart.investorz.com/achart/history/query.ashx?';
+//    http://service.bidschart.com/history?symbol=.SET&resolution=D&from=1465784260&to=1466648260
+    private $url = 'http://service.bidschart.com/history?';
+//    private $url = 'http://chart.investorz.com/achart/history/query.ashx?';
     private $criteria = 'symbol={symbol}&resolution={resolution}&from={from}&to={to}';
     protected $is_insert = false;
 
@@ -233,7 +235,7 @@ class HistoryController extends Controller {
         $url = $this->getUrl() . $this->getCriteria();
         $symbol = $this->getSymbol();
         $resolution = $this->getResolution();
-        $from = $this->getFrom();
+        $from = 1433116800;//$this->getFrom();
         $to = $this->getTo();
 
         $url = str_replace("{symbol}", $symbol, $url);
@@ -241,6 +243,9 @@ class HistoryController extends Controller {
         $url = str_replace("{from}", $from, $url);
         $url = str_replace("{to}", $to, $url);
 
+//        http://service.bidschart.com/history?symbol=ADVANC&resolution=D&from=1433116800&to=1466923244
+//        http://service.bidschart.com/history?symbol=ADVANC*BK&resolution=D&from=1433116800&to=1466923467
+//            
         return str_replace("&amp;", "&", $url);
     }
 
