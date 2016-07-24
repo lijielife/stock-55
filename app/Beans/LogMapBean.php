@@ -18,7 +18,7 @@ class LogMapBean {
             }
         }
     }
-    
+
     function getId() {
         return $this->id;
     }
@@ -49,7 +49,7 @@ class LogMapBean {
         $this->mapVol = $mapVol;
     }
 
-    
+
     function getDataLogSrc() {
         return $this->dataLogSrc;
     }
