@@ -26,7 +26,6 @@ class LoadController extends GetController {
 
 
         $symbols = (Request::input('symbols') === null ? null : explode(",", Request::input('symbols')));
-
         $isLoadAll = (Request::input('isLoadAll') === null ? false : true);
         $this->log->info(" isLoadAll : " . '' . ($isLoadAll ? 'true' : 'false') );
 

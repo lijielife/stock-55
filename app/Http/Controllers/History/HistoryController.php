@@ -38,7 +38,7 @@ class HistoryController extends Controller {
 
         return $masSymbols;
     }
-    
+
     protected function getLoadStatusError() {
 
         $masSymbols = DB::table('LOAD_STATUS')
@@ -47,18 +47,18 @@ class HistoryController extends Controller {
 
         return $masSymbols;
     }
-    
+
     protected function updateIsNotUse($masSymbol) {
 
         DB::table('MAS_SYMBOL')->where('SYMBOL', $masSymbol)->update(['IS_USE' => 0]);
     }
 
 //    protected function historyInsert($symbolBeans, $origin){
-//    
+//
 //        if (!$this->is_insert) {
 //            return;
 //        }
-//            
+//
 //        $times = array();
 //        foreach ($symbolBeans as $symbolBean) {
 //            $timeMillisec = $symbolBean->getMillisec();
@@ -78,19 +78,19 @@ class HistoryController extends Controller {
 //            $timeMillisec = $symbolBean->getMillisec();
 //
 //            if (!in_array($timeMillisec, $timeInUse)) {
-//                
+//
 //                $symbolBean->setUpdated_at(date('Y-m-d H:i:s'));
 //                $symbolBean->setCreated_at(date('Y-m-d H:i:s'));
-//                
+//
 //                array_push($historiesInsert, (array) $symbolBean);
 //                array_push($timeInUse, $timeMillisec);
 //            }
 //        }
-//                
+//
 //        foreach (array_chunk($historiesInsert, 1000) as $insertValue) {
 //            DB::table('HISTORY')->insert($insertValue);
 //        }
-//        
+//
 //    }
 
     protected function historyInsert($symbolBeans, $tableName, $origin) {
@@ -108,7 +108,7 @@ class HistoryController extends Controller {
         $symbol = str_replace("*BK", "", $this->getSymbol());
 
         $this->createTable($tableName, $symbol, $origin);
-        
+
         $timeInUse = DB::table($tableName)
                 ->select('MILLISEC', DB::raw('md5(concat(TIME, OPEN, CLOSE, HIGH, LOW, VOLUME)) as MD'))
                 ->where('SYMBOL', $symbol)
@@ -146,7 +146,7 @@ class HistoryController extends Controller {
         foreach (array_chunk($historiesInsert, 1000) as $insertValue) {
             DB::table($tableName)->insert($insertValue);
         }
-        
+
         foreach (array_chunk($historiesUpdate, 1000) as $updateValue) {
             DB::table($tableName)
                     ->where('MILLISEC', $updateValue[0]["millisec"])
@@ -175,7 +175,7 @@ class HistoryController extends Controller {
                   `CREATED_AT` date NOT NULL,
                   PRIMARY KEY (`ID`),
                   KEY `TIME` (`TIME` DESC)
-                  
+
                 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2474868 ;');
 
                 $is_check = DB::table('TABLE_NAME')->where(["table_name" => $tableName])->get();
@@ -245,7 +245,7 @@ class HistoryController extends Controller {
 
 //        http://service.bidschart.com/history?symbol=ADVANC&resolution=D&from=1433116800&to=1466923244
 //        http://service.bidschart.com/history?symbol=ADVANC*BK&resolution=D&from=1433116800&to=1466923467
-//            
+//
         return str_replace("&amp;", "&", $url);
     }
 
@@ -280,14 +280,14 @@ class HistoryController extends Controller {
     public function resetData($default = '1') {
         DB::update('update MAS_SYMBOL SET IS_USE = ?', [$default]);
     }
-    
+
     public function resetDataInPort($symbols = null) {
-        
+
         if($symbols){
             $this->resetData(0);
             \App\Models\MasSymbol::whereIn("SYMBOL", $symbols)->update(array("IS_USE" => 1));
         } else {
-            
+
             $this->resetData(0);
             DB::update('update MAS_SYMBOL SET IS_USE = ?'
                 . ' WHERE ID IN (SELECT distinct SYMBOL_ID FROM DATA_LOG) OR SYMBOL = ?', ['1', 'SET']);
@@ -307,13 +307,13 @@ class HistoryController extends Controller {
 //                ->distinct()
 //                ->count('symbol');
 
-        
+
         $commit = DB::table('LOAD_STATUS')
                 ->where('SESSION_ID', $sessionId)
                 ->where('STATUS_DESC', 'success')
                 ->distinct()
                 ->count('SYMBOL');
-        
+
         $total = DB::table('LOAD_STATUS')
                 ->where('SESSION_ID', $sessionId)
                 ->distinct()
@@ -332,18 +332,18 @@ class HistoryController extends Controller {
 //                ->groupBy('symbol')
 //                ->get();
 
-        
+
 //        $values = DB::table('LOAD_STATUS')
 //                ->where('SESSION_ID', $sessionId)
 //                ->lists('SYMBOL', 'status_desc');
-        
+
         $values = DB::table('LOAD_STATUS')
                 ->select(DB::raw('count(*) as CNT, SYMBOL'))
 //                ->where('origin', $origin)
                 ->where('SESSION_ID', $sessionId)
                 ->groupBy('SYMBOL')
                 ->get();
-        
+
         foreach ($values as $value) {
             array_push($ret, array("symbolName" => $value->SYMBOL
                 , "count" => $value->CNT));
