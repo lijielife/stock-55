@@ -62,7 +62,7 @@ class LoadController extends GetController {
         $this->loadDataLoop($masSymbols, $statusArr);
 
 //        load error loop
-        $loadErrorSymbols = $this->getLoadStatusError();
+        $loadErrorSymbols = $this->getLoadStatusError($sessionId);
         $this->loadDataLoop($loadErrorSymbols, $statusArr);
 
 
@@ -99,6 +99,7 @@ class LoadController extends GetController {
             $error_desc = null;
             $status_desc = 'success';
             try {
+                
                 $data = $this->process($masSymbol);
 //                array_push($respone, array("symbolName" => $masSymbol
 //                    , "count" => $data->count));

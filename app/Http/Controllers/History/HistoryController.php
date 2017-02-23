@@ -39,10 +39,11 @@ class HistoryController extends Controller {
         return $masSymbols;
     }
 
-    protected function getLoadStatusError() {
+    protected function getLoadStatusError($sessionId) {
 
         $masSymbols = DB::table('LOAD_STATUS')
                 ->whereNotNull('ERROR_DESC')
+                ->where('SESSION_ID', $sessionId)
                 ->lists('SYMBOL');
 
         return $masSymbols;

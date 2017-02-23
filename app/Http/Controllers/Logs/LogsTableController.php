@@ -11,7 +11,10 @@ abstract class LogsTableController extends Controller {
     abstract public function getIndex();    
     
     public function data_json(){
-        return json_encode($this->calData($this->getDataLogs()));
+        $result = $this->calData($this->getDataLogs());
+        $resultJson = json_encode($result);
+        $this->log->info(" Result Json : " . $resultJson );
+        return $resultJson;
     }
     
     public function getPriceBetweenDate($symbol, $firstDAte, $endDAte){
